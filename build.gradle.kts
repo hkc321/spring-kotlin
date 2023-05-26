@@ -17,7 +17,8 @@ repositories {
     mavenCentral()
 }
 
-extra["snippetsDir"] = file("build/generated-snippets")
+//extra["snippetsDir"] = file("build/generated-snippets")
+val snippetsDir by extra { file("build/generated-snippets") }
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
@@ -53,5 +54,6 @@ tasks.test {
 
 tasks.asciidoctor {
     inputs.dir(snippetsDir)
-    dependsOn(test)
+    //dependsOn(test)
+    dependsOn(tasks.test)
 }
