@@ -1,0 +1,17 @@
+=== Get Product By Id
+Obtains a specific products by its unique identifier.
+
+==== Sample Request
+include::{snippets}/product/get-product-by-id/http-request.adoc[]
+
+==== Sample Response
+include::{snippets}/product/get-product-by-id/http-response.adoc[]
+
+==== CURL sample
+include::{snippets}/product/get-product-by-id/curl-request.adoc[]
+
+==== Path Parameters
+include::{snippets}/product/get-product-by-id/path-parameters.adoc[]
+
+==== Response Fields
+include::{snippets}/product/get-product-by-id/response-fields.adoc[]

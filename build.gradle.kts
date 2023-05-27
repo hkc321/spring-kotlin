@@ -19,12 +19,13 @@ repositories {
 
 //extra["snippetsDir"] = file("build/generated-snippets")
 val snippetsDir by extra { file("build/generated-snippets") }
+val asciidoctorExt: Configuration by configurations.creating
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -35,6 +36,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
+    asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
 }
 
 tasks.withType<KotlinCompile> {
@@ -56,4 +58,25 @@ tasks.asciidoctor {
     inputs.dir(snippetsDir)
     //dependsOn(test)
     dependsOn(tasks.test)
+
+    doFirst { // 2
+        delete {
+            file("src/main/resources/static/docs")
+        }
+    }
+}
+
+tasks.register("copyHTML", Copy::class) { // 3
+    dependsOn(tasks.asciidoctor)
+    from(file("build/asciidoc/html5"))
+    into(file("src/main/resources/static/docs"))
+}
+
+tasks.build { // 4
+    dependsOn(tasks.getByName("copyHTML"))
+}
+
+tasks.bootJar { // 5
+    dependsOn(tasks.asciidoctor)
+    dependsOn(tasks.getByName("copyHTML"))
 }
