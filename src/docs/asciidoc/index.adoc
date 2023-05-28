@@ -1,3 +1,6 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
 === Get Product By Id
 Obtains a specific products by its unique identifier.
 

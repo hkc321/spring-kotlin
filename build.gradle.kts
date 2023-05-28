@@ -68,7 +68,7 @@ tasks.asciidoctor {
 
 tasks.register("copyHTML", Copy::class) { // 3
     dependsOn(tasks.asciidoctor)
-    from(file("build/asciidoc/html5"))
+    from(file("build/docs/asciidoc"))
     into(file("src/main/resources/static/docs"))
 }
 
