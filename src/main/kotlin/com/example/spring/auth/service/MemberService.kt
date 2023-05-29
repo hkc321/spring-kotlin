@@ -10,4 +10,8 @@ class MemberService(private val memberRepository: MemberRepository) {
     fun save(member: Member): Member {
         return this.memberRepository.save(member)
     }
+
+    fun findByMemId(memId: String): Member? {
+        return  this.memberRepository.findByMemId(memId)
+    }
 }

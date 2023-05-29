@@ -1,5 +1,7 @@
 package com.example.spring.auth.controller
 
+import com.example.spring.auth.dto.LoginDTO
+import com.example.spring.auth.dto.MessageDTO
 import com.example.spring.auth.dto.RegisterDTO
 import com.example.spring.auth.model.Member
 import com.example.spring.auth.service.MemberService
@@ -17,11 +19,22 @@ class AuthController(private val memberService: MemberService) {
     @PostMapping("register")
     fun register(@RequestBody body: RegisterDTO): ResponseEntity<Member> {
         val member = Member()
-        member.mem_id = body.mem_id
-        member.mem_pw = body.mem_pw
-        print(member)
+        member.memId = body.memId
+        member.memPw = body.memPw
 
         return ResponseEntity.ok(this.memberService.save(member))
+    }
+
+    @PostMapping("login")
+    fun login(@RequestBody body: LoginDTO): ResponseEntity<Any>{
+        val member = this.memberService.findByMemId(body.memId)
+            ?: return ResponseEntity.badRequest().body(MessageDTO("user not found"))
+
+        if (!member.comparePW(body.memPw)){
+            return ResponseEntity.badRequest().body(MessageDTO("invalid password"))
+        }
+
+        return ResponseEntity.ok(member)
     }
 
     @GetMapping("test")

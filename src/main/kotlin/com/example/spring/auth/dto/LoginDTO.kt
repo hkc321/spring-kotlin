@@ -1,7 +1,6 @@
 package com.example.spring.auth.dto
 
-class RegisterDTO {
-    val memIdx= ""
+class LoginDTO {
     val memId = ""
     val memPw = ""
 }

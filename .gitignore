@@ -37,7 +37,7 @@ out/
 .vscode/
 
 ### DB ###
-/src/main/resources/aws.properties
+/src/main/resources/application-prod.yml
 
 ### Rest Doc ###
 /src/main/resources/static/docs

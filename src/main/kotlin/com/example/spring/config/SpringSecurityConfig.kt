@@ -18,6 +18,7 @@ class SpringSecurityConfig{
                 disable()
             }
             authorizeRequests {
+                authorize("/api/login",anonymous)
                 authorize("/api/register",anonymous)
                 authorize("/api/test",anonymous)
                 authorize(anyRequest, authenticated)

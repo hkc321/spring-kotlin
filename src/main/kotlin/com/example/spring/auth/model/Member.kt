@@ -12,19 +12,22 @@ private val passwordEncoder = BCryptPasswordEncoder()
 @Entity
 @Table(name="member")
 class Member{
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mem_idx", nullable = false)
-    var mem_idx: Int? = null
+    var memIdx: Int? = null
 
-    @Column(name = "mem_id")
-    var mem_id: String? = null
+    @Column(name = "mem_id", unique = true)
+    var memId: String? = null
 
     @Column(name = "mem_pw")
-    var mem_pw: String? = null
+    var memPw: String? = null
+        get() = field
         set(value) {
             field = passwordEncoder.encode(value)
         }
+
+    fun comparePW(pw: String): Boolean {
+        return BCryptPasswordEncoder().matches(pw, this.memPw)
+    }
 }
