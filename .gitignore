@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### DB ###
+/src/main/resources/aws.properties
+
+### Rest Doc ###
+/src/main/resources/static/docs
