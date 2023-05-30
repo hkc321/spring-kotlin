@@ -5,4 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface MemberRepository: JpaRepository<Member, Int> {
     fun findByMemId(memId: String): Member?
+    fun countByMemId(memId: String): Long
 }
