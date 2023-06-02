@@ -1,18 +1,12 @@
-package com.example.spring.auth.model
+package com.example.spring.member.adapter.out.persistence
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-private val passwordEncoder = BCryptPasswordEncoder()
 
 @Entity
 @Table(name="member")
-class Member{
+class MemberEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mem_idx", nullable = false)
@@ -26,10 +20,9 @@ class Member{
         @JsonIgnore
         get() = field
         set(value) {
-            field = passwordEncoder.encode(value)
+            field = BCryptPasswordEncoder().encode(value)
         }
 
-//    fun comparePW(pw: String): Boolean {
-//        return BCryptPasswordEncoder().matches(pw, this.memPw)
-//    }
+
+
 }

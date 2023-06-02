@@ -7,6 +7,7 @@ plugins {
     kotlin("jvm") version "1.8.21"
     kotlin("plugin.spring") version "1.8.21"
     kotlin("plugin.jpa") version "1.8.21"
+    kotlin("kapt") version "1.7.10"
 }
 
 group = "com.example"
@@ -31,6 +32,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final") //123
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")//23
+    kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")//123
+    kaptTest("org.mapstruct:mapstruct-processor:1.5.5.Final")//123
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("com.h2database:h2")
     runtimeOnly("com.mysql:mysql-connector-j")
