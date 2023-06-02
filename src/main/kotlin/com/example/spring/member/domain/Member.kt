@@ -5,10 +5,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 
 class Member() {
-    var memIdx:Int = 0
-    var memId:String = ""
+    var idx:Int = 0
+    var id:String = ""
     @JsonIgnore
-    var memPw:String = ""
+    var pw:String = ""
     var authStatus: Status = Status.NONE
 
     enum class Status {
@@ -16,6 +16,6 @@ class Member() {
     }
 
     fun comparePW(pw: String): Boolean {
-        return BCryptPasswordEncoder().matches(pw, this.memPw)
+        return BCryptPasswordEncoder().matches(pw, this.pw)
     }
 }

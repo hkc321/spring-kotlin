@@ -9,14 +9,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class MemberEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "mem_idx", nullable = false)
-    var memIdx: Int = 0
+    @Column(name = "idx", nullable = false)
+    var idx: Int = 0
 
-    @Column(name = "mem_id", unique = true)
-    var memId: String = ""
+    @Column(name = "id", unique = true)
+    var id: String = ""
 
-    @Column(name = "mem_pw")
-    var memPw: String = ""
+    @Column(name = "pw")
+    var pw: String = ""
         @JsonIgnore
         get() = field
         set(value) {

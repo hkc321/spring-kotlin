@@ -3,7 +3,6 @@ package com.example.spring.member.adapter.out.persistence
 
 import com.example.spring.member.adapter.mapper.MemberMapper
 import com.example.spring.member.application.port.out.MemberPort
-import com.example.spring.member.domain.Auth
 import com.example.spring.member.domain.Member
 import org.springframework.stereotype.Repository
 
@@ -14,16 +13,16 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
     /**
      * ID,PW 확인
      * */
-    override fun checkAuth(auth: Auth): Member? {
-        val member: Member? = memberMapper.toMember(memberRepository.findByMemId(auth.memId))
+    override fun checkAuth(member: Member): Member? {
+        val findMember: Member? = memberMapper.toMember(memberRepository.findById(member.id))
 
-        if (member != null){
-            if(!member.comparePW(auth.memPw)){
-                member.authStatus = Member.Status.WRONG_PW
+        if (findMember != null){
+            if(!findMember.comparePW(member.pw)){
+                findMember.authStatus = Member.Status.WRONG_PW
             }else{
-                member.authStatus = Member.Status.AUTHENTIC
+                findMember.authStatus = Member.Status.AUTHENTIC
             }
-            return member
+            return findMember
         }
         return null
     }
@@ -31,14 +30,21 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
     /**
      * Member 찾기
      * */
-    override fun findMember() {
+    override fun findMemberById() {
         TODO("Not yet implemented")
     }
 
     /**
      * Member 등록
      * */
-    override fun registerMember() {
-        TODO("Not yet implemented")
+    override fun registerMember(member: Member): Member? {
+        // 아이디 있으면 가입 금지
+        val findMember: Member? = memberMapper.toMember(memberRepository.findById(member.id))
+
+        if (findMember == null){
+            return memberMapper.toMember(memberRepository.save(memberMapper.toEntity(member)))
+        }else{
+            return null
+        }
     }
 }

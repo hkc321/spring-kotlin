@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class Auth {
-    var memId:String = ""
+    var id:String = ""
     @JsonIgnore
-    var memPw:String = ""
+    var pw:String = ""
 
 
 

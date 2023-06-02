@@ -47,9 +47,9 @@ class JwtService: Jwt {
         val tokenValidTime = getAccessTime() * 60 * 1000L
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.memIdx.toString())
-        claims["memIdx"] = member.memIdx
-        claims["memId"] = member.memId
+        val claims: Claims = Jwts.claims().setSubject(member.idx.toString())
+        claims["idx"] = member.idx
+        claims["id"] = member.id
 
         val token =  Jwts.builder()
             .setHeaderParam("type", "JWT")
@@ -66,9 +66,9 @@ class JwtService: Jwt {
         val tokenValidTime = getRefreshTime() * 60 * 1000L
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.memIdx.toString())
-        claims["memIdx"] = member.memIdx
-        claims["memId"] = member.memId
+        val claims: Claims = Jwts.claims().setSubject(member.idx.toString())
+        claims["idx"] = member.idx
+        claims["id"] = member.id
 
         val token =  Jwts.builder()
             .setHeaderParam("type", "JWT")
