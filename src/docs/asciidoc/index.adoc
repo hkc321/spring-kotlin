@@ -1,20 +1,125 @@
 ifndef::snippets[]
 :snippets: build/generated-snippets
 endif::[]
-=== Get Product By Id
-Obtains a specific products by its unique identifier.
+
+= Member Domain Test
+Andy Wilkinson;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+[[overview]]
+= Overview
+Member Domain API Doc
+
+[[overview_http_verbs]]
+
+[[overview_headers]]
+== URI
+
+=== /api/register
+Try to regist member with id/pw.
 
 ==== Sample Request
-include::{snippets}/product/get-product-by-id/http-request.adoc[]
+include::{snippets}/api/register/http-request.adoc[]
 
 ==== Sample Response
-include::{snippets}/product/get-product-by-id/http-response.adoc[]
+include::{snippets}/api/register/http-response.adoc[]
 
 ==== CURL sample
-include::{snippets}/product/get-product-by-id/curl-request.adoc[]
+include::{snippets}/api/register/curl-request.adoc[]
 
 ==== Path Parameters
-include::{snippets}/product/get-product-by-id/path-parameters.adoc[]
+include::{snippets}/api/register/path-parameters.adoc[]
+
+==== Request Body
+include::{snippets}/api/register/request-body.adoc[]
+
+==== Response Body
+include::{snippets}/api/register/response-body.adoc[]
 
 ==== Response Fields
-include::{snippets}/product/get-product-by-id/response-fields.adoc[]
+include::{snippets}/api/register/response-fields.adoc[]
+
+
+
+=== /api/login
+Try to logim member with id/pw.
+
+==== success
+If success, it returns 2 tokens(access/refresh)
+
+===== Sample Request
+include::{snippets}/api/login/success/http-request.adoc[]
+
+===== Sample Response
+include::{snippets}/api/login/success/http-response.adoc[]
+
+===== CURL sample
+include::{snippets}/api/login/success/curl-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/api/login/success/path-parameters.adoc[]
+
+===== Request Body
+include::{snippets}/api/login/success/request-body.adoc[]
+
+===== Response Body
+include::{snippets}/api/login/success/response-body.adoc[]
+
+===== Response Fields
+include::{snippets}/api/login/success/response-fields.adoc[]
+
+==== wrong_id
+If send nonexistent ID, it returns "user not found"
+
+===== Sample Request
+include::{snippets}/api/login/wrong_id/http-request.adoc[]
+
+===== Sample Response
+include::{snippets}/api/login/wrong_id/http-response.adoc[]
+
+===== CURL sample
+include::{snippets}/api/login/wrong_id/curl-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/api/login/wrong_id/path-parameters.adoc[]
+
+===== Request Body
+include::{snippets}/api/login/wrong_id/request-body.adoc[]
+
+===== Response Body
+include::{snippets}/api/login/wrong_id/response-body.adoc[]
+
+===== Response Fields
+include::{snippets}/api/login/wrong_id/response-fields.adoc[]
+
+
+==== wrong_pw
+If send wrong PW, it returns "invalid password"
+
+===== Sample Request
+include::{snippets}/api/login/wrong_pw/http-request.adoc[]
+
+===== Sample Response
+include::{snippets}/api/login/wrong_pw/http-response.adoc[]
+
+===== CURL sample
+include::{snippets}/api/login/wrong_pw/curl-request.adoc[]
+
+===== Path Parameters
+include::{snippets}/api/login/wrong_pw/path-parameters.adoc[]
+
+===== Request Body
+include::{snippets}/api/login/wrong_pw/request-body.adoc[]
+
+===== Response Body
+include::{snippets}/api/login/wrong_pw/response-body.adoc[]
+
+===== Response Fields
+include::{snippets}/api/login/wrong_pw/response-fields.adoc[]

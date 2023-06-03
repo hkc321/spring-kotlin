@@ -2,7 +2,6 @@ package com.example.spring.member.adapter.`in`.web
 
 import com.example.spring.member.adapter.MemberRequest
 import com.example.spring.member.application.port.`in`.MemberUseCase
-import com.example.spring.member.domain.Member
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping

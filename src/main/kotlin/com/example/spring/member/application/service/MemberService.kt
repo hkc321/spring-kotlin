@@ -15,7 +15,7 @@ class MemberService(private val memberPort: MemberPort, private val jwtService: 
         val joinMember: Member? = memberPort.registerMember(member)
 
         if (joinMember == null){
-            return ResponseEntity.badRequest().body("ID already exist")
+            return ResponseEntity.badRequest().body("ID already exists")
         }else{
             return ResponseEntity.ok(joinMember)
         }
