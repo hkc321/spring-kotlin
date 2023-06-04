@@ -41,3 +41,6 @@ out/
 
 ### Rest Doc ###
 /src/main/resources/static/docs
+
+### Swagger ##
+/src/main/resources/static/swagger-ui

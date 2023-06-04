@@ -1,11 +1,11 @@
 package com.example.spring.member.adapter.`in`.web
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
@@ -35,7 +35,7 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.content().string("ID already exists"))
             .andDo(
-                document(
+                MockMvcRestDocumentationWrapper.document(
                     "api/register"
                 )
             )
@@ -58,7 +58,7 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.content().string("user not found"))
             .andDo(
-                document(
+                MockMvcRestDocumentationWrapper.document(
                     "api/login/wrong_id"
                 )
             )
@@ -77,7 +77,7 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
             .andExpect(MockMvcResultMatchers.content().string("invalid password"))
             .andDo(
-                document(
+                MockMvcRestDocumentationWrapper.document(
                     "api/login/wrong_pw"
                 )
             )
@@ -97,7 +97,7 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.jsonPath("$.X-AUTH-TOKEN-ACCESS", notNullValue()))
             .andDo(
-                document(
+                MockMvcRestDocumentationWrapper.document(
                     "api/login/success"
                 )
             )
