@@ -102,11 +102,9 @@ tasks.register("copyOasToSwagger", Copy::class) {
 
 tasks.build { // 4
     dependsOn(tasks.getByName("copyHTML"))
-    dependsOn(tasks.getByName("copyOasToSwagger"))
 }
 
 tasks.bootJar { // 5
     dependsOn(tasks.asciidoctor)
     dependsOn(tasks.getByName("copyHTML"))
-    dependsOn(tasks.getByName("copyOasToSwagger"))
 }
