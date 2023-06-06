@@ -13,7 +13,7 @@ interface MemberMapper {
     }
 
     @Mapping(target = "authStatus", ignore = true)
-    fun toMember(dto: MemberEntity?): Member?
+    fun toMember(dto: MemberEntity?): Member
 
     fun toEntity(member: Member): MemberEntity
 }

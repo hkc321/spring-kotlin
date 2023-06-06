@@ -4,10 +4,20 @@ import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.application.port.`in`.MemberUseCase
 import com.example.spring.member.domain.Member
 import org.springframework.http.ResponseEntity
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class MemberService(private val memberPort: MemberPort, private val jwtService: JwtService): MemberUseCase {
+class MemberService(
+    private val memberPort: MemberPort,
+    private val jwtService: JwtService,
+    private val authenticationManager: AuthenticationManager): MemberUseCase {
     /**
      * 회원가입
      * */
@@ -22,22 +32,37 @@ class MemberService(private val memberPort: MemberPort, private val jwtService: 
     }
 
     override fun login(member: Member): ResponseEntity<Any> {
-        val findMember: Member? =  memberPort.checkAuth(member)
-
-        if (findMember != null) {
-            if (findMember.authStatus == Member.Status.WRONG_PW){
-                return ResponseEntity.badRequest().body("invalid password")
-            }else if (findMember.authStatus == Member.Status.AUTHENTIC){
-                val accessToken = jwtService.createAccessToken(findMember)
-                val refreshToken = jwtService.createRefreshToken(findMember)
-                val data = mutableMapOf<String, Any>()
-                data["X-AUTH-TOKEN-ACCESS"] = accessToken
-                data["X-AUTH-TOKEN-REFRESH"] = refreshToken
-                return ResponseEntity.ok(data)
-            }
+        try {
+            val authentication: Authentication =
+            authenticationManager.authenticate(
+                UsernamePasswordAuthenticationToken(member.id, member.pw, null)
+            )
+            val accessToken = jwtService.createAccessToken(authentication)
+            val refreshToken = jwtService.createRefreshToken(authentication)
+            val data = mutableMapOf<String, Any>()
+            data["X-AUTH-TOKEN-ACCESS"] = accessToken
+            data["X-AUTH-TOKEN-REFRESH"] = refreshToken
+            return ResponseEntity.ok(data)
+        }catch (e: Exception){
+            return ResponseEntity.badRequest().body("Bad Credential")
         }
 
-        return ResponseEntity.badRequest().body("user not found")
+
+//        val findMember: Member? =  memberPort.checkAuth(member)
+//        if (findMember != null) {
+//            if (findMember.authStatus == Member.Status.WRONG_PW){
+//                return ResponseEntity.badRequest().body("invalid password")
+//            }else if (findMember.authStatus == Member.Status.AUTHENTIC){
+//                val accessToken = jwtService.createAccessToken(findMember)
+//                val refreshToken = jwtService.createRefreshToken(findMember)
+//                val data = mutableMapOf<String, Any>()
+//                data["X-AUTH-TOKEN-ACCESS"] = accessToken
+//                data["X-AUTH-TOKEN-REFRESH"] = refreshToken
+//                return ResponseEntity.ok(data)
+//            }
+//        }
+//
+//        return ResponseEntity.badRequest().body("user not found")
     }
 
     override fun logout() {

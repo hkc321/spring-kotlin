@@ -1,5 +1,6 @@
 package com.example.spring.member.application.service
 
+import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.domain.Jwt
 import com.example.spring.member.domain.Member
 import io.jsonwebtoken.Claims
@@ -8,13 +9,19 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.Authentication
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.crypto.SecretKey
 
 @Service
-class JwtService: Jwt {
+class JwtService(
+    private val memberPort: MemberPort,
+    private val userDetailsServiceImpl: UserDetailsServiceImpl): Jwt {
+
     @Value("\${jwt.secret-key}")
     private val secretKey: String = ""
 
@@ -43,16 +50,16 @@ class JwtService: Jwt {
         return refreshTime
     }
 
-    override fun createAccessToken(member: Member): String {
+    override fun createAccessToken(authentication: Authentication): String {
         val tokenValidTime = getAccessTime() * 60 * 1000L
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.idx.toString())
-        claims["idx"] = member.idx
-        claims["id"] = member.id
+        val claims: Claims = Jwts.claims().setSubject(authentication.name)
+        claims["id"] = authentication.name
 
         val token =  Jwts.builder()
             .setHeaderParam("type", "JWT")
+            .setSubject(authentication.name)
             .setClaims(claims) // 정보저장
             .setIssuedAt(now)  // 토큰 발행 시간 정보
             .setExpiration(accessValidTime) // 만료시간
@@ -62,16 +69,16 @@ class JwtService: Jwt {
         return token
     }
 
-    override fun createRefreshToken(member: Member): String {
+    override fun createRefreshToken(authentication: Authentication): String {
         val tokenValidTime = getRefreshTime() * 60 * 1000L
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.idx.toString())
-        claims["idx"] = member.idx
-        claims["id"] = member.id
+        val claims: Claims = Jwts.claims().setSubject(authentication.name)
+        claims["id"] = authentication.name
 
         val token =  Jwts.builder()
             .setHeaderParam("type", "JWT")
+            .setSubject(authentication.name)
             .setClaims(claims) // 정보저장
             .setIssuedAt(now)  // 토큰 발행 시간 정보
             .setExpiration(refreshValidTime) // 만료시간
@@ -82,7 +89,41 @@ class JwtService: Jwt {
     }
 
     override fun resolveToken(req: HttpServletRequest): String? {
-        return req.getHeader("X-AUTH-TOKEN")
+        return req.getHeader("Authorization")
+    }
+
+    override fun validateToken(token: String): Boolean {
+        val getMember = memberPort.findMemberById(extractId(token))
+        if (getMember != null) {
+            return !isTokenExpired(token)
+        }else{
+            return false
+        }
+    }
+
+    override fun extractClaims(token: String): Claims {
+        return Jwts.parserBuilder()
+            .setSigningKey(getSingingKey())
+            .build()
+            .parseClaimsJws(token)
+            .body
+    }
+
+    override fun isTokenExpired(token: String): Boolean {
+        return extractClaims(token).expiration.before(Date())
+    }
+
+    override fun extractId(token: String): String {
+        return extractClaims(token).subject
+    }
+
+    /**
+     * 인증정보 만들기
+     * */
+    override fun getAuthentication(id: String): UsernamePasswordAuthenticationToken {
+        val userDetails: UserDetails = userDetailsServiceImpl.loadUserByUsername(id)
+
+        return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 
 }

@@ -30,8 +30,15 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
     /**
      * Member 찾기
      * */
-    override fun findMemberById() {
-        TODO("Not yet implemented")
+    override fun findMemberById(id: String): Member? {
+        return  memberMapper.toMember(memberRepository.findById(id))
+    }
+
+    /**
+     * Member 찾기
+     * */
+    override fun findMemberByIdx(idx: Int): Member? {
+        return  memberMapper.toMember(memberRepository.findByIdx(idx))
     }
 
     /**
