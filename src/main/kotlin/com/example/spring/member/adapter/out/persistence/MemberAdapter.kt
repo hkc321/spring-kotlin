@@ -5,6 +5,7 @@ import com.example.spring.member.adapter.mapper.MemberMapper
 import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.domain.Member
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class MemberAdapter(private val memberRepository: MemberRepository): MemberPort {
@@ -54,7 +55,7 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
             return null
         }
     }
-
+    @Transactional
     override fun saveRefreshToken(id: String, token: String) {
         memberRepository.findById(id)!!.refreshToken = token
     }
