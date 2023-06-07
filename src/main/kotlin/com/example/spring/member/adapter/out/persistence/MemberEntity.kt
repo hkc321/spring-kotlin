@@ -9,8 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 class MemberEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idx", nullable = false)
-    var idx: Int = 0
+    @Column(name = "member_id", nullable = false)
+    var memberId: Int = 0
 
     @Column(name = "id", unique = true)
     var id: String = ""
@@ -22,6 +22,12 @@ class MemberEntity{
         set(value) {
             field = BCryptPasswordEncoder().encode(value)
         }
+
+    @Column(name = "role")
+    var role: String = ""
+
+    @Column(name = "refresh_token")
+    var refreshToken: String? = null
 
 
 

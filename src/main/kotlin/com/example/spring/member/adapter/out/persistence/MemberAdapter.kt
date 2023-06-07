@@ -30,15 +30,15 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
     /**
      * Member 찾기
      * */
-    override fun findMemberById(id: String): Member? {
-        return  memberMapper.toMember(memberRepository.findById(id))
+    override fun findMemberById(id: String): MemberEntity? {
+        return  memberRepository.findById(id)
     }
 
     /**
      * Member 찾기
      * */
-    override fun findMemberByIdx(idx: Int): Member? {
-        return  memberMapper.toMember(memberRepository.findByIdx(idx))
+    override fun findMemberByMemberId(memberId: Int): Member? {
+        return  memberMapper.toMember(memberRepository.findByMemberId(memberId))
     }
 
     /**
@@ -46,7 +46,7 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
      * */
     override fun registerMember(member: Member): Member? {
         // 아이디 있으면 가입 금지
-        val findMember: Member? = memberMapper.toMember(memberRepository.findById(member.id))
+        val findMember: MemberEntity? = memberRepository.findById(member.id)
 
         if (findMember == null){
             return memberMapper.toMember(memberRepository.save(memberMapper.toEntity(member)))
@@ -54,4 +54,13 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
             return null
         }
     }
+
+    override fun saveRefreshToken(id: String, token: String) {
+        memberRepository.findById(id)!!.refreshToken = token
+    }
+
+    override fun findMemberByRefreshToken(token: String): MemberEntity {
+        return memberRepository.findByRefreshToken(token)
+    }
+
 }

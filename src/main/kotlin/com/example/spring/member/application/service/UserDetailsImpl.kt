@@ -13,7 +13,7 @@ class UserDetailsImpl(private val member: Member): UserDetails {
      * @return the authorities, sorted by natural key (never `null`)
      */
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return AuthorityUtils.createAuthorityList()
+        return AuthorityUtils.createAuthorityList(member.role)
     }
 
     /**
@@ -30,7 +30,7 @@ class UserDetailsImpl(private val member: Member): UserDetails {
      * @return the username (never `null`)
      */
     override fun getUsername(): String {
-        return member.id.toString()
+        return member.id
     }
 
     /**

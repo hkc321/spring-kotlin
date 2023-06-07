@@ -32,37 +32,37 @@ class MemberService(
     }
 
     override fun login(member: Member): ResponseEntity<Any> {
-        try {
-            val authentication: Authentication =
-            authenticationManager.authenticate(
-                UsernamePasswordAuthenticationToken(member.id, member.pw, null)
-            )
-            val accessToken = jwtService.createAccessToken(authentication)
-            val refreshToken = jwtService.createRefreshToken(authentication)
-            val data = mutableMapOf<String, Any>()
-            data["X-AUTH-TOKEN-ACCESS"] = accessToken
-            data["X-AUTH-TOKEN-REFRESH"] = refreshToken
-            return ResponseEntity.ok(data)
-        }catch (e: Exception){
-            return ResponseEntity.badRequest().body("Bad Credential")
-        }
+//        try {
+//            val authentication: Authentication =
+//            authenticationManager.authenticate(
+//                UsernamePasswordAuthenticationToken(member.id, member.pw, null)
+//            )
+//            val accessToken = jwtService.createAccessToken(authentication)
+//            val refreshToken = jwtService.createRefreshToken(authentication)
+//            val data = mutableMapOf<String, Any>()
+//            data["X-AUTH-TOKEN-ACCESS"] = accessToken
+//            data["X-AUTH-TOKEN-REFRESH"] = refreshToken
+//            return ResponseEntity.ok(authentication)
+//        }catch (e: Exception){
+//            return ResponseEntity.badRequest().body("Bad Credential")
+//        }
 
 
-//        val findMember: Member? =  memberPort.checkAuth(member)
-//        if (findMember != null) {
-//            if (findMember.authStatus == Member.Status.WRONG_PW){
-//                return ResponseEntity.badRequest().body("invalid password")
-//            }else if (findMember.authStatus == Member.Status.AUTHENTIC){
+        val findMember: Member? =  memberPort.checkAuth(member)
+        if (findMember != null) {
+            if (findMember.authStatus == Member.Status.WRONG_PW){
+                return ResponseEntity.badRequest().body("invalid password")
+            }else if (findMember.authStatus == Member.Status.AUTHENTIC){
 //                val accessToken = jwtService.createAccessToken(findMember)
 //                val refreshToken = jwtService.createRefreshToken(findMember)
 //                val data = mutableMapOf<String, Any>()
 //                data["X-AUTH-TOKEN-ACCESS"] = accessToken
 //                data["X-AUTH-TOKEN-REFRESH"] = refreshToken
-//                return ResponseEntity.ok(data)
-//            }
-//        }
-//
-//        return ResponseEntity.badRequest().body("user not found")
+                return ResponseEntity.ok("qwe")
+            }
+        }
+
+        return ResponseEntity.badRequest().body("user not found")
     }
 
     override fun logout() {

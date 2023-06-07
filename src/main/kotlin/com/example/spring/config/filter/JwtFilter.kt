@@ -40,6 +40,7 @@ class JwtFilter(private val jwtService: JwtService): OncePerRequestFilter() {
             val authentication: UsernamePasswordAuthenticationToken = jwtService.getAuthentication(id)
             // 생성된 AuthenticationToken을 SecurityContext가 관리하도록 설정
             SecurityContextHolder.getContext().authentication = authentication
+            println(authentication)
         }
 
         filterChain.doFilter(request, response)

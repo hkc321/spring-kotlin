@@ -5,11 +5,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 
 class Member() {
-    var idx:Int = 0
+    var memberId:Int = 0
     var id:String = ""
     @JsonIgnore
     var pw:String = ""
     var authStatus: Status = Status.NONE
+    var role: String = ""
+    var refreshToken: String? = null
 
     enum class Status {
         NONE, WRONG_ID, WRONG_PW, AUTHENTIC

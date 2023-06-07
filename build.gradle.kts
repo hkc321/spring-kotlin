@@ -24,6 +24,7 @@ val snippetsDir by extra { file("build/generated-snippets") }
 val asciidoctorExt: Configuration by configurations.creating
 
 dependencies {
+    implementation("org.json:json:20230227")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-cache")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

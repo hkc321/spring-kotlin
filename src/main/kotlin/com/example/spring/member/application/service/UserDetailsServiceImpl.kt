@@ -1,8 +1,9 @@
 package com.example.spring.member.application.service
 
+import com.example.spring.member.adapter.mapper.MemberMapper
+import com.example.spring.member.adapter.out.persistence.MemberEntity
 import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.domain.Member
-import org.springframework.http.ResponseEntity
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserDetailsServiceImpl( private val memberPort: MemberPort): UserDetailsService {
+    val memberMapper = MemberMapper.INSTANCE
     /**
      * Locates the user based on the username. In the actual implementation, the search
      * may possibly be case sensitive, or case insensitive depending on how the
@@ -22,9 +24,9 @@ class UserDetailsServiceImpl( private val memberPort: MemberPort): UserDetailsSe
      * GrantedAuthority
      */
     override fun loadUserByUsername(username: String): UserDetails {
-        val member: Member = memberPort.findMemberById(username)
+        val member: MemberEntity = memberPort.findMemberById(username)
             ?: throw UsernameNotFoundException("존재하지 않는 username 입니다.")
 
-        return UserDetailsImpl(member)
+        return UserDetailsImpl(memberMapper.toMember(member))
     }
 }
