@@ -3,6 +3,7 @@ package com.example.spring.member.application.service
 import com.example.spring.config.filter.JwtExceptionResponse
 import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.domain.Jwt
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
@@ -20,7 +21,8 @@ import javax.crypto.SecretKey
 
 @Service
 class JwtService(
-    private val userDetailsServiceImpl: UserDetailsServiceImpl): Jwt {
+    private val userDetailsServiceImpl: UserDetailsServiceImpl,
+    private val objectMapper: ObjectMapper): Jwt {
 
     @Value("\${jwt.secret-key}")
     private val secretKey: String = ""
@@ -158,7 +160,7 @@ class JwtService(
     ) {
         response.status = status.value()
         response.contentType = "application/json; charset=UTF-8"
-        response.writer.write(JwtExceptionResponse(status, "$errorType: $message").toJsonString())
+        response.writer.write(objectMapper.writeValueAsString(JwtExceptionResponse(status, "$errorType: $message")))
     }
 
     override fun extractAccessToken(request: HttpServletRequest): String {
