@@ -56,16 +56,18 @@ class MemberControllerTest {
         // Then
         result
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().string("user not found"))
+            .andExpect(MockMvcResultMatchers.jsonPath("success", `is`("false")))
+            .andExpect(MockMvcResultMatchers.jsonPath("message", startsWith("login fail")))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
-                    "api/login/wrong_id"
+                    "api/login/bad_credential"
                 )
             )
 
+
         val input2 = mutableMapOf<String, String>()
         input2["id"] = "test"
-        input2["pw"] = "noPW"
+        input2["pw"] = "test"
 
         // When
         var result2 = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/login")
@@ -74,28 +76,11 @@ class MemberControllerTest {
 
         // Then
         result2
-            .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().string("invalid password"))
-            .andDo(
-                MockMvcRestDocumentationWrapper.document(
-                    "api/login/wrong_pw"
-                )
-            )
-
-
-        val input3 = mutableMapOf<String, String>()
-        input3["id"] = "test"
-        input3["pw"] = "test"
-
-        // When
-        var result3 = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(ObjectMapper().writeValueAsString(input3)))
-
-        // Then
-        result3
             .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.jsonPath("$.X-AUTH-TOKEN-ACCESS", notNullValue()))
+            .andExpect(MockMvcResultMatchers.jsonPath("success", `is`("true")))
+            .andExpect(MockMvcResultMatchers.jsonPath("message", startsWith("login success")))
+            .andExpect(MockMvcResultMatchers.header().exists("Authorization"))
+            .andExpect(MockMvcResultMatchers.header().exists("Authorization-refresh"))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
                     "api/login/success"
