@@ -67,7 +67,7 @@ class CustomUsernamePasswordAuthenticationFilter(
         jwtService.setHeaderOfAccessToken(response, accessToken)
         jwtService.setHeaderOfRefreshToken(response, refreshToken)
 
-        jwtService.setResponseMessage(true, response, authResult.toString())
+        jwtService.setResponseMessage("true", response, "login success")
     }
 
     /**
@@ -86,6 +86,6 @@ class CustomUsernamePasswordAuthenticationFilter(
         }
         response.status = HttpStatus.BAD_REQUEST.value()
 //        val failMessage = failed!!.message
-        jwtService.setResponseMessage(false, response, "로그인 실패: $failMessage")
+        jwtService.setResponseMessage("false", response, "login fail: $failMessage")
     }
 }

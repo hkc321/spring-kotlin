@@ -60,7 +60,7 @@ interface Jwt {
     /**
      * JWT 응답 메시지 설정
      * */
-    fun setResponseMessage(result: Boolean, response: HttpServletResponse, message: String)
+    fun setResponseMessage(result: String, response: HttpServletResponse, message: String)
 
     /**
      * JWT 에러 메시지 설정

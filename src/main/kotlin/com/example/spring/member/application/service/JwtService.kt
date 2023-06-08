@@ -143,7 +143,7 @@ class JwtService(
         response.addHeader(Jwt.REFRESH_TOKEN_HEADER, Jwt.TOKEN_PREFIX + token)
     }
 
-    override fun setResponseMessage(result: Boolean, response: HttpServletResponse, message: String) {
+    override fun setResponseMessage(result: String, response: HttpServletResponse, message: String) {
         response.contentType = "application/json;charset=UTF-8"
         val content = JSONObject()
             .apply { put("success", result) }
