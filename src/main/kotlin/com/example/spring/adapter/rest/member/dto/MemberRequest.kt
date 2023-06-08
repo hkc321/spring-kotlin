@@ -1,7 +1,6 @@
-package com.example.spring.member.adapter
+package com.example.spring.adapter.rest.member.dto
 
-import com.example.spring.member.domain.Auth
-import com.example.spring.member.domain.Member
+import com.example.spring.domain.member.Member
 
 class MemberRequest() {
     var id: String = ""

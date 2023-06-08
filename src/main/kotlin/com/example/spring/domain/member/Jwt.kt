@@ -1,4 +1,4 @@
-package com.example.spring.member.domain
+package com.example.spring.domain.member
 
 import io.jsonwebtoken.Claims
 import jakarta.servlet.http.HttpServletRequest

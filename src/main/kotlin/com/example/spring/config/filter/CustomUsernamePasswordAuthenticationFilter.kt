@@ -1,11 +1,10 @@
 package com.example.spring.config.filter
 
 import com.example.spring.config.dto.ErrorCode
-import com.example.spring.member.adapter.MemberRequest
-import com.example.spring.member.application.port.out.MemberPort
-import com.example.spring.member.application.service.JwtService
-import com.example.spring.member.application.service.UserDetailsImpl
-import com.example.spring.member.domain.Member
+import com.example.spring.adapter.rest.member.dto.MemberRequest
+import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.service.member.JwtService
+import com.example.spring.application.service.member.UserDetailsImpl
 import com.fasterxml.jackson.databind.ObjectMapper
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -17,7 +16,6 @@ import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
-import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 

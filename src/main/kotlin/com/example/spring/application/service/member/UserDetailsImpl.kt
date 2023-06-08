@@ -1,6 +1,6 @@
-package com.example.spring.member.application.service
+package com.example.spring.application.service.member
 
-import com.example.spring.member.domain.Member
+import com.example.spring.domain.member.Member
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails

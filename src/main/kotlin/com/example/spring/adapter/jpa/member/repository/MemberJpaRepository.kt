@@ -1,9 +1,9 @@
-package com.example.spring.member.adapter.out.persistence
+package com.example.spring.adapter.jpa.member.repository
 
-import com.example.spring.member.adapter.out.persistence.MemberEntity
+import com.example.spring.adapter.jpa.member.entity.MemberEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
-interface MemberRepository : JpaRepository<MemberEntity, Int> {
+interface MemberJpaRepository : JpaRepository<MemberEntity, Int> {
     fun findById(id: String): MemberEntity?
     fun countById(id: String): Long
     fun findByMemberId(memberId: Int): MemberEntity?

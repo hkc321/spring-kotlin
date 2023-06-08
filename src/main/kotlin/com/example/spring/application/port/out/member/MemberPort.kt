@@ -1,8 +1,7 @@
-package com.example.spring.member.application.port.out
+package com.example.spring.application.port.out.member
 
-import com.example.spring.member.adapter.out.persistence.MemberEntity
-import com.example.spring.member.domain.Member
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import com.example.spring.adapter.jpa.member.entity.MemberEntity
+import com.example.spring.domain.member.Member
 
 interface MemberPort {
     /**

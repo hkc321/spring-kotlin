@@ -1,4 +1,4 @@
-package com.example.spring.member.domain
+package com.example.spring.domain.member
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder

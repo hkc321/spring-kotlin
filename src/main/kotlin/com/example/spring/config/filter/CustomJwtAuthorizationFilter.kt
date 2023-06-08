@@ -1,11 +1,11 @@
 package com.example.spring.config.filter
 
-import com.example.spring.member.adapter.mapper.MemberMapper
-import com.example.spring.member.application.port.out.MemberPort
-import com.example.spring.member.application.service.JwtService
-import com.example.spring.member.application.service.UserDetailsImpl
-import com.example.spring.member.application.service.UserDetailsServiceImpl
-import com.example.spring.member.domain.Jwt
+import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
+import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.service.member.JwtService
+import com.example.spring.application.service.member.UserDetailsImpl
+import com.example.spring.application.service.member.UserDetailsServiceImpl
+import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
@@ -27,7 +27,7 @@ class CustomJwtAuthorizationFilter(
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
-    val memberMapper = MemberMapper.INSTANCE
+    val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -94,7 +94,7 @@ class CustomJwtAuthorizationFilter(
             check(jwtService.checkValidToken(access))
             check(jwtService.checkValidToken(refresh))
             check(jwtService.isTokenExpired(refresh).not())
-            val member = memberMapper.toMember(memberPort.findMemberByRefreshToken(refresh))
+            val member = memberJpaMapper.toMember(memberPort.findMemberByRefreshToken(refresh))
 //            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
 //            if (expireIn7Day) reissueRefreshToken(member.username, response)
             reissueAccessToken(member.id, response)

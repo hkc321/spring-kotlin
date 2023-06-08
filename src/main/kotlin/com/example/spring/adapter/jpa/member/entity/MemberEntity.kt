@@ -1,4 +1,4 @@
-package com.example.spring.member.adapter.out.persistence
+package com.example.spring.adapter.jpa.member.entity
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*

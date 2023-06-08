@@ -1,21 +1,23 @@
-package com.example.spring.member.adapter.out.persistence
+package com.example.spring.adapter.jpa.member
 
 
-import com.example.spring.member.adapter.mapper.MemberMapper
-import com.example.spring.member.application.port.out.MemberPort
-import com.example.spring.member.domain.Member
+import com.example.spring.adapter.jpa.member.entity.MemberEntity
+import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
+import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.domain.member.Member
+import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-class MemberAdapter(private val memberRepository: MemberRepository) : MemberPort {
-    val memberMapper = MemberMapper.INSTANCE
+class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberPort {
+    val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
      * ID,PW 확인
      * */
     override fun checkAuth(member: Member): Member? {
-        val findMember: Member? = memberMapper.toMember(memberRepository.findById(member.id))
+        val findMember: Member? = memberJpaMapper.toMember(memberJpaRepository.findById(member.id))
 
         if (findMember != null) {
             if (!findMember.comparePW(member.pw)) {
@@ -32,14 +34,14 @@ class MemberAdapter(private val memberRepository: MemberRepository) : MemberPort
      * Member 찾기
      * */
     override fun findMemberById(id: String): MemberEntity? {
-        return memberRepository.findById(id)
+        return memberJpaRepository.findById(id)
     }
 
     /**
      * Member 찾기
      * */
     override fun findMemberByMemberId(memberId: Int): Member? {
-        return memberMapper.toMember(memberRepository.findByMemberId(memberId))
+        return memberJpaMapper.toMember(memberJpaRepository.findByMemberId(memberId))
     }
 
     /**
@@ -47,10 +49,10 @@ class MemberAdapter(private val memberRepository: MemberRepository) : MemberPort
      * */
     override fun registerMember(member: Member): Member? {
         // 아이디 있으면 가입 금지
-        val findMember: MemberEntity? = memberRepository.findById(member.id)
+        val findMember: MemberEntity? = memberJpaRepository.findById(member.id)
 
         if (findMember == null) {
-            return memberMapper.toMember(memberRepository.save(memberMapper.toEntity(member)))
+            return memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
         } else {
             return null
         }
@@ -58,11 +60,11 @@ class MemberAdapter(private val memberRepository: MemberRepository) : MemberPort
 
     @Transactional
     override fun saveRefreshToken(id: String, token: String) {
-        memberRepository.findById(id)!!.refreshToken = token
+        memberJpaRepository.findById(id)!!.refreshToken = token
     }
 
     override fun findMemberByRefreshToken(token: String): MemberEntity {
-        return memberRepository.findByRefreshToken(token)
+        return memberJpaRepository.findByRefreshToken(token)
     }
 
 }

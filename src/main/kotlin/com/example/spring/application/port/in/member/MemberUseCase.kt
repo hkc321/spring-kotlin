@@ -1,6 +1,6 @@
-package com.example.spring.member.application.port.`in`
+package com.example.spring.application.port.`in`.member
 
-import com.example.spring.member.domain.Member
+import com.example.spring.domain.member.Member
 import org.springframework.http.ResponseEntity
 
 interface MemberUseCase {

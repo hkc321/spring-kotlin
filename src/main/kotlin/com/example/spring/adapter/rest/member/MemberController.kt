@@ -1,10 +1,9 @@
-package com.example.spring.member.adapter.`in`.web
+package com.example.spring.adapter.rest.member
 
-import com.example.spring.member.adapter.MemberRequest
-import com.example.spring.member.application.port.`in`.MemberUseCase
+import com.example.spring.adapter.rest.member.dto.MemberRequest
+import com.example.spring.application.port.`in`.member.MemberUseCase
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

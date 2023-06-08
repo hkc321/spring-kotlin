@@ -1,8 +1,7 @@
-package com.example.spring.member.application.service
+package com.example.spring.application.service.member
 
 import com.example.spring.config.filter.JwtExceptionResponse
-import com.example.spring.member.application.port.out.MemberPort
-import com.example.spring.member.domain.Jwt
+import com.example.spring.domain.member.Jwt
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
