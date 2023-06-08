@@ -3,7 +3,6 @@ package com.example.spring.config
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
-import com.example.spring.config.filter.JwtFilter
 import com.example.spring.member.application.port.out.MemberPort
 import com.example.spring.member.application.service.JwtService
 import com.example.spring.member.application.service.UserDetailsServiceImpl
@@ -15,6 +14,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
@@ -31,6 +31,14 @@ class SpringSecurityConfig(
     private val memberPort: MemberPort,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) {
+    @Bean
+    fun webSecurityCustomizer(): WebSecurityCustomizer =
+        WebSecurityCustomizer {
+            it.ignoring()
+                .requestMatchers("/swagger-ui.html")
+                .requestMatchers("/static/swagger-ui/**")
+        }
+
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
