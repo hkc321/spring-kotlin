@@ -1,6 +1,6 @@
 package com.example.spring.adapter.jpa.member.mapper
 
-import com.example.spring.adapter.jpa.member.entity.MemberEntity
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.domain.member.Member
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
@@ -13,7 +13,7 @@ interface MemberJpaMapper {
     }
 
     @Mapping(target = "authStatus", ignore = true)
-    fun toMember(dto: MemberEntity?): Member
+    fun toMember(dto: MemberJpaEntity?): Member
 
-    fun toEntity(member: Member): MemberEntity
+    fun toEntity(member: Member): MemberJpaEntity
 }

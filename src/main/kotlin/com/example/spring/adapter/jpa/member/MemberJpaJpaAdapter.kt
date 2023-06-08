@@ -1,16 +1,16 @@
 package com.example.spring.adapter.jpa.member
 
 
-import com.example.spring.adapter.jpa.member.entity.MemberEntity
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.domain.member.Member
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberPort {
+class MemberJpaJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberJpaPort {
     val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
@@ -33,7 +33,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     /**
      * Member 찾기
      * */
-    override fun findMemberById(id: String): MemberEntity? {
+    override fun findMemberById(id: String): MemberJpaEntity? {
         return memberJpaRepository.findById(id)
     }
 
@@ -49,7 +49,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
      * */
     override fun registerMember(member: Member): Member? {
         // 아이디 있으면 가입 금지
-        val findMember: MemberEntity? = memberJpaRepository.findById(member.id)
+        val findMember: MemberJpaEntity? = memberJpaRepository.findById(member.id)
 
         if (findMember == null) {
             return memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
@@ -63,7 +63,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
         memberJpaRepository.findById(id)!!.refreshToken = token
     }
 
-    override fun findMemberByRefreshToken(token: String): MemberEntity {
+    override fun findMemberByRefreshToken(token: String): MemberJpaEntity {
         return memberJpaRepository.findByRefreshToken(token)
     }
 

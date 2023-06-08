@@ -1,6 +1,6 @@
 package com.example.spring.application.service.member
 
-import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.domain.member.Member
 import org.springframework.http.ResponseEntity
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class MemberService(
-    private val memberPort: MemberPort,
+    private val memberJpaPort: MemberJpaPort,
     private val jwtService: JwtService,
     private val authenticationManager: AuthenticationManager
 ) : MemberUseCase {
@@ -17,7 +17,7 @@ class MemberService(
      * 회원가입
      * */
     override fun join(member: Member): ResponseEntity<Any> {
-        val joinMember: Member? = memberPort.registerMember(member)
+        val joinMember: Member? = memberJpaPort.registerMember(member)
 
         if (joinMember == null) {
             return ResponseEntity.badRequest().body("ID already exists")
@@ -43,7 +43,7 @@ class MemberService(
 //        }
 
 
-        val findMember: Member? = memberPort.checkAuth(member)
+        val findMember: Member? = memberJpaPort.checkAuth(member)
         if (findMember != null) {
             if (findMember.authStatus == Member.Status.WRONG_PW) {
                 return ResponseEntity.badRequest().body("invalid password")

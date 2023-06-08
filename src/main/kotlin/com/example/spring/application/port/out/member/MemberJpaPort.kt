@@ -1,13 +1,13 @@
 package com.example.spring.application.port.out.member
 
-import com.example.spring.adapter.jpa.member.entity.MemberEntity
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.domain.member.Member
 
-interface MemberPort {
+interface MemberJpaPort {
     /**
      * Member 찾기
      * */
-    fun findMemberById(id: String): MemberEntity?
+    fun findMemberById(id: String): MemberJpaEntity?
 
     /**
      * Member 찾기
@@ -32,5 +32,5 @@ interface MemberPort {
     /**
      * Member 찾기
      * */
-    fun findMemberByRefreshToken(token: String): MemberEntity
+    fun findMemberByRefreshToken(token: String): MemberJpaEntity
 }

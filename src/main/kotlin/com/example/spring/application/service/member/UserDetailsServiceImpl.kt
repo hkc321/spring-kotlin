@@ -1,15 +1,15 @@
 package com.example.spring.application.service.member
 
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.adapter.jpa.member.entity.MemberEntity
-import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
+import com.example.spring.application.port.out.member.MemberJpaPort
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class UserDetailsServiceImpl(private val memberPort: MemberPort) : UserDetailsService {
+class UserDetailsServiceImpl(private val memberJpaPort: MemberJpaPort) : UserDetailsService {
     val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
@@ -24,7 +24,7 @@ class UserDetailsServiceImpl(private val memberPort: MemberPort) : UserDetailsSe
      * GrantedAuthority
      */
     override fun loadUserByUsername(username: String): UserDetails {
-        val member: MemberEntity = memberPort.findMemberById(username)
+        val member: MemberJpaEntity = memberJpaPort.findMemberById(username)
             ?: throw UsernameNotFoundException("존재하지 않는 username 입니다.")
 
         return UserDetailsImpl(memberJpaMapper.toMember(member))

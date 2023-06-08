@@ -1,7 +1,7 @@
 package com.example.spring.config.filter
 
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
@@ -23,7 +23,7 @@ import org.springframework.web.filter.OncePerRequestFilter
  * */
 class CustomJwtAuthorizationFilter(
     private val jwtService: JwtService,
-    private val memberPort: MemberPort,
+    private val memberJpaPort: MemberJpaPort,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
@@ -94,7 +94,7 @@ class CustomJwtAuthorizationFilter(
             check(jwtService.checkValidToken(access))
             check(jwtService.checkValidToken(refresh))
             check(jwtService.isTokenExpired(refresh).not())
-            val member = memberJpaMapper.toMember(memberPort.findMemberByRefreshToken(refresh))
+            val member = memberJpaMapper.toMember(memberJpaPort.findMemberByRefreshToken(refresh))
 //            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
 //            if (expireIn7Day) reissueRefreshToken(member.username, response)
             reissueAccessToken(member.id, response)

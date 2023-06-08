@@ -3,7 +3,7 @@ package com.example.spring.config
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
-import com.example.spring.application.port.out.member.MemberPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 class SpringSecurityConfig(
     private val jwtService: JwtService,
     private val authenticationConfiguration: AuthenticationConfiguration,
-    private val memberPort: MemberPort,
+    private val memberJpaPort: MemberJpaPort,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) {
     @Bean
@@ -55,7 +55,7 @@ class SpringSecurityConfig(
             addFilterBefore<BasicAuthenticationFilter>(
                 CustomJwtAuthorizationFilter(
                     jwtService,
-                    memberPort,
+                    memberJpaPort,
                     userDetailsServiceImpl
                 )
             )
@@ -78,7 +78,7 @@ class SpringSecurityConfig(
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
             jwtService,
-            memberPort
+            memberJpaPort
         ).apply { setFilterProcessesUrl("/api/login") }
     }
 
