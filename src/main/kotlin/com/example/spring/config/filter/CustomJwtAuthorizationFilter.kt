@@ -25,7 +25,7 @@ class CustomJwtAuthorizationFilter(
     private val jwtService: JwtService,
     private val memberPort: MemberPort,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
-): OncePerRequestFilter() {
+) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
     val memberMapper = MemberMapper.INSTANCE
 

@@ -4,8 +4,8 @@ import com.example.spring.member.domain.Auth
 import com.example.spring.member.domain.Member
 
 class MemberRequest() {
-    var id:String = ""
-    var pw:String = ""
+    var id: String = ""
+    var pw: String = ""
 
     fun toDomain(): Member {
         Member().let {

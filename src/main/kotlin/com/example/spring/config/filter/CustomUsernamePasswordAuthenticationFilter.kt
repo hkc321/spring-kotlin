@@ -41,7 +41,7 @@ class CustomUsernamePasswordAuthenticationFilter(
             val loginInput = om.readValue(request.inputStream, MemberRequest::class.java)
             val authentication = UsernamePasswordAuthenticationToken(loginInput.id, loginInput.pw)
             return authenticationManager.authenticate(authentication)
-        } catch (e: Exception){
+        } catch (e: Exception) {
             e.printStackTrace()
             throw UsernameNotFoundException("Bad Credential")
         }

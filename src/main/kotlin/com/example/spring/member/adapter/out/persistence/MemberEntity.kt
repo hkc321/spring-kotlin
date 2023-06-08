@@ -5,8 +5,8 @@ import jakarta.persistence.*
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 @Entity
-@Table(name="member")
-class MemberEntity{
+@Table(name = "member")
+class MemberEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id", nullable = false)
@@ -28,7 +28,6 @@ class MemberEntity{
 
     @Column(name = "refresh_token")
     var refreshToken: String? = null
-
 
 
 }

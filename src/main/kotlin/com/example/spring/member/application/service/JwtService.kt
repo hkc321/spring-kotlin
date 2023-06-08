@@ -22,7 +22,8 @@ import javax.crypto.SecretKey
 @Service
 class JwtService(
     private val userDetailsServiceImpl: UserDetailsServiceImpl,
-    private val objectMapper: ObjectMapper): Jwt {
+    private val objectMapper: ObjectMapper
+) : Jwt {
 
     @Value("\${jwt.secret-key}")
     private val secretKey: String = ""
@@ -59,7 +60,7 @@ class JwtService(
         val claims: Claims = Jwts.claims().setSubject(id)
         claims["id"] = id
 
-        val token =  Jwts.builder()
+        val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
             .setSubject(Jwt.ACCESS)
             .setClaims(claims) // 정보저장
@@ -76,7 +77,7 @@ class JwtService(
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
 
-        val token =  Jwts.builder()
+        val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
             .setSubject(Jwt.ACCESS)
             .setIssuedAt(now)  // 토큰 발행 시간 정보

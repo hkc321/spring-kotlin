@@ -5,7 +5,7 @@ import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.userdetails.UserDetails
 
-class UserDetailsImpl(private val member: Member): UserDetails {
+class UserDetailsImpl(private val member: Member) : UserDetails {
     var enabled: Boolean = true
 
     /**

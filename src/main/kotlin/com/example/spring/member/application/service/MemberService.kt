@@ -17,16 +17,17 @@ import org.springframework.stereotype.Service
 class MemberService(
     private val memberPort: MemberPort,
     private val jwtService: JwtService,
-    private val authenticationManager: AuthenticationManager): MemberUseCase {
+    private val authenticationManager: AuthenticationManager
+) : MemberUseCase {
     /**
      * 회원가입
      * */
     override fun join(member: Member): ResponseEntity<Any> {
         val joinMember: Member? = memberPort.registerMember(member)
 
-        if (joinMember == null){
+        if (joinMember == null) {
             return ResponseEntity.badRequest().body("ID already exists")
-        }else{
+        } else {
             return ResponseEntity.ok(joinMember)
         }
     }
@@ -48,11 +49,11 @@ class MemberService(
 //        }
 
 
-        val findMember: Member? =  memberPort.checkAuth(member)
+        val findMember: Member? = memberPort.checkAuth(member)
         if (findMember != null) {
-            if (findMember.authStatus == Member.Status.WRONG_PW){
+            if (findMember.authStatus == Member.Status.WRONG_PW) {
                 return ResponseEntity.badRequest().body("invalid password")
-            }else if (findMember.authStatus == Member.Status.AUTHENTIC){
+            } else if (findMember.authStatus == Member.Status.AUTHENTIC) {
 //                val accessToken = jwtService.createAccessToken(findMember)
 //                val refreshToken = jwtService.createRefreshToken(findMember)
 //                val data = mutableMapOf<String, Any>()

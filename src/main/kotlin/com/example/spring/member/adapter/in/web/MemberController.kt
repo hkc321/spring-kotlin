@@ -22,7 +22,7 @@ class MemberController(private val memberUseCase: MemberUseCase) {
     }
 
     @PostMapping("login")
-    fun login(@RequestBody body: MemberRequest): ResponseEntity<Any>{
+    fun login(@RequestBody body: MemberRequest): ResponseEntity<Any> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("성공")

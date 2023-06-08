@@ -29,7 +29,8 @@ class SpringSecurityConfig(
     private val jwtService: JwtService,
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val memberPort: MemberPort,
-    private val userDetailsServiceImpl: UserDetailsServiceImpl){
+    private val userDetailsServiceImpl: UserDetailsServiceImpl
+) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
@@ -38,13 +39,19 @@ class SpringSecurityConfig(
             }
 
             authorizeRequests {
-                authorize("/api/login",permitAll)
-                authorize("/api/register",permitAll)
-                authorize("/api/why",hasAuthority("b"))
+                authorize("/api/login", permitAll)
+                authorize("/api/register", permitAll)
+                authorize("/api/why", hasAuthority("b"))
                 authorize(anyRequest, authenticated)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
-            addFilterBefore<BasicAuthenticationFilter>(CustomJwtAuthorizationFilter(jwtService,memberPort,userDetailsServiceImpl))
+            addFilterBefore<BasicAuthenticationFilter>(
+                CustomJwtAuthorizationFilter(
+                    jwtService,
+                    memberPort,
+                    userDetailsServiceImpl
+                )
+            )
             addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))
             formLogin { disable() }
             logout { }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-class MemberAdapter(private val memberRepository: MemberRepository): MemberPort {
+class MemberAdapter(private val memberRepository: MemberRepository) : MemberPort {
     val memberMapper = MemberMapper.INSTANCE
 
     /**
@@ -17,10 +17,10 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
     override fun checkAuth(member: Member): Member? {
         val findMember: Member? = memberMapper.toMember(memberRepository.findById(member.id))
 
-        if (findMember != null){
-            if(!findMember.comparePW(member.pw)){
+        if (findMember != null) {
+            if (!findMember.comparePW(member.pw)) {
                 findMember.authStatus = Member.Status.WRONG_PW
-            }else{
+            } else {
                 findMember.authStatus = Member.Status.AUTHENTIC
             }
             return findMember
@@ -32,14 +32,14 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
      * Member 찾기
      * */
     override fun findMemberById(id: String): MemberEntity? {
-        return  memberRepository.findById(id)
+        return memberRepository.findById(id)
     }
 
     /**
      * Member 찾기
      * */
     override fun findMemberByMemberId(memberId: Int): Member? {
-        return  memberMapper.toMember(memberRepository.findByMemberId(memberId))
+        return memberMapper.toMember(memberRepository.findByMemberId(memberId))
     }
 
     /**
@@ -49,12 +49,13 @@ class MemberAdapter(private val memberRepository: MemberRepository): MemberPort 
         // 아이디 있으면 가입 금지
         val findMember: MemberEntity? = memberRepository.findById(member.id)
 
-        if (findMember == null){
+        if (findMember == null) {
             return memberMapper.toMember(memberRepository.save(memberMapper.toEntity(member)))
-        }else{
+        } else {
             return null
         }
     }
+
     @Transactional
     override fun saveRefreshToken(id: String, token: String) {
         memberRepository.findById(id)!!.refreshToken = token

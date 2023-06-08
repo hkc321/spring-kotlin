@@ -10,8 +10,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
-class UserDetailsServiceImpl( private val memberPort: MemberPort): UserDetailsService {
+class UserDetailsServiceImpl(private val memberPort: MemberPort) : UserDetailsService {
     val memberMapper = MemberMapper.INSTANCE
+
     /**
      * Locates the user based on the username. In the actual implementation, the search
      * may possibly be case sensitive, or case insensitive depending on how the

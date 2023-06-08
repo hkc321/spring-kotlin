@@ -7,18 +7,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 
 interface Jwt {
-    companion object{
-        const val ACCESS = "AccessToken"
-        const val REFRESH = "RefreshToken"
-        const val EXCEPTION = "EXCEPTION"
-        const val JWT_EXCEPTION = "JWT_EXCEPTION"
-        const val HEADER_EXCEPTION = "HEADER_EXCEPTION"
-        const val EXPIRED_EXCEPTION = "EXPIRED_EXCEPTION"
-        const val ACCESS_TOKEN_HEADER = "Authorization"
-        const val REFRESH_TOKEN_HEADER = "Authorization-refresh"
-        const val TOKEN_PREFIX = "Bearer "
-    }
-
     /**
      * JWT Access Token 생성
      * */
@@ -111,4 +99,16 @@ interface Jwt {
      * 지정한 이름으로 왔는지 확인
      * */
     fun checkValidRefreshHeader(request: HttpServletRequest): Boolean
+
+    companion object {
+        const val ACCESS = "AccessToken"
+        const val REFRESH = "RefreshToken"
+        const val EXCEPTION = "EXCEPTION"
+        const val JWT_EXCEPTION = "JWT_EXCEPTION"
+        const val HEADER_EXCEPTION = "HEADER_EXCEPTION"
+        const val EXPIRED_EXCEPTION = "EXPIRED_EXCEPTION"
+        const val ACCESS_TOKEN_HEADER = "Authorization"
+        const val REFRESH_TOKEN_HEADER = "Authorization-refresh"
+        const val TOKEN_PREFIX = "Bearer "
+    }
 }
