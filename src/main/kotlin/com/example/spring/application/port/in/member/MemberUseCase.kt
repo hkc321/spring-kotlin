@@ -8,6 +8,5 @@ interface MemberUseCase {
      * 회원가입
      * */
     fun join(member: Member): ResponseEntity<Any>
-    fun login(member: Member): ResponseEntity<Any>
     fun logout()
 }
