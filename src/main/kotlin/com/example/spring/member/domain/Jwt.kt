@@ -80,17 +80,35 @@ interface Jwt {
     fun setErrorResponseMessage(response: HttpServletResponse, status: HttpStatus, errorType: String, message: String)
 
     /**
-     * Header에서
+     * Header에서 AccessToken 추출
      * */
     fun extractAccessToken(request: HttpServletRequest): String
 
+    /**
+     * Header에서 RefreshToken 추출
+     * */
     fun extractRefreshToken(request: HttpServletRequest): String
 
+    /**
+     * Header에 AccessToken만 있는지 확인
+     * RefreshToken도 같이 있으면 false 반환
+     * */
     fun onlyAccessToken(request: HttpServletRequest): Boolean
 
+    /**
+     * 토큰 클래임 추출하여 유효한지 판단
+     * */
     fun checkValidToken(token: String): Boolean
 
+    /**
+     * AccessToken Header 유효성 검사
+     * 지정한 이름으로 왔는지 확인
+     * */
     fun checkValidAccessHeader(request: HttpServletRequest): Boolean
 
+    /**
+     * RefreshToken Header 유효성 검사
+     * 지정한 이름으로 왔는지 확인
+     * */
     fun checkValidRefreshHeader(request: HttpServletRequest): Boolean
 }

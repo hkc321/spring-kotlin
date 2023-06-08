@@ -18,6 +18,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
 
+/**
+ * 인가필터
+ * */
 class CustomJwtAuthorizationFilter(
     private val jwtService: JwtService,
     private val memberPort: MemberPort,
@@ -70,11 +73,18 @@ class CustomJwtAuthorizationFilter(
         filterChain.doFilter(request, response)
     }
 
+    /**
+     * request header 검증
+     * */
     private fun HttpServletRequest.checkValidHeader(): Boolean {
         return (jwtService.checkValidAccessHeader(this) && !jwtService.checkValidRefreshHeader(this)) ||
                 (jwtService.checkValidAccessHeader(this) && jwtService.checkValidRefreshHeader(this))
     }
 
+    /**
+     * 헤더에서 가져온 토큰 검사
+     * 통과 시 인증정보 가져옴
+     * */
     private fun TokenPair.getAuthentication(response: HttpServletResponse): UsernamePasswordAuthenticationToken {
         val principal = if (refresh == null) {
             check(jwtService.checkValidToken(access))

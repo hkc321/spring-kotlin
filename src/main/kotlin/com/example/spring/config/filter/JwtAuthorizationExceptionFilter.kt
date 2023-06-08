@@ -11,6 +11,9 @@ import org.json.JSONObject
 import org.springframework.http.HttpStatus
 import org.springframework.web.filter.OncePerRequestFilter
 
+/**
+ * JWT 예외처리 필터
+ * */
 class JwtAuthorizationExceptionFilter(
     private val jwtService: JwtService
 ) : OncePerRequestFilter() {
@@ -30,6 +33,9 @@ class JwtAuthorizationExceptionFilter(
         }
     }
 
+    /**
+     * 에러 메시지 설정
+     * */
     fun setErrorResponse(res: HttpServletResponse, status: HttpStatus, errorType: String, ex: Throwable) {
         jwtService.setErrorResponseMessage(res, status, errorType, ex.message ?: "")
     }

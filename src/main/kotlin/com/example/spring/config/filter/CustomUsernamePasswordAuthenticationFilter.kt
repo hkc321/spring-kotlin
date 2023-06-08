@@ -21,6 +21,9 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
+/**
+ * 로그인 시도 시 작동하는 필터(인증필터)
+ * */
 class CustomUsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtService: JwtService,
@@ -28,6 +31,9 @@ class CustomUsernamePasswordAuthenticationFilter(
 ) : UsernamePasswordAuthenticationFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
+    /**
+     * 로그인 시도
+     * */
     override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication {
         log.info("try authentication")
         try {
@@ -41,6 +47,9 @@ class CustomUsernamePasswordAuthenticationFilter(
         }
     }
 
+    /**
+     * 로그인 성공 시 작동
+     * */
     override fun successfulAuthentication(
         request: HttpServletRequest?,
         response: HttpServletResponse,
@@ -61,6 +70,9 @@ class CustomUsernamePasswordAuthenticationFilter(
         jwtService.setResponseMessage(true, response, authResult.toString())
     }
 
+    /**
+     * 로그인 실패 시 작동
+     * */
     override fun unsuccessfulAuthentication(
         request: HttpServletRequest?,
         response: HttpServletResponse,
