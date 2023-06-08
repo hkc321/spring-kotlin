@@ -8,12 +8,11 @@ class MemberRequest() {
     var pw: String = ""
 
     fun toDomain(): Member {
-        Member().let {
-            id = this.id
-            pw = this.pw
+        val member = Member()
+        member.id = this.id
+        member.pw = this.pw
 
-            return it
-        }
+        return member
     }
 }
 
