@@ -36,7 +36,9 @@ class SpringSecurityConfig(
         WebSecurityCustomizer {
             it.ignoring()
                 .requestMatchers("/swagger-ui.html")
-                .requestMatchers("/static/swagger-ui/**")
+                .requestMatchers("/static/**")
+            it.ignoring()
+                .requestMatchers("/api/register")
         }
 
     @Bean
