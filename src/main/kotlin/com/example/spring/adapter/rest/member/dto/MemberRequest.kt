@@ -2,7 +2,7 @@ package com.example.spring.adapter.rest.member.dto
 
 import com.example.spring.domain.member.Member
 
-class MemberRequest() {
+class MemberRequest {
     var id: String = ""
     var pw: String = ""
 

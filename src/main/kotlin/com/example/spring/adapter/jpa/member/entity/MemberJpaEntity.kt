@@ -18,7 +18,7 @@ class MemberJpaEntity {
     @Column(name = "pw")
     var pw: String = ""
         @JsonIgnore
-        get() = field
+        get
         set(value) {
             field = BCryptPasswordEncoder().encode(value)
         }

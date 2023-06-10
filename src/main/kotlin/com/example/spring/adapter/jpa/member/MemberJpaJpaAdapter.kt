@@ -17,7 +17,7 @@ class MemberJpaJpaAdapter(private val memberJpaRepository: MemberJpaRepository) 
      * ID,PW 확인
      * */
     override fun checkAuth(member: Member): Member? {
-        val findMember: Member? = memberJpaMapper.toMember(memberJpaRepository.findById(member.id))
+        val findMember: Member = memberJpaMapper.toMember(memberJpaRepository.findById(member.id))
 
         if (findMember != null) {
             if (!findMember.comparePW(member.pw)) {
