@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
-class MemberJpaJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberJpaPort {
+class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberJpaPort {
     val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
