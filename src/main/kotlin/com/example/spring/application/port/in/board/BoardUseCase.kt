@@ -11,7 +11,7 @@ interface BoardUseCase {
     /**
      * 게시글 상세 조회
      * */
-    fun detail()
+    fun detail(boardId: Int): ResponseEntity<Any>
 
     /**
      * 게시글 작성

@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service
 class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
     override fun all(): ResponseEntity<Any> = ResponseEntity.ok(boardJpaPort.getAllBoard())
 
-    override fun detail() {
-        TODO("Not yet implemented")
-    }
+    override fun detail(boardId: Int): ResponseEntity<Any> = ResponseEntity.ok(boardJpaPort.getDetail(boardId))
 
     override fun write(): ResponseEntity<Any> {
         TODO("Not yet implemented")

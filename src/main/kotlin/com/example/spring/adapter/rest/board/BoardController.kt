@@ -14,9 +14,8 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
     fun all(): ResponseEntity<Any> = boardUseCase.all()
 
     @GetMapping("detail/{boardId}")
-    fun detail(@PathVariable("boardId") boardId: Int): Boolean {
-        return true
-    }
+    fun detail(@PathVariable("boardId") boardId: Int): ResponseEntity<Any> = boardUseCase.detail(boardId)
+
 
     @PostMapping("write")
     fun write(@RequestBody body: MemberRequest): Boolean {

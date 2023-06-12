@@ -7,4 +7,9 @@ interface BoardJpaPort {
      * 게시글 전체 조회
      * */
     fun getAllBoard(): List<Board>
+
+    /**
+     * 게시글 상세 조회
+     * */
+    fun getDetail(boardId: Int): Board
 }

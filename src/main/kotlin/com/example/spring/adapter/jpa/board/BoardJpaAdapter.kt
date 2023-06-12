@@ -15,4 +15,6 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
         val entities = boardJpaRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
         return entities.map { boardJpaMapper.toBoard(it) }
     }
+
+    override fun getDetail(boardId: Int): Board = boardJpaMapper.toBoard(boardJpaRepository.findByBoardId(boardId))
 }
