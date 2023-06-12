@@ -1,11 +1,12 @@
 package com.example.spring.adapter.jpa.board.entity
 
 import jakarta.persistence.*
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Entity
 @Table(name = "board")
-class boardJpaEntity {
+class BoardJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false)
@@ -24,8 +25,8 @@ class boardJpaEntity {
     var writer: String = ""
 
     @Column(name = "created_at")
-    var createdAt: Date = Date()
+    var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
     @Column(name = "edited_at")
-    var editedAt: Date? = null
+    var editedAt: String? = null
 }
