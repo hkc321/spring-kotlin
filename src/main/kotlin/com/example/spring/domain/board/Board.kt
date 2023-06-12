@@ -4,6 +4,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Board {
+    var boardId: Int = 0
     var title: String = ""
     var content: String = ""
     var up: Int = 0

@@ -12,11 +12,13 @@ class BoardRequest {
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
     var editedAt: String? = null
 
-    fun toDomain() {
+    fun toDomain(): Board {
         val board = Board()
         board.title = this.title
         board.content = this.content
         board.up = this.up
         board.writer = this.writer
+
+        return board
     }
 }

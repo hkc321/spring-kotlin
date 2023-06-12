@@ -30,6 +30,10 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
         return boardJpaMapper.toBoard(detail)
     }
 
+    override fun write(board: Board): Board {
+        return boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
+    }
+
     data class BoardNoDataException(
         var code: ErrorCode,
         override var message: String

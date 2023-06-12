@@ -1,5 +1,6 @@
 package com.example.spring.application.port.`in`.board
 
+import com.example.spring.domain.board.Board
 import org.springframework.http.ResponseEntity
 
 interface BoardUseCase {
@@ -16,7 +17,7 @@ interface BoardUseCase {
     /**
      * 게시글 작성
      * */
-    fun write(): ResponseEntity<Any>
+    fun write(board: Board): ResponseEntity<Any>
 
     /**
      * 게시글 수정

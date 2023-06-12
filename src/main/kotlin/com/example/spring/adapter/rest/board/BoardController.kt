@@ -18,9 +18,7 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
 
 
     @PostMapping("write")
-    fun write(@RequestBody body: MemberRequest): Boolean {
-        return true
-    }
+    fun write(@RequestBody body: BoardRequest): ResponseEntity<Any> = boardUseCase.write(body.toDomain())
 
     @PutMapping("edit/{boardId}")
     fun edit(@RequestBody body: BoardRequest, @PathVariable boardId: String): Boolean {

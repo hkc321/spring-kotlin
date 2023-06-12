@@ -12,4 +12,9 @@ interface BoardJpaPort {
      * 게시글 상세 조회
      * */
     fun getDetail(boardId: Int): Board
+
+    /**
+     * 게시글 작성
+     * */
+    fun write(board: Board): Board
 }
