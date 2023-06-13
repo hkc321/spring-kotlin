@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter
 class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : BoardJpaPort {
     val boardJpaMapper = BoardJpaMapper.INSTANCE
 
-    override fun getAllBoard(): List<Board> {
+    override fun loadAllBoard(): List<Board> {
         val entities = boardJpaRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
         if (entities.size < 1) {
             throw NoDataException(ErrorCode.DATA_NOT_FOUND)
@@ -24,7 +24,7 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
         return entities.map { boardJpaMapper.toBoard(it) }
     }
 
-    override fun getDetail(boardId: Int): Board {
+    override fun loadBoard(boardId: Int): Board {
         boardJpaRepository.findByBoardId(boardId)
             ?.let {
                 return boardJpaMapper.toBoard(it)
@@ -32,12 +32,12 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun write(board: Board): Board {
+    override fun saveBoard(board: Board): Board {
         return boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
     }
 
     @Transactional
-    override fun edit(board: Board, boardId: Int): Board {
+    override fun editBoard(board: Board, boardId: Int): Board {
         boardJpaRepository.findByBoardId(boardId)
             ?.let {
                 it.title = board.title
@@ -51,7 +51,7 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun delete(boardId: Int) {
+    override fun deleteBoard(boardId: Int) {
         boardJpaRepository.findByBoardId(boardId)
             ?.let {
                 boardJpaRepository.deleteById(boardId)

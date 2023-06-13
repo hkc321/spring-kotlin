@@ -7,13 +7,13 @@ import org.springframework.stereotype.Service
 
 @Service
 class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
-    override fun all(): List<Board> = boardJpaPort.getAllBoard()
+    override fun readAllBoard(): List<Board> = boardJpaPort.loadAllBoard()
 
-    override fun detail(boardId: Int): Board = boardJpaPort.getDetail(boardId)
+    override fun readBoard(boardId: Int): Board = boardJpaPort.loadBoard(boardId)
 
-    override fun write(board: Board): Board = boardJpaPort.write(board)
+    override fun writeBoard(board: Board): Board = boardJpaPort.saveBoard(board)
 
-    override fun edit(board: Board, boardId: Int): Board = boardJpaPort.edit(board, boardId)
+    override fun editBoard(board: Board, boardId: Int): Board = boardJpaPort.editBoard(board, boardId)
 
-    override fun delete(boardId: Int) = boardJpaPort.delete(boardId)
+    override fun deleteBoard(boardId: Int) = boardJpaPort.deleteBoard(boardId)
 }

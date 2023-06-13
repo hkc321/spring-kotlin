@@ -6,25 +6,25 @@ interface BoardJpaPort {
     /**
      * 게시글 전체 조회
      * */
-    fun getAllBoard(): List<Board>
+    fun loadAllBoard(): List<Board>
 
     /**
      * 게시글 상세 조회
      * */
-    fun getDetail(boardId: Int): Board
+    fun loadBoard(boardId: Int): Board
 
     /**
      * 게시글 작성
      * */
-    fun write(board: Board): Board
+    fun saveBoard(board: Board): Board
 
     /**
      * 게시글 수정
      * */
-    fun edit(board: Board, boardId: Int): Board
+    fun editBoard(board: Board, boardId: Int): Board
 
     /**
      * 게시글 삭제
      * */
-    fun delete(boardId: Int)
+    fun deleteBoard(boardId: Int)
 }

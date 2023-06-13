@@ -6,25 +6,25 @@ interface BoardUseCase {
     /**
      * 게시글 전체 목록 조회
      * */
-    fun all(): List<Board>
+    fun readAllBoard(): List<Board>
 
     /**
      * 게시글 상세 조회
      * */
-    fun detail(boardId: Int): Board
+    fun readBoard(boardId: Int): Board
 
     /**
      * 게시글 작성
      * */
-    fun write(board: Board): Board
+    fun writeBoard(board: Board): Board
 
     /**
      * 게시글 수정
      * */
-    fun edit(board: Board, boardId: Int): Board
+    fun editBoard(board: Board, boardId: Int): Board
 
     /**
      * 게시글 삭제
      * */
-    fun delete(boardId: Int)
+    fun deleteBoard(boardId: Int)
 }

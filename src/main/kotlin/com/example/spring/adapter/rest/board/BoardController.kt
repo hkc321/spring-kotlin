@@ -12,21 +12,21 @@ import org.springframework.web.bind.annotation.*
 class BoardController(private val boardUseCase: BoardUseCase) : BaseController() {
     @GetMapping("all")
     fun all(): ResponseEntity<Any> =
-        ResponseEntity.ok(boardUseCase.all())
+        ResponseEntity.ok(boardUseCase.readAllBoard())
 
     @GetMapping("{boardId}")
-    fun detail(@PathVariable("boardId") boardId: Int): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.detail(boardId))
+    fun readBoard(@PathVariable("boardId") boardId: Int): ResponseEntity<Board> =
+        ResponseEntity.ok(boardUseCase.readBoard(boardId))
 
     @PostMapping("")
-    fun write(@RequestBody body: BoardRequest): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.write(body.toDomain()))
+    fun writeBoard(@RequestBody body: BoardRequest): ResponseEntity<Board> =
+        ResponseEntity.ok(boardUseCase.writeBoard(body.toDomain()))
 
     @PutMapping("{boardId}")
-    fun edit(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.edit(body.toDomain(), boardId))
+    fun editBoard(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
+        ResponseEntity.ok(boardUseCase.editBoard(body.toDomain(), boardId))
 
     @DeleteMapping("{boardId}")
-    fun delete(@PathVariable("boardId") boardId: Int) =
-        boardUseCase.delete(boardId)
+    fun deleteBoard(@PathVariable("boardId") boardId: Int) =
+        boardUseCase.deleteBoard(boardId)
 }
