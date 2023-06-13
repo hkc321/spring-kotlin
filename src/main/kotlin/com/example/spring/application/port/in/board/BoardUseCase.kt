@@ -27,5 +27,5 @@ interface BoardUseCase {
     /**
      * 게시글 삭제
      * */
-    fun delete()
+    fun delete(boardId: Int): ResponseEntity<Any>
 }

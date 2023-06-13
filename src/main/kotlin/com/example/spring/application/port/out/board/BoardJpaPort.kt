@@ -22,4 +22,9 @@ interface BoardJpaPort {
      * 게시글 수정
      * */
     fun edit(board: Board, boardId: Int): Board
+
+    /**
+     * 게시글 삭제
+     * */
+    fun delete(boardId: Int)
 }

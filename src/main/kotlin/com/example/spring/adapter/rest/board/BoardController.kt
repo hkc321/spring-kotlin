@@ -25,7 +25,5 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
         boardUseCase.edit(body.toDomain(), boardId)
 
     @DeleteMapping("delete/{boardId}")
-    fun delete(@PathVariable("boardId") boardId: Int): Boolean {
-        return true
-    }
+    fun delete(@PathVariable("boardId") boardId: Int): ResponseEntity<Any> = boardUseCase.delete(boardId)
 }

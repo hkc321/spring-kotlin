@@ -51,6 +51,14 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
         return boardJpaMapper.toBoard(detail)
     }
 
+    override fun delete(boardId: Int) {
+        boardJpaRepository.findByBoardId(boardId) ?: throw BoardNoDataException(
+            ErrorCode.DATA_NOT_FOUND,
+            "데이터가 존재하지 않습니다"
+        )
+        boardJpaRepository.deleteById(boardId)
+    }
+
     data class BoardNoDataException(
         var code: ErrorCode,
         override var message: String
