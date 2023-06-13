@@ -14,19 +14,19 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
     fun all(): ResponseEntity<Any> =
         ResponseEntity.ok(boardUseCase.all())
 
-    @GetMapping("detail/{boardId}")
+    @GetMapping("{boardId}")
     fun detail(@PathVariable("boardId") boardId: Int): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.detail(boardId))
 
-    @PostMapping("write")
+    @PostMapping("")
     fun write(@RequestBody body: BoardRequest): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.write(body.toDomain()))
 
-    @PutMapping("edit/{boardId}")
+    @PutMapping("{boardId}")
     fun edit(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.edit(body.toDomain(), boardId))
 
-    @DeleteMapping("delete/{boardId}")
+    @DeleteMapping("{boardId}")
     fun delete(@PathVariable("boardId") boardId: Int) =
         boardUseCase.delete(boardId)
 }
