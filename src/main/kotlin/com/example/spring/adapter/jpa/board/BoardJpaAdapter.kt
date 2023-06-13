@@ -30,9 +30,8 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun saveBoard(board: Board): Board {
-        return boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
-    }
+    override fun saveBoard(board: Board): Board =
+        boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
 
     @Transactional
     override fun editBoard(board: Board, boardId: Int): Board {

@@ -15,10 +15,13 @@ import org.springframework.web.bind.annotation.*
 class BoardController(private val boardUseCase: BoardUseCase) : BaseController() {
     @GetMapping("all")
     fun readBoardList(
-        @PageableDefault(size = 10, sort = ["boardId"], direction = Sort.Direction.DESC) pageable: Pageable
-    ): ResponseEntity<Any> {
-        return ResponseEntity.ok(boardUseCase.readBoardList(pageable))
-    }
+        @PageableDefault(
+            size = 10,
+            sort = ["boardId"],
+            direction = Sort.Direction.DESC
+        ) pageable: Pageable
+    ): ResponseEntity<Any> =
+        ResponseEntity.ok(boardUseCase.readBoardList(pageable))
 
 
     @GetMapping("{boardId}")
