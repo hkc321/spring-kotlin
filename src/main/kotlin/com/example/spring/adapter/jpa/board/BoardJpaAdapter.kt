@@ -25,9 +25,11 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
     }
 
     override fun getDetail(boardId: Int): Board {
-        val detail = boardJpaRepository.findByBoardId(boardId)
+        boardJpaRepository.findByBoardId(boardId)
+            ?.let {
+                return boardJpaMapper.toBoard(it)
+            }
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
-        return boardJpaMapper.toBoard(detail)
     }
 
     override fun write(board: Board): Board {
@@ -36,21 +38,25 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
 
     @Transactional
     override fun edit(board: Board, boardId: Int): Board {
-        val detail = boardJpaRepository.findByBoardId(boardId)
-            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
-        detail.title = board.title
-        detail.content = board.content
-        detail.up = board.up
-        detail.writer = board.writer
-        detail.editedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        boardJpaRepository.findByBoardId(boardId)
+            ?.let {
+                it.title = board.title
+                it.content = board.content
+                it.up = board.up
+                it.writer = board.writer
+                it.editedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-        return boardJpaMapper.toBoard(detail)
+                return boardJpaMapper.toBoard(it)
+            }
+            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
     override fun delete(boardId: Int) {
         boardJpaRepository.findByBoardId(boardId)
+            ?.let {
+                boardJpaRepository.deleteById(boardId)
+            }
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
-        boardJpaRepository.deleteById(boardId)
     }
 
 }
