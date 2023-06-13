@@ -3,12 +3,12 @@ package com.example.spring.adapter.jpa.board
 import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.application.port.out.board.BoardJpaPort
+import com.example.spring.config.NoDataException
 import com.example.spring.config.dto.ErrorCode
 import com.example.spring.domain.board.Board
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.data.domain.Sort
 import org.springframework.stereotype.Repository
-import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -19,16 +19,14 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
     override fun getAllBoard(): List<Board> {
         val entities = boardJpaRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"))
         if (entities.size < 1) {
-            throw BoardNoDataException(ErrorCode.DATA_NOT_FOUND, "데이터가 존재하지 않습니다")
+            throw NoDataException(ErrorCode.DATA_NOT_FOUND)
         }
         return entities.map { boardJpaMapper.toBoard(it) }
     }
 
     override fun getDetail(boardId: Int): Board {
-        val detail = boardJpaRepository.findByBoardId(boardId) ?: throw BoardNoDataException(
-            ErrorCode.DATA_NOT_FOUND,
-            "데이터가 존재하지 않습니다"
-        )
+        val detail = boardJpaRepository.findByBoardId(boardId)
+            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
         return boardJpaMapper.toBoard(detail)
     }
 
@@ -38,10 +36,8 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
 
     @Transactional
     override fun edit(board: Board, boardId: Int): Board {
-        val detail = boardJpaRepository.findByBoardId(boardId) ?: throw BoardNoDataException(
-            ErrorCode.DATA_NOT_FOUND,
-            "데이터가 존재하지 않습니다"
-        )
+        val detail = boardJpaRepository.findByBoardId(boardId)
+            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
         detail.title = board.title
         detail.content = board.content
         detail.up = board.up
@@ -52,15 +48,9 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
     }
 
     override fun delete(boardId: Int) {
-        boardJpaRepository.findByBoardId(boardId) ?: throw BoardNoDataException(
-            ErrorCode.DATA_NOT_FOUND,
-            "데이터가 존재하지 않습니다"
-        )
+        boardJpaRepository.findByBoardId(boardId)
+            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
         boardJpaRepository.deleteById(boardId)
     }
 
-    data class BoardNoDataException(
-        var code: ErrorCode,
-        override var message: String
-    ) : RuntimeException(message, null)
 }
