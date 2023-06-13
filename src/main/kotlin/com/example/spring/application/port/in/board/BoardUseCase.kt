@@ -22,7 +22,7 @@ interface BoardUseCase {
     /**
      * 게시글 수정
      * */
-    fun edit()
+    fun edit(board: Board, boardId: Int): ResponseEntity<Any>
 
     /**
      * 게시글 삭제

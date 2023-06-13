@@ -72,8 +72,18 @@ class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
         }
     }
 
-    override fun edit() {
-        TODO("Not yet implemented")
+    override fun edit(board: Board, boardId: Int): ResponseEntity<Any> {
+        try {
+            return ResponseEntity.ok(boardJpaPort.edit(board, boardId))
+        } catch (ex: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(
+                    BaseResponseException(
+                        ErrorCode.INTERNAL_SERVER_ERROR,
+                        ex.message.toString()
+                    )
+                )
+        }
     }
 
     override fun delete() {

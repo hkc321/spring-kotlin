@@ -17,4 +17,9 @@ interface BoardJpaPort {
      * 게시글 작성
      * */
     fun write(board: Board): Board
+
+    /**
+     * 게시글 수정
+     * */
+    fun edit(board: Board, boardId: Int): Board
 }
