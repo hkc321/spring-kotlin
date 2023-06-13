@@ -32,7 +32,7 @@ class ControllerAdvice {
             .body(
                 BaseResponseException(
                     ErrorCode.INTERNAL_SERVER_ERROR,
-                    ex.message.toString()
+                    "INTERNAL_SERVER_ERROR"
                 )
             )
     }
