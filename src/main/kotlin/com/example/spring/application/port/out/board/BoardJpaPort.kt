@@ -1,12 +1,14 @@
 package com.example.spring.application.port.out.board
 
 import com.example.spring.domain.board.Board
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 
 interface BoardJpaPort {
     /**
      * 게시글 전체 조회
      * */
-    fun loadAllBoard(): List<Board>
+    fun loadAllBoard(pageable: Pageable): Page<Board>
 
     /**
      * 게시글 상세 조회
