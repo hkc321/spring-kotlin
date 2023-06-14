@@ -15,6 +15,12 @@ class CommentJpaEntity {
     @Column(name = "board_id")
     var boardId: Int = 1
 
+    @Column(name = "parent_comment_id")
+    var parentCommentId: Int = 1
+
+    @Column(name = "level")
+    var level: Int = 0
+
     @Column(name = "content")
     var content: String = ""
 
