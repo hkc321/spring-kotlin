@@ -23,7 +23,7 @@ Member Domain API Doc
 == URI
 
 === /api/register
-Try to regist member with id/pw.
+Try to regist member with email/pw.
 
 ==== Sample Request
 include::{snippets}/api/register/http-request.adoc[]
@@ -49,7 +49,7 @@ include::{snippets}/api/register/response-fields.adoc[]
 
 
 === /api/login
-Try to logim member with id/pw.
+Try to logim member with email/pw.
 
 ==== success
 If success, it returns 2 tokens(access/refresh)
@@ -75,29 +75,29 @@ include::{snippets}/api/login/success/response-body.adoc[]
 ===== Response Fields
 include::{snippets}/api/login/success/response-fields.adoc[]
 
-==== wrong_id
-If send nonexistent ID, it returns "user not found"
+==== wrong_email
+If send nonexistent email, it returns "user not found"
 
 ===== Sample Request
-include::{snippets}/api/login/wrong_id/http-request.adoc[]
+include::{snippets}/api/login/wrong_email/http-request.adoc[]
 
 ===== Sample Response
-include::{snippets}/api/login/wrong_id/http-response.adoc[]
+include::{snippets}/api/login/wrong_email/http-response.adoc[]
 
 ===== CURL sample
-include::{snippets}/api/login/wrong_id/curl-request.adoc[]
+include::{snippets}/api/login/wrong_email/curl-request.adoc[]
 
 ===== Path Parameters
-include::{snippets}/api/login/wrong_id/path-parameters.adoc[]
+include::{snippets}/api/login/wrong_email/path-parameters.adoc[]
 
 ===== Request Body
-include::{snippets}/api/login/wrong_id/request-body.adoc[]
+include::{snippets}/api/login/wrong_email/request-body.adoc[]
 
 ===== Response Body
-include::{snippets}/api/login/wrong_id/response-body.adoc[]
+include::{snippets}/api/login/wrong_email/response-body.adoc[]
 
 ===== Response Fields
-include::{snippets}/api/login/wrong_id/response-fields.adoc[]
+include::{snippets}/api/login/wrong_email/response-fields.adoc[]
 
 
 ==== wrong_pw

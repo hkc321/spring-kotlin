@@ -6,7 +6,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 
 class Member {
     var memberId: Int = 0
-    var id: String = ""
+    var email: String = ""
 
     @JsonIgnore
     var pw: String = ""

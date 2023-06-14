@@ -7,7 +7,7 @@ interface MemberJpaPort {
     /**
      * Member 찾기
      * */
-    fun findMemberById(id: String): MemberJpaEntity?
+    fun findMemberByEmail(email: String): MemberJpaEntity?
 
     /**
      * Member 찾기
@@ -27,7 +27,7 @@ interface MemberJpaPort {
     /**
      * Refresh 토큰 저장
      * */
-    fun saveRefreshToken(id: String, token: String)
+    fun saveRefreshToken(email: String, token: String)
 
     /**
      * Member 찾기

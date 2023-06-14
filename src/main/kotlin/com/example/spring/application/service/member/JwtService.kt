@@ -52,12 +52,12 @@ class JwtService(
         return refreshTime
     }
 
-    override fun createAccessToken(id: String): String {
+    override fun createAccessToken(email: String): String {
         val tokenValidTime = getAccessTime() * 60 * 1000L
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(id)
-        claims["id"] = id
+        val claims: Claims = Jwts.claims().setSubject(email)
+        claims["email"] = email
 
         val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
@@ -101,7 +101,7 @@ class JwtService(
             false
         }
 
-//        val getMember = memberPort.findMemberById(extractId(token))
+//        val getMember = memberPort.findMemberById(extractEmail(token))
 //        if (getMember != null) {
 //            return !isTokenExpired(token)
 //        }else{
@@ -121,7 +121,7 @@ class JwtService(
         return extractClaims(token).expiration.before(Date())
     }
 
-    override fun extractId(token: String): String {
+    override fun extractEmail(token: String): String {
         return extractClaims(token).subject
     }
 

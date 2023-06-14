@@ -12,8 +12,8 @@ class MemberJpaEntity {
     @Column(name = "member_id", nullable = false)
     var memberId: Int = 0
 
-    @Column(name = "id", unique = true)
-    var id: String = ""
+    @Column(name = "email", unique = true)
+    var email: String = ""
 
     @Column(name = "pw")
     var pw: String = ""

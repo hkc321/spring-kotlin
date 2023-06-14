@@ -89,7 +89,7 @@ class CustomJwtAuthorizationFilter(
         val principal = if (refresh == null) {
             check(jwtService.checkValidToken(access))
             check(jwtService.isTokenExpired(access).not())
-            userDetailsServiceImpl.loadUserByUsername(jwtService.extractId(access))
+            userDetailsServiceImpl.loadUserByUsername(jwtService.extractEmail(access))
         } else {
             check(jwtService.checkValidToken(access))
             check(jwtService.checkValidToken(refresh))
@@ -97,7 +97,7 @@ class CustomJwtAuthorizationFilter(
             val member = memberJpaMapper.toMember(memberJpaPort.findMemberByRefreshToken(refresh))
 //            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
 //            if (expireIn7Day) reissueRefreshToken(member.username, response)
-            reissueAccessToken(member.id, response)
+            reissueAccessToken(member.email, response)
             UserDetailsImpl(member)
         }
 

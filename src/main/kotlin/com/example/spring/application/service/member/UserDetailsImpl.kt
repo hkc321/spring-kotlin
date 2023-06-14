@@ -30,7 +30,7 @@ class UserDetailsImpl(private val member: Member) : UserDetails {
      * @return the username (never `null`)
      */
     override fun getUsername(): String {
-        return member.id
+        return member.email
     }
 
     /**

@@ -17,7 +17,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
      * ID,PW 확인
      * */
     override fun checkAuth(member: Member): Member? {
-        val findMember: Member = memberJpaMapper.toMember(memberJpaRepository.findById(member.id))
+        val findMember: Member = memberJpaMapper.toMember(memberJpaRepository.findByEmail(member.email))
 
         if (findMember != null) {
             if (!findMember.comparePW(member.pw)) {
@@ -33,8 +33,8 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     /**
      * Member 찾기
      * */
-    override fun findMemberById(id: String): MemberJpaEntity? {
-        return memberJpaRepository.findById(id)
+    override fun findMemberByEmail(email: String): MemberJpaEntity? {
+        return memberJpaRepository.findByEmail(email)
     }
 
     /**
@@ -49,7 +49,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
      * */
     override fun registerMember(member: Member): Member? {
         // 아이디 있으면 가입 금지
-        val findMember: MemberJpaEntity? = memberJpaRepository.findById(member.id)
+        val findMember: MemberJpaEntity? = memberJpaRepository.findByEmail(member.email)
 
         if (findMember == null) {
             return memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
@@ -60,7 +60,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
 
     @Transactional
     override fun saveRefreshToken(id: String, token: String) {
-        memberJpaRepository.findById(id)!!.refreshToken = token
+        memberJpaRepository.findByEmail(id)!!.refreshToken = token
     }
 
     override fun findMemberByRefreshToken(token: String): MemberJpaEntity {

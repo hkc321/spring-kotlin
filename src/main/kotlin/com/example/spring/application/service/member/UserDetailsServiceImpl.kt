@@ -24,7 +24,7 @@ class UserDetailsServiceImpl(private val memberJpaPort: MemberJpaPort) : UserDet
      * GrantedAuthority
      */
     override fun loadUserByUsername(username: String): UserDetails {
-        val member: MemberJpaEntity = memberJpaPort.findMemberById(username)
+        val member: MemberJpaEntity = memberJpaPort.findMemberByEmail(username)
             ?: throw UsernameNotFoundException("존재하지 않는 username 입니다.")
 
         return UserDetailsImpl(memberJpaMapper.toMember(member))

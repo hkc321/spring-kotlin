@@ -10,7 +10,7 @@ interface Jwt {
     /**
      * JWT Access Token 생성
      * */
-    fun createAccessToken(id: String): String
+    fun createAccessToken(email: String): String
 
     /**
      * JWT Refresh Token 생성
@@ -38,9 +38,9 @@ interface Jwt {
     fun isTokenExpired(token: String): Boolean
 
     /**
-     * Jwt Access Token subject(id) 가져오기
+     * Jwt Access Token subject(email) 가져오기
      * */
-    fun extractId(token: String): String
+    fun extractEmail(token: String): String
 
     /**
      * 인증정보 만들기

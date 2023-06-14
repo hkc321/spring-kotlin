@@ -18,7 +18,7 @@ class MemberService(
         val joinMember: Member? = memberJpaPort.registerMember(member)
 
         if (joinMember == null) {
-            return ResponseEntity.badRequest().body("ID already exists")
+            return ResponseEntity.badRequest().body("email already exists")
         } else {
             return ResponseEntity.ok(joinMember)
         }

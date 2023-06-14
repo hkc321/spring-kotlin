@@ -37,7 +37,7 @@ class CustomUsernamePasswordAuthenticationFilter(
         try {
             val om = ObjectMapper()
             val loginInput = om.readValue(request.inputStream, MemberRequest::class.java)
-            val authentication = UsernamePasswordAuthenticationToken(loginInput.id, loginInput.pw)
+            val authentication = UsernamePasswordAuthenticationToken(loginInput.email, loginInput.pw)
             return authenticationManager.authenticate(authentication)
         } catch (e: Exception) {
             e.printStackTrace()
