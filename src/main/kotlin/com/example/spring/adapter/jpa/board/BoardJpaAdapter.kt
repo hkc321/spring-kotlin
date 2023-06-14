@@ -8,6 +8,7 @@ import com.example.spring.config.dto.ErrorCode
 import com.example.spring.domain.board.Board
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.stereotype.Repository
 import java.time.LocalDateTime
@@ -23,7 +24,7 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
         }
 
     override fun loadBoard(boardId: Int): Board {
-        boardJpaRepository.findByBoardId(boardId)
+        boardJpaRepository.findByIdOrNull(boardId)
             ?.let {
                 return boardJpaMapper.toBoard(it)
             }
@@ -35,7 +36,7 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
 
     @Transactional
     override fun editBoard(board: Board, boardId: Int): Board {
-        boardJpaRepository.findByBoardId(boardId)
+        boardJpaRepository.findByIdOrNull(boardId)
             ?.let {
                 it.title = board.title
                 it.content = board.content
@@ -49,7 +50,7 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository) : Boar
     }
 
     override fun deleteBoard(boardId: Int) {
-        boardJpaRepository.findByBoardId(boardId)
+        boardJpaRepository.findByIdOrNull(boardId)
             ?.let {
                 boardJpaRepository.deleteById(boardId)
             }
