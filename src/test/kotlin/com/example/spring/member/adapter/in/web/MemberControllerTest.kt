@@ -23,7 +23,7 @@ class MemberControllerTest {
     @Test
     fun register() {
         val input = mutableMapOf<String, String>()
-        input["id"] = "test"
+        input["email"] = "test"
         input["pw"] = "test"
 
         val result = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/register")
@@ -33,7 +33,7 @@ class MemberControllerTest {
         // Then
         result
             .andExpect(MockMvcResultMatchers.status().isBadRequest)
-            .andExpect(MockMvcResultMatchers.content().string("ID already exists"))
+            .andExpect(MockMvcResultMatchers.content().string("email already exists"))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
                     "api/register"
@@ -44,7 +44,7 @@ class MemberControllerTest {
     @Test
     fun login() {
         val input = mutableMapOf<String, String>()
-        input["id"] = "noID"
+        input["email"] = "noID"
         input["pw"] = "noPW"
 
 
@@ -66,7 +66,7 @@ class MemberControllerTest {
 
 
         val input2 = mutableMapOf<String, String>()
-        input2["id"] = "test"
+        input2["email"] = "test"
         input2["pw"] = "test"
 
         // When
