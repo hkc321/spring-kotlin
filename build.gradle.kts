@@ -48,6 +48,8 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.epages:restdocs-api-spec-mockmvc:0.18.2")
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
+    implementation("com.linecorp.kotlin-jdsl:hibernate-kotlin-jdsl-jakarta:2.2.0.RELEASE")
+    implementation("org.hibernate:hibernate-core:6.2.4.Final") // up to 6 version
 }
 
 openapi3 {
