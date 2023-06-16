@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 data class CommentRequest(
-    var commentId: String? = null,
+    var commentId: Int? = null,
     var boardId: Int,
     var parentCommentId: Int,
     var level: Int = 0,
@@ -17,7 +17,7 @@ data class CommentRequest(
 ) {
     fun toDomain(): Comment {
         val comment = Comment()
-        this.commentId?.apply { comment.commentId = this.toInt() }
+        this.commentId?.apply { comment.commentId = this }
         comment.boardId = this.boardId
         comment.parentCommentId = this.parentCommentId
         comment.level = this.level

@@ -17,4 +17,5 @@ class CommentService(private val commentJpaPort: CommentJpaPort) : CommentUseCas
         commentJpaPort.readBoardCommentTopLevelList(boardId, pageable)
 
     override fun createComment(comment: Comment): Comment = commentJpaPort.createComment(comment)
+    override fun readComment(commentId: Int): Comment = commentJpaPort.readComment(commentId)
 }

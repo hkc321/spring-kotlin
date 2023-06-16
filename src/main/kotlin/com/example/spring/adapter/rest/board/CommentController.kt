@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("comment")
 class CommentController(private val commentUseCase: CommentUseCase) : BaseController() {
-    @GetMapping("{boardId}")
+    @GetMapping("{boardId}/12")
     fun readBoardCommentList(
         @PathVariable("boardId") boardId: Int,
         @PageableDefault(
@@ -29,5 +29,10 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
         ResponseEntity.ok(commentUseCase.readBoardCommentTopLevelList(boardId, pageable))
 
     @PostMapping("")
-    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<Comment> =  ResponseEntity.ok(commentUseCase.createComment(body.toDomain()))
+    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<Comment> =
+        ResponseEntity.ok(commentUseCase.createComment(body.toDomain()))
+
+    @GetMapping("{commentId}")
+    fun readComment(@PathVariable("commentId") commentId: Int): ResponseEntity<Comment> =
+        ResponseEntity.ok(commentUseCase.readComment(commentId))
 }

@@ -9,11 +9,33 @@ import org.springframework.validation.BindingResult
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 
 
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException::class)
+    fun methodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Any> {
+        val builder = StringBuilder()
+        builder.append("[")
+        builder.append(ex.errorCode)
+        builder.append(": ")
+        builder.append(ex.value)
+        builder.append("] - ")
+        builder.append(ex.name)
+        builder.append(" required ")
+        builder.append(ex.requiredType)
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ErrorCode.INVALID_PARAMETER,
+                    builder.toString()
+                )
+            )
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Any> {
