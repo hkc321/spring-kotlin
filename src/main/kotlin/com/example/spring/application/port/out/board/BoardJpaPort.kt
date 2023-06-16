@@ -1,5 +1,6 @@
 package com.example.spring.application.port.out.board
 
+import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.domain.board.Board
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -8,7 +9,7 @@ interface BoardJpaPort {
     /**
      * 게시글 전체 조회
      * */
-    fun loadAllBoard(pageable: Pageable): Page<Board>
+    fun loadAllBoard(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any>
 
     /**
      * 게시글 상세 조회

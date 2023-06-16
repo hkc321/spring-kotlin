@@ -1,5 +1,6 @@
 package com.example.spring.adapter.rest.board
 
+import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.adapter.rest.board.dto.BoardRequest
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.config.BaseController
@@ -15,13 +16,9 @@ import org.springframework.web.bind.annotation.*
 class BoardController(private val boardUseCase: BoardUseCase) : BaseController() {
     @GetMapping("all")
     fun readBoardList(
-        @PageableDefault(
-            size = 10,
-            sort = ["boardId"],
-            direction = Sort.Direction.DESC
-        ) pageable: Pageable
+        @ModelAttribute boardReadBoardListRequest: BoardReadBoardListRequest
     ): ResponseEntity<Any> =
-        ResponseEntity.ok(boardUseCase.readBoardList(pageable))
+        ResponseEntity.ok(boardUseCase.readBoardList(boardReadBoardListRequest))
 
 
     @GetMapping("{boardId}")

@@ -1,5 +1,6 @@
 package com.example.spring.application.port.`in`.board
 
+import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.domain.board.Board
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
@@ -8,7 +9,7 @@ interface BoardUseCase {
     /**
      * 게시글 전체 목록 조회
      * */
-    fun readBoardList(pageable: Pageable): Page<Board>
+    fun readBoardList(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any>
 
     /**
      * 게시글 상세 조회

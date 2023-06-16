@@ -1,5 +1,6 @@
 package com.example.spring.application.service.board
 
+import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.domain.board.Board
@@ -9,7 +10,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
-    override fun readBoardList(pageable: Pageable): Page<Board> = boardJpaPort.loadAllBoard(pageable)
+    override fun readBoardList(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any> =
+        boardJpaPort.loadAllBoard(boardReadBoardListRequest)
 
     override fun readBoard(boardId: Int): Board = boardJpaPort.loadBoard(boardId)
 

@@ -2,11 +2,7 @@ package com.example.spring.config.common
 
 class Pagination(
     totalRecordCount: Int,
-    page: Int,
-    recordSize: Int,
-    pageSize: Int,
-    keyword: String? = null,
-    searchType: String? = null
+    paginationRequest: PaginationRequest
 ) {
     var totalRecordCount = 0 // 전체 데이터 수
     var totalPageCount = 0 // 전체 페이지 수
@@ -20,21 +16,23 @@ class Pagination(
     init {
         if (totalRecordCount > 0) {
             this.totalRecordCount = totalRecordCount
-            calculation(page, recordSize, pageSize, keyword, searchType)
+            calculation(paginationRequest.page, paginationRequest.recordSize, paginationRequest.pageSize)
         }
     }
 
     private fun calculation(
         page: Int,
         recordSize: Int,
-        pageSize: Int,
-        keyword: String? = null,
-        searchType: String? = null
+        pageSize: Int
     ) {
-        currentPage = page
-
         // 전체 페이지 수 계산
         totalPageCount = (totalRecordCount - 1) / recordSize + 1
+
+        // 요청한 페이지 보정
+        currentPage = when {
+            0 < page && page > totalPageCount -> 1
+            else -> 1
+        }
 
         // 현재 페이지 번호가 전체 페이지 수보다 큰 경우, 현재 페이지 번호에 전체 페이지 수 저장
         if (currentPage > totalPageCount) {
