@@ -7,4 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentJpaRepository : JpaRepository<CommentJpaEntity, Int> {
     fun findSliceByBoardIdAndLevel(boardId: Int, pageable: Pageable, level: Int = 0): Slice<CommentJpaEntity>
+    fun countByParentCommentIdAndCommentIdIsNot(parentCommentId: Int, commentId: Int): Int
 }
