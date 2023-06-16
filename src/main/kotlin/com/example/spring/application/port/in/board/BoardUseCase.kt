@@ -2,8 +2,6 @@ package com.example.spring.application.port.`in`.board
 
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.domain.board.Board
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
 
 interface BoardUseCase {
     /**

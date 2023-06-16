@@ -5,9 +5,6 @@ import com.example.spring.adapter.rest.board.dto.BoardRequest
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Board
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.web.PageableDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
