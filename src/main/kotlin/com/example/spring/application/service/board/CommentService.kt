@@ -21,4 +21,6 @@ class CommentService(private val commentJpaPort: CommentJpaPort) : CommentUseCas
             sliceComment.content
         )
     }
+
+    override fun updateComment(commentId: Int, comment: Comment): Comment = commentJpaPort.updateComment(commentId, comment)
 }

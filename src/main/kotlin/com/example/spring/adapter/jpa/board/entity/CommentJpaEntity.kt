@@ -1,5 +1,6 @@
 package com.example.spring.adapter.jpa.board.entity
 
+import com.example.spring.domain.board.Comment
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -35,4 +36,9 @@ class CommentJpaEntity {
 
     @Column(name = "edited_at")
     var editedAt: String? = null
+
+    fun updateComment(comment: Comment) {
+        this.content = comment.content
+        this.editedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+    }
 }

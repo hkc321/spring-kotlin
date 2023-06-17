@@ -12,6 +12,7 @@ import org.springframework.data.domain.Slice
 import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
+import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class CommentJpaAdapter(
@@ -37,5 +38,16 @@ class CommentJpaAdapter(
         return commentJpaRepository.findByParentCommentIdAndLevelGreaterThan(commentId, pageRequest).map {
             commentJpaMapper.toComment(it)
         }
+    }
+
+    @Transactional
+    override fun updateComment(commentId: Int, comment: Comment): Comment {
+        commentJpaRepository.findByIdOrNull(commentId)
+            ?.let {
+                it.updateComment(comment)
+
+                return commentJpaMapper.toComment(it)
+            }
+            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 }

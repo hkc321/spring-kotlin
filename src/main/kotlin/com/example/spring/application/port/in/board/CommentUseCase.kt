@@ -19,4 +19,9 @@ interface CommentUseCase {
      * 대댓글 조회
      * */
     fun readChildComment(commentId: Int, pageable: Pageable): CommentReadChildCommentResponse
+
+    /**
+     * 댓글 수정
+     * */
+    fun updateComment(commentId: Int, comment: Comment): Comment
 }
