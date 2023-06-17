@@ -32,8 +32,8 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
         ResponseEntity.ok(boardUseCase.writeBoard(body.toDomain()))
 
     @PutMapping("{boardId}")
-    fun editBoard(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.editBoard(body.toDomain(), boardId))
+    fun updateBoard(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
+        ResponseEntity.ok(boardUseCase.updateBoard(body.toDomain(), boardId))
 
     @DeleteMapping("{boardId}")
     fun deleteBoard(@PathVariable("boardId") boardId: Int) =

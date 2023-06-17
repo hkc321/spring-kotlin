@@ -34,11 +34,11 @@ class CommentJpaEntity {
     @Column(name = "created_at")
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-    @Column(name = "edited_at")
-    var editedAt: String? = null
+    @Column(name = "updated_at")
+    var updatedAt: String? = null
 
     fun updateComment(comment: Comment) {
         this.content = comment.content
-        this.editedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
     }
 }

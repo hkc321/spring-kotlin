@@ -17,7 +17,7 @@ class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
 
     override fun writeBoard(board: Board): Board = boardJpaPort.saveBoard(board)
 
-    override fun editBoard(board: Board, boardId: Int): Board = boardJpaPort.editBoard(board, boardId)
+    override fun updateBoard(board: Board, boardId: Int): Board = boardJpaPort.updateBoard(board, boardId)
 
     override fun deleteBoard(boardId: Int) = boardJpaPort.deleteBoard(boardId)
     override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {

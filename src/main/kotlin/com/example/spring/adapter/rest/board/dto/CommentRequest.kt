@@ -13,7 +13,7 @@ data class CommentRequest(
     var up: Int,
     var writer: String,
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-    var editedAt: String? = null
+    var updatedAt: String? = null
 ) {
     fun toDomain(): Comment {
         val comment = Comment()
@@ -25,7 +25,7 @@ data class CommentRequest(
         comment.up = this.up
         comment.writer = this.writer
         comment.createdAt = this.createdAt
-        comment.editedAt = this.editedAt
+        comment.updatedAt = this.updatedAt
 
         return comment
     }

@@ -108,14 +108,14 @@ class BoardJpaAdapter(
         boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
 
     @Transactional
-    override fun editBoard(board: Board, boardId: Int): Board {
+    override fun updateBoard(board: Board, boardId: Int): Board {
         boardJpaRepository.findByIdOrNull(boardId)
             ?.let {
                 it.title = board.title
                 it.content = board.content
                 it.up = board.up
                 it.writer = board.writer
-                it.editedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                it.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
                 return boardJpaMapper.toBoard(it)
             }

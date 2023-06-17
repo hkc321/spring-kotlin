@@ -12,6 +12,6 @@ class Comment {
     var up: Int = 0
     var writer: String = ""
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    var editedAt: String? = null
+    var updatedAt: String? = null
     var childCommentCount: Int = 0
 }

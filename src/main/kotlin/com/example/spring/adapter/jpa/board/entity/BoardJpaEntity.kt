@@ -27,6 +27,6 @@ class BoardJpaEntity {
     @Column(name = "created_at")
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
 
-    @Column(name = "edited_at")
-    var editedAt: String? = null
+    @Column(name = "updated_at")
+    var updatedAt: String? = null
 }

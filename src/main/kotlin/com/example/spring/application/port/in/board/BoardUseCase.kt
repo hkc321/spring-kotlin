@@ -24,7 +24,7 @@ interface BoardUseCase {
     /**
      * 게시글 수정
      * */
-    fun editBoard(board: Board, boardId: Int): Board
+    fun updateBoard(board: Board, boardId: Int): Board
 
     /**
      * 게시글 삭제
