@@ -6,6 +6,10 @@ import com.example.spring.application.port.out.board.CommentJpaPort
 import com.example.spring.config.NoDataException
 import com.example.spring.config.dto.ErrorCode
 import com.example.spring.domain.board.Comment
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
+import org.springframework.data.domain.Sort
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
@@ -22,5 +26,16 @@ class CommentJpaAdapter(
         commentJpaRepository.findByIdOrNull(commentId)?.let {
             return commentJpaMapper.toComment(it)
         } ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
+    }
+
+    override fun readChildComment(commentId: Int, pageable: Pageable): Slice<Comment> {
+        val pageRequest: Pageable = PageRequest.of(
+            pageable.pageNumber,
+            20,
+            Sort.by("commentId").ascending()
+        )
+        return commentJpaRepository.findByParentCommentIdAndLevelGreaterThan(commentId, pageRequest).map {
+            commentJpaMapper.toComment(it)
+        }
     }
 }

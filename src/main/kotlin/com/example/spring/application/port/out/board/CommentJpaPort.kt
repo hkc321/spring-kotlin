@@ -1,6 +1,8 @@
 package com.example.spring.application.port.out.board
 
 import com.example.spring.domain.board.Comment
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Slice
 
 interface CommentJpaPort {
     /**
@@ -12,4 +14,9 @@ interface CommentJpaPort {
      * 댓글 조회
      * */
     fun readComment(commentId: Int): Comment
+
+    /**
+     * 대댓글 조회
+     * */
+    fun readChildComment(commentId: Int, pageable: Pageable): Slice<Comment>
 }
