@@ -1,7 +1,9 @@
 package com.example.spring.application.port.`in`.board
 
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
+import com.example.spring.adapter.rest.board.dto.ReadTopLevelCommentOnBoardResponse
 import com.example.spring.domain.board.Board
+import org.springframework.data.domain.Pageable
 
 interface BoardUseCase {
     /**
@@ -28,4 +30,9 @@ interface BoardUseCase {
      * 게시글 삭제
      * */
     fun deleteBoard(boardId: Int)
+
+    /**
+     * 게시글에 대한 댓글 검색
+     * */
+    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): ReadTopLevelCommentOnBoardResponse
 }

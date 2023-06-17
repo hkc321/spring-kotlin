@@ -2,8 +2,11 @@ package com.example.spring.adapter.jpa.board
 
 import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
+import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
+import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
+import com.example.spring.adapter.rest.board.dto.ReadTopLevelCommentOnBoardResponse
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.config.NoDataException
 import com.example.spring.config.common.Pagination
@@ -18,6 +21,7 @@ import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.selectQuery
 import jakarta.persistence.EntityManager
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.stereotype.Repository
@@ -25,9 +29,14 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Repository
-class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository, private val entityManager: EntityManager) :
+class BoardJpaAdapter(
+    private val boardJpaRepository: BoardJpaRepository,
+    private val entityManager: EntityManager,
+    private val commentJpaRepository: CommentJpaRepository
+) :
     BoardJpaPort {
     val boardJpaMapper = BoardJpaMapper.INSTANCE
+    val commentJpaMapper = CommentJpaMapper.INSTANCE
 
     override fun loadAllBoard(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any> {
         val queryFactory: QueryFactory = QueryFactoryImpl(
@@ -117,6 +126,23 @@ class BoardJpaAdapter(private val boardJpaRepository: BoardJpaRepository, privat
                 boardJpaRepository.deleteById(boardId)
             }
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
+    }
+
+    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): ReadTopLevelCommentOnBoardResponse {
+        commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
+            commentJpaMapper.toComment(it).apply {
+                this.childCommentCount =
+                    commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(it.parentCommentId, it.commentId)
+            }
+        }.apply {
+            return ReadTopLevelCommentOnBoardResponse(
+                isEmpty,
+                isLast,
+                totalElements.toInt(),
+                pageable.pageNumber,
+                content
+            )
+        }
     }
 
 }

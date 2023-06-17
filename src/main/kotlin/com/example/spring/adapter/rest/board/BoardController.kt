@@ -2,9 +2,14 @@ package com.example.spring.adapter.rest.board
 
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.adapter.rest.board.dto.BoardRequest
+import com.example.spring.adapter.rest.board.dto.ReadTopLevelCommentOnBoardResponse
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Board
+import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.Sort
+import org.springframework.data.web.PageableDefault
+import org.springframework.data.web.SortDefault
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -33,4 +38,18 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
     @DeleteMapping("{boardId}")
     fun deleteBoard(@PathVariable("boardId") boardId: Int) =
         boardUseCase.deleteBoard(boardId)
+
+    @GetMapping("{boardId}/comment")
+    fun readTopLevelCommentOnBoard(
+        @PathVariable("boardId") boardId: Int,
+        @PageableDefault(
+            page = 0,
+            size = 10
+        )
+        @SortDefault.SortDefaults(
+            SortDefault(sort = ["parentCommentId"], direction = Sort.Direction.DESC)
+        )
+        pageable: Pageable
+    ): ResponseEntity<ReadTopLevelCommentOnBoardResponse> =
+        ResponseEntity.ok(boardUseCase.readTopLevelCommentOnBoard(boardId, pageable))
 }

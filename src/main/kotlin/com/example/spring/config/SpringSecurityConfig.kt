@@ -37,6 +37,7 @@ class SpringSecurityConfig(
             it.ignoring()
                 .requestMatchers("/api/register")
                 .requestMatchers("/comment/**")
+                .requestMatchers("/board/**")
         }
 
     @Bean
