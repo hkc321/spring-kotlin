@@ -1,8 +1,9 @@
 package com.example.spring.application.port.out.board
 
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
-import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
 import com.example.spring.domain.board.Board
+import com.example.spring.domain.board.Comment
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface BoardJpaPort {
@@ -34,5 +35,5 @@ interface BoardJpaPort {
     /**
      * 게시글에 대한 댓글 검색
      * */
-    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse
+    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment>
 }

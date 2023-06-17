@@ -20,6 +20,14 @@ class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
     override fun editBoard(board: Board, boardId: Int): Board = boardJpaPort.editBoard(board, boardId)
 
     override fun deleteBoard(boardId: Int) = boardJpaPort.deleteBoard(boardId)
-    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse =
-        boardJpaPort.readTopLevelCommentOnBoard(boardId, pageable)
+    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {
+        val pageComment = boardJpaPort.readTopLevelCommentOnBoard(boardId, pageable)
+        return BoardReadTopLevelCommentOnBoardResponse(
+            pageComment.isEmpty,
+            pageComment.isLast,
+            pageComment.totalElements.toInt(),
+            pageComment.pageable.pageNumber,
+            pageComment.content
+        )
+    }
 }

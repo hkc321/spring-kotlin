@@ -12,6 +12,7 @@ import com.example.spring.config.NoDataException
 import com.example.spring.config.common.Pagination
 import com.example.spring.config.dto.ErrorCode
 import com.example.spring.domain.board.Board
+import com.example.spring.domain.board.Comment
 import com.linecorp.kotlinjdsl.QueryFactory
 import com.linecorp.kotlinjdsl.QueryFactoryImpl
 import com.linecorp.kotlinjdsl.listQuery
@@ -21,6 +22,7 @@ import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.selectQuery
 import jakarta.persistence.EntityManager
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.transaction.annotation.Transactional
@@ -128,20 +130,12 @@ class BoardJpaAdapter(
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {
-        commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
+    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment> {
+        return commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
             commentJpaMapper.toComment(it).apply {
                 this.childCommentCount =
                     commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(it.parentCommentId, it.commentId)
             }
-        }.apply {
-            return BoardReadTopLevelCommentOnBoardResponse(
-                isEmpty,
-                isLast,
-                totalElements.toInt(),
-                pageable.pageNumber,
-                content
-            )
         }
     }
 
