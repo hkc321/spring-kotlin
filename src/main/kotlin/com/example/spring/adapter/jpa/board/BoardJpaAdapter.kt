@@ -6,7 +6,7 @@ import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
-import com.example.spring.adapter.rest.board.dto.ReadTopLevelCommentOnBoardResponse
+import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.config.NoDataException
 import com.example.spring.config.common.Pagination
@@ -128,14 +128,14 @@ class BoardJpaAdapter(
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): ReadTopLevelCommentOnBoardResponse {
+    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {
         commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
             commentJpaMapper.toComment(it).apply {
                 this.childCommentCount =
                     commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(it.parentCommentId, it.commentId)
             }
         }.apply {
-            return ReadTopLevelCommentOnBoardResponse(
+            return BoardReadTopLevelCommentOnBoardResponse(
                 isEmpty,
                 isLast,
                 totalElements.toInt(),

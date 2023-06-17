@@ -2,7 +2,7 @@ package com.example.spring.adapter.rest.board
 
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.adapter.rest.board.dto.BoardRequest
-import com.example.spring.adapter.rest.board.dto.ReadTopLevelCommentOnBoardResponse
+import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Board
@@ -50,6 +50,6 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
             SortDefault(sort = ["parentCommentId"], direction = Sort.Direction.DESC)
         )
         pageable: Pageable
-    ): ResponseEntity<ReadTopLevelCommentOnBoardResponse> =
+    ): ResponseEntity<BoardReadTopLevelCommentOnBoardResponse> =
         ResponseEntity.ok(boardUseCase.readTopLevelCommentOnBoard(boardId, pageable))
 }

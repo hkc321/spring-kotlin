@@ -2,7 +2,7 @@ package com.example.spring.adapter.rest.board.dto
 
 import com.example.spring.domain.board.Comment
 
-data class ReadTopLevelCommentOnBoardResponse(
+data class BoardReadTopLevelCommentOnBoardResponse(
     val isEmpty: Boolean,
     val isLast: Boolean,
     val totalCount: Int,
