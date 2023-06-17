@@ -23,5 +23,5 @@ interface CommentJpaPort {
     /**
      * 댓글 수정
      * */
-    fun updateComment(commentId: Int, comment: Comment): Comment
+    fun updateComment(comment: Comment): Comment
 }

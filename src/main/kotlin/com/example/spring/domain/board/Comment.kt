@@ -14,4 +14,10 @@ class Comment {
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
     var updatedAt: String? = null
     var childCommentCount: Int = 0
+
+    fun updateComment(comment: Comment): Comment {
+        this.content = comment.content
+        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        return this
+    }
 }
