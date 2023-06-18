@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("board")
 class BoardController(private val boardUseCase: BoardUseCase) : BaseController() {
-    @GetMapping("all")
+    @GetMapping("")
     fun readBoardList(
         @ModelAttribute boardReadBoardListRequest: BoardReadBoardListRequest
     ): ResponseEntity<Any> =
