@@ -35,9 +35,7 @@ class SpringSecurityConfig(
                 .requestMatchers("/swagger-ui.html")
                 .requestMatchers("/static/**")
             it.ignoring()
-                .requestMatchers("/api/register")
-                .requestMatchers("/comment/**")
-                .requestMatchers("/board/**")
+                .requestMatchers("/member/register")
         }
 
     @Bean
@@ -48,9 +46,9 @@ class SpringSecurityConfig(
             }
 
             authorizeRequests {
-                authorize("/api/login", permitAll)
-                authorize("/api/register", permitAll)
-                authorize("/api/why", hasAuthority("b"))
+                authorize("/member/login", permitAll)
+                authorize("/member/register", permitAll)
+                authorize("/member/why", hasAuthority("b"))
                 authorize(anyRequest, authenticated)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
@@ -81,7 +79,7 @@ class SpringSecurityConfig(
             authenticationManager(authenticationConfiguration),
             jwtService,
             memberJpaPort
-        ).apply { setFilterProcessesUrl("/api/login") }
+        ).apply { setFilterProcessesUrl("/member/login") }
     }
 
 }

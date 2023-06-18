@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController
 import java.util.*
 
 @RestController
-@RequestMapping("api")
+@RequestMapping("member")
 class MemberController(private val memberUseCase: MemberUseCase) {
 
     @PostMapping("register")
