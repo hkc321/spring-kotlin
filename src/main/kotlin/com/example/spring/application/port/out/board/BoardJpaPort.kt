@@ -32,8 +32,4 @@ interface BoardJpaPort {
      * */
     fun deleteBoard(boardId: Int)
 
-    /**
-     * 게시글에 대한 댓글 검색
-     * */
-    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment>
 }

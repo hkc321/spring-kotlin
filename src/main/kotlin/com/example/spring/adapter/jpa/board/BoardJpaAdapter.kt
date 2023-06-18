@@ -130,13 +130,4 @@ class BoardJpaAdapter(
             ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
     }
 
-    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment> {
-        return commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
-            commentJpaMapper.toComment(it).apply {
-                this.childCommentCount =
-                    commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(it.parentCommentId, it.commentId)
-            }
-        }
-    }
-
 }

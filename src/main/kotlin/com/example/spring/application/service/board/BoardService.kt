@@ -4,12 +4,15 @@ import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.out.board.BoardJpaPort
+import com.example.spring.application.port.out.board.CommentJpaPort
 import com.example.spring.domain.board.Board
+import com.example.spring.domain.board.Comment
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 
 @Service
-class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
+class BoardService(private val boardJpaPort: BoardJpaPort, private val commentJpaPort: CommentJpaPort) : BoardUseCase {
     override fun readBoardList(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any> =
         boardJpaPort.loadAllBoard(boardReadBoardListRequest)
 
@@ -21,13 +24,19 @@ class BoardService(private val boardJpaPort: BoardJpaPort) : BoardUseCase {
 
     override fun deleteBoard(boardId: Int) = boardJpaPort.deleteBoard(boardId)
     override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {
-        val pageComment = boardJpaPort.readTopLevelCommentOnBoard(boardId, pageable)
-        return BoardReadTopLevelCommentOnBoardResponse(
-            pageComment.isEmpty,
-            pageComment.isLast,
-            pageComment.totalElements.toInt(),
-            pageComment.pageable.pageNumber,
-            pageComment.content
-        )
+        val pageComment: Page<Comment> = commentJpaPort.readTopLevelCommentOnBoard(boardId, pageable)
+        pageComment.apply {
+            this.map {
+                it.childCommentCount =
+                    commentJpaPort.countChildComment(it.parentCommentId, it.commentId)
+            }
+            return BoardReadTopLevelCommentOnBoardResponse(
+                this.isEmpty,
+                this.isLast,
+                this.totalElements.toInt(),
+                this.pageable.pageNumber,
+                this.content
+            )
+        }
     }
 }
