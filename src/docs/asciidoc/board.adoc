@@ -1,0 +1,76 @@
+ifndef::snippets[]
+:snippets: build/generated-snippets
+endif::[]
+
+= Board Domain Test
+Andy Wilkinson;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:operation-curl-request-title: Example request
+:operation-http-response-title: Example response
+
+[[overview]]
+= Overview
+Board Domain API Doc
+
+[[overview_http_verbs]]
+
+[[overview_headers]]
+== URI
+
+=== /board
+Try to read board list.
+
+==== Sample Request
+include::{snippets}/board/readBoard/success/http-request.adoc[]
+
+==== Sample Response
+include::{snippets}/board/readBoard/success/http-response.adoc[]
+
+==== CURL sample
+include::{snippets}/board/readBoard/success/curl-request.adoc[]
+
+==== Path Parameters
+include::{snippets}/board/readBoard/success/path-parameters.adoc[]
+
+==== Request Body
+include::{snippets}/board/readBoard/success/request-body.adoc[]
+
+==== Response Body
+include::{snippets}/board/readBoard/success/response-body.adoc[]
+
+==== Response Fields
+include::{snippets}/board/readBoard/success/response-fields.adoc[]
+
+
+
+=== /board/{boardId}
+Try to read board just one record detail.
+
+==== success
+If success, it returns board detail
+
+==== Sample Request
+include::{snippets}/board/readBoard/success/http-request.adoc[]
+
+==== Sample Response
+include::{snippets}/board/readBoard/success/http-response.adoc[]
+
+==== CURL sample
+include::{snippets}/board/readBoard/success/curl-request.adoc[]
+
+==== Path Parameters
+include::{snippets}/board/readBoard/success/path-parameters.adoc[]
+
+==== Request Body
+include::{snippets}/board/readBoard/success/request-body.adoc[]
+
+==== Response Body
+include::{snippets}/board/readBoard/success/response-body.adoc[]
+
+==== Response Fields
+include::{snippets}/board/readBoard/success/response-fields.adoc[]

@@ -22,104 +22,79 @@ Member Domain API Doc
 [[overview_headers]]
 == URI
 
-=== /api/register
+=== /member/register
 Try to regist member with email/pw.
 
 ==== Sample Request
-include::{snippets}/api/register/http-request.adoc[]
+include::{snippets}/member/register/http-request.adoc[]
 
 ==== Sample Response
-include::{snippets}/api/register/http-response.adoc[]
+include::{snippets}/member/register/http-response.adoc[]
 
 ==== CURL sample
-include::{snippets}/api/register/curl-request.adoc[]
+include::{snippets}/member/register/curl-request.adoc[]
 
 ==== Path Parameters
-include::{snippets}/api/register/path-parameters.adoc[]
+include::{snippets}/member/register/request-fields.adoc[]
 
 ==== Request Body
-include::{snippets}/api/register/request-body.adoc[]
+include::{snippets}/member/register/request-body.adoc[]
 
 ==== Response Body
-include::{snippets}/api/register/response-body.adoc[]
+include::{snippets}/member/register/response-body.adoc[]
 
 ==== Response Fields
-include::{snippets}/api/register/response-fields.adoc[]
+include::{snippets}/member/register/response-fields.adoc[]
 
 
 
-=== /api/login
-Try to logim member with email/pw.
+=== /member/login
+Try to log in member with email/pw.
 
 ==== success
-If success, it returns 2 tokens(access/refresh)
+If success, it returns 2 tokens(access/refresh) in header
 
 ===== Sample Request
-include::{snippets}/api/login/success/http-request.adoc[]
+include::{snippets}/member/login/success/http-request.adoc[]
 
 ===== Sample Response
-include::{snippets}/api/login/success/http-response.adoc[]
+include::{snippets}/member/login/success/http-response.adoc[]
 
 ===== CURL sample
-include::{snippets}/api/login/success/curl-request.adoc[]
+include::{snippets}/member/login/success/curl-request.adoc[]
 
 ===== Path Parameters
-include::{snippets}/api/login/success/path-parameters.adoc[]
+include::{snippets}/member/login/success/request-fields.adoc[]
 
 ===== Request Body
-include::{snippets}/api/login/success/request-body.adoc[]
+include::{snippets}/member/login/success/request-body.adoc[]
 
 ===== Response Body
-include::{snippets}/api/login/success/response-body.adoc[]
+include::{snippets}/member/login/success/response-body.adoc[]
 
 ===== Response Fields
-include::{snippets}/api/login/success/response-fields.adoc[]
+include::{snippets}/member/login/success/response-fields.adoc[]
 
-==== wrong_email
-If send nonexistent email, it returns "user not found"
+==== bad_credential
+If send nonexistent email or password, it returns "login fail"
 
 ===== Sample Request
-include::{snippets}/api/login/wrong_email/http-request.adoc[]
+include::{snippets}/member/login/bad_credential/http-request.adoc[]
 
 ===== Sample Response
-include::{snippets}/api/login/wrong_email/http-response.adoc[]
+include::{snippets}/member/login/bad_credential/http-response.adoc[]
 
 ===== CURL sample
-include::{snippets}/api/login/wrong_email/curl-request.adoc[]
+include::{snippets}/member/login/bad_credential/curl-request.adoc[]
 
-===== Path Parameters
-include::{snippets}/api/login/wrong_email/path-parameters.adoc[]
-
-===== Request Body
-include::{snippets}/api/login/wrong_email/request-body.adoc[]
-
-===== Response Body
-include::{snippets}/api/login/wrong_email/response-body.adoc[]
-
-===== Response Fields
-include::{snippets}/api/login/wrong_email/response-fields.adoc[]
-
-
-==== wrong_pw
-If send wrong PW, it returns "invalid password"
-
-===== Sample Request
-include::{snippets}/api/login/wrong_pw/http-request.adoc[]
-
-===== Sample Response
-include::{snippets}/api/login/wrong_pw/http-response.adoc[]
-
-===== CURL sample
-include::{snippets}/api/login/wrong_pw/curl-request.adoc[]
-
-===== Path Parameters
-include::{snippets}/api/login/wrong_pw/path-parameters.adoc[]
+===== Request Fields
+include::{snippets}/member/login/bad_credential/request-fields.adoc[]
 
 ===== Request Body
-include::{snippets}/api/login/wrong_pw/request-body.adoc[]
+include::{snippets}/member/login/bad_credential/request-body.adoc[]
 
 ===== Response Body
-include::{snippets}/api/login/wrong_pw/response-body.adoc[]
+include::{snippets}/member/login/bad_credential/response-body.adoc[]
 
 ===== Response Fields
-include::{snippets}/api/login/wrong_pw/response-fields.adoc[]
+include::{snippets}/member/login/bad_credential/response-fields.adoc[]
