@@ -12,16 +12,16 @@ class BoardJpaEntity {
     @Column(name = "board_id", nullable = false)
     var boardId: Int = 0
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     var title: String = ""
 
-    @Column(name = "content")
+    @Column(name = "content", nullable = false)
     var content: String = ""
 
     @Column(name = "up")
     var up: Int = 0
 
-    @Column(name = "writer")
+    @Column(name = "writer", nullable = false)
     var writer: String = ""
 
     @Column(name = "created_at")
