@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.data.web.SortDefault
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -29,16 +30,19 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
         ResponseEntity.ok(boardUseCase.readBoard(boardId))
 
     @PostMapping("")
-    fun writeBoard(@RequestBody body: BoardRequest): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.writeBoard(body.toDomain()))
+    fun writeBoard(@RequestBody body: BoardRequest): ResponseEntity<Board> {
+        val createdBoard: Board = boardUseCase.writeBoard(body.toDomain())
+        val location = "/board/${createdBoard.boardId}"
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location).body(createdBoard)
+    }
 
     @PatchMapping("{boardId}")
     fun updateBoard(@RequestBody body: BoardUpdateBoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.updateBoard(body.toDomain(), boardId))
 
     @DeleteMapping("{boardId}")
-    fun deleteBoard(@PathVariable("boardId") boardId: Int) =
-        boardUseCase.deleteBoard(boardId)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteBoard(@PathVariable("boardId") boardId: Int) = boardUseCase.deleteBoard(boardId)
 
     @GetMapping("{boardId}/comment")
     fun readTopLevelCommentOnBoard(
