@@ -9,6 +9,11 @@ data class BoardRequest(
     var content: String,
     var writer: String
 ) {
+    init {
+        require(title.isNotBlank())
+        require(content.isNotBlank())
+        require(writer.isNotBlank())
+    }
     fun toDomain(): Board {
         val board = Board()
         board.title = this.title

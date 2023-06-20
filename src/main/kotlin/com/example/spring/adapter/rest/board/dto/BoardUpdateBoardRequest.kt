@@ -7,6 +7,10 @@ data class BoardUpdateBoardRequest(
     var content: String
 )
 {
+    init {
+        require(title.isNotBlank())
+        require(content.isNotBlank())
+    }
     fun toDomain(): Board {
         val board = Board()
         board.title = this.title
