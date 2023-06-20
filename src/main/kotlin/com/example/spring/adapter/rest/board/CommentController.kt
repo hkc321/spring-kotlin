@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.data.web.SortDefault
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -16,8 +17,11 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("comment")
 class CommentController(private val commentUseCase: CommentUseCase) : BaseController() {
     @PostMapping("")
-    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<Comment> =
-        ResponseEntity.ok(commentUseCase.createComment(body.toDomain()))
+    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<Comment> {
+        val createdComment: Comment = commentUseCase.createComment(body.toDomain())
+        val location = "/comment/${createdComment.commentId}"
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location).body(createdComment)
+    }
 
     @GetMapping("{commentId}")
     fun readComment(@PathVariable("commentId") commentId: Int): ResponseEntity<Comment> =
