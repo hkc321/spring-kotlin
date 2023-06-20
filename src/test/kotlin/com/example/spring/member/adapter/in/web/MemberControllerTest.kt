@@ -12,6 +12,9 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.hamcrest.CoreMatchers.*
+import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
+import org.springframework.restdocs.payload.JsonFieldType
+import org.springframework.restdocs.payload.PayloadDocumentation
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -26,9 +29,11 @@ class MemberControllerTest {
         input["email"] = "test"
         input["pw"] = "test"
 
-        val result = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/register")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(ObjectMapper().writeValueAsString(input)))
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/member/register")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(input))
+        )
 
         // Then
         result
@@ -36,22 +41,24 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.content().string("email already exists"))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
-                    "api/register"
+                    "member/register"
                 )
             )
     }
 
     @Test
-    fun login() {
+    fun loginFail() {
         val input = mutableMapOf<String, String>()
         input["email"] = "noID"
         input["pw"] = "noPW"
 
 
         // When
-        var result = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(ObjectMapper().writeValueAsString(input)))
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/member/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(input))
+        )
 
         // Then
         result
@@ -60,19 +67,40 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.jsonPath("message", startsWith("login fail")))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
-                    "api/login/bad_credential"
+                    "member/login/bad_credential"
                 )
             )
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "member/login/bad_credential",
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING)
+                            .description("Member email"),
+                        PayloadDocumentation.fieldWithPath("pw").type(JsonFieldType.STRING)
+                            .description("Member password"),
+                    ),
+                    PayloadDocumentation.responseFields(
+                        PayloadDocumentation.fieldWithPath("success").type(JsonFieldType.STRING)
+                            .description("Success or not"),
+                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING)
+                            .description("Message from server"),
+                    )
+                )
+            )
+    }
 
-
+    @Test
+    fun loginSuccess() {
         val input2 = mutableMapOf<String, String>()
         input2["email"] = "test"
         input2["pw"] = "test"
 
         // When
-        var result2 = mockMvc.perform(RestDocumentationRequestBuilders.post("/api/login")
-            .contentType(MediaType.APPLICATION_JSON)
-            .content(ObjectMapper().writeValueAsString(input2)))
+        var result2 = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/member/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(input2))
+        )
 
         // Then
         result2
@@ -83,12 +111,26 @@ class MemberControllerTest {
             .andExpect(MockMvcResultMatchers.header().exists("Authorization-refresh"))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
-                    "api/login/success"
+                    "member/login/success"
+                )
+            )
+            .andDo(
+                MockMvcRestDocumentation.document(
+                    "member/login/success",
+                    PayloadDocumentation.requestFields(
+                        PayloadDocumentation.fieldWithPath("email").type(JsonFieldType.STRING)
+                            .description("Member email"),
+                        PayloadDocumentation.fieldWithPath("pw").type(JsonFieldType.STRING)
+                            .description("Member password"),
+                    ),
+                    PayloadDocumentation.responseFields(
+                        PayloadDocumentation.fieldWithPath("success").type(JsonFieldType.STRING)
+                            .description("Success or not"),
+                        PayloadDocumentation.fieldWithPath("message").type(JsonFieldType.STRING)
+                            .description("Message from server"),
+                    )
                 )
             )
     }
 
-    @Test
-    fun test1() {
-    }
 }
