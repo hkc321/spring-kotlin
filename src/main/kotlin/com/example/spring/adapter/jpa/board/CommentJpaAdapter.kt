@@ -45,4 +45,9 @@ class CommentJpaAdapter(
 
     override fun countChildComment(parentCommentId: Int, commentId: Int): Int =
         commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(parentCommentId, commentId)
+
+    override fun deleteComment(commentId: Int) =
+        commentJpaRepository.findByIdOrNull(commentId)?.let {
+            commentJpaRepository.deleteById(commentId)
+        } ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
 }

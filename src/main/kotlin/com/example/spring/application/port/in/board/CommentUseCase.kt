@@ -24,4 +24,9 @@ interface CommentUseCase {
      * 댓글 수정
      * */
     fun updateComment(commentId: Int, comment: Comment): Comment
+
+    /**
+     * 댓글 삭제
+     * */
+    fun deleteComment(commentId: Int)
 }

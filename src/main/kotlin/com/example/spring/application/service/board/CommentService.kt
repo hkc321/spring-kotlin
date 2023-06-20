@@ -31,4 +31,6 @@ class CommentService(private val commentJpaPort: CommentJpaPort) : CommentUseCas
 
     override fun updateComment(commentId: Int, comment: Comment): Comment =
         commentJpaPort.updateComment(commentJpaPort.readComment(commentId).updateComment(comment))
+
+    override fun deleteComment(commentId: Int) = commentJpaPort.deleteComment(commentId)
 }

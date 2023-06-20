@@ -47,4 +47,8 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
         @RequestBody body: CommentRequest
     ): ResponseEntity<Comment> =
         ResponseEntity.ok(commentUseCase.updateComment(commentId, body.toDomain()))
+
+    @DeleteMapping("{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteComment(@PathVariable("commentId") commentId: Int) = commentUseCase.deleteComment(commentId)
 }
