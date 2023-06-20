@@ -4,19 +4,15 @@ import com.example.spring.domain.board.Board
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class BoardRequest {
-    var title: String = ""
-    var content: String = ""
-    var up: Int = 0
-    var writer: String = ""
-    var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    var updatedAt: String? = null
-
+data class BoardRequest(
+    var title: String,
+    var content: String,
+    var writer: String
+) {
     fun toDomain(): Board {
         val board = Board()
         board.title = this.title
         board.content = this.content
-        board.up = this.up
         board.writer = this.writer
 
         return board

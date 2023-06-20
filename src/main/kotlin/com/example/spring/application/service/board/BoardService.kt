@@ -20,7 +20,8 @@ class BoardService(private val boardJpaPort: BoardJpaPort, private val commentJp
 
     override fun writeBoard(board: Board): Board = boardJpaPort.saveBoard(board)
 
-    override fun updateBoard(board: Board, boardId: Int): Board = boardJpaPort.updateBoard(board, boardId)
+    override fun updateBoard(board: Board, boardId: Int): Board =
+        boardJpaPort.updateBoard(boardJpaPort.loadBoard(boardId).updateBoard(board))
 
     override fun deleteBoard(boardId: Int) = boardJpaPort.deleteBoard(boardId)
     override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse {

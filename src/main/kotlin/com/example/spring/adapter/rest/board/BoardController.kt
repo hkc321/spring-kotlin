@@ -3,6 +3,7 @@ package com.example.spring.adapter.rest.board
 import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
 import com.example.spring.adapter.rest.board.dto.BoardRequest
 import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
+import com.example.spring.adapter.rest.board.dto.BoardUpdateBoardRequest
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Board
@@ -31,8 +32,8 @@ class BoardController(private val boardUseCase: BoardUseCase) : BaseController()
     fun writeBoard(@RequestBody body: BoardRequest): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.writeBoard(body.toDomain()))
 
-    @PutMapping("{boardId}")
-    fun updateBoard(@RequestBody body: BoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
+    @PatchMapping("{boardId}")
+    fun updateBoard(@RequestBody body: BoardUpdateBoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
         ResponseEntity.ok(boardUseCase.updateBoard(body.toDomain(), boardId))
 
     @DeleteMapping("{boardId}")

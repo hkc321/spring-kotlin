@@ -11,4 +11,11 @@ class Board {
     var writer: String = ""
     var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
     var updatedAt: String? = null
+
+    fun updateBoard(board: Board): Board {
+        this.title = board.title
+        this.content = board.content
+        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+        return this
+    }
 }

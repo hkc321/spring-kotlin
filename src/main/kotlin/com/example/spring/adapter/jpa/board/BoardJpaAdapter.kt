@@ -38,7 +38,6 @@ class BoardJpaAdapter(
 ) :
     BoardJpaPort {
     val boardJpaMapper = BoardJpaMapper.INSTANCE
-    val commentJpaMapper = CommentJpaMapper.INSTANCE
 
     override fun loadAllBoard(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any> {
         val queryFactory: QueryFactory = QueryFactoryImpl(
@@ -108,19 +107,8 @@ class BoardJpaAdapter(
         boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
 
     @Transactional
-    override fun updateBoard(board: Board, boardId: Int): Board {
-        boardJpaRepository.findByIdOrNull(boardId)
-            ?.let {
-                it.title = board.title
-                it.content = board.content
-                it.up = board.up
-                it.writer = board.writer
-                it.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-                return boardJpaMapper.toBoard(it)
-            }
-            ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
-    }
+    override fun updateBoard(board: Board): Board =
+        boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toEntity(board)))
 
     override fun deleteBoard(boardId: Int) {
         boardJpaRepository.findByIdOrNull(boardId)
