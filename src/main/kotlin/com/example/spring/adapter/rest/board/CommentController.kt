@@ -2,6 +2,7 @@ package com.example.spring.adapter.rest.board
 
 import com.example.spring.adapter.rest.board.dto.CommentReadChildCommentResponse
 import com.example.spring.adapter.rest.board.dto.CommentRequest
+import com.example.spring.adapter.rest.board.dto.CommentUpdateCommentRequest
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Comment
@@ -44,7 +45,7 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
     @PatchMapping("{commentId}")
     fun updateComment(
         @PathVariable("commentId") commentId: Int,
-        @RequestBody body: CommentRequest
+        @RequestBody body: CommentUpdateCommentRequest
     ): ResponseEntity<Comment> =
         ResponseEntity.ok(commentUseCase.updateComment(commentId, body.toDomain()))
 

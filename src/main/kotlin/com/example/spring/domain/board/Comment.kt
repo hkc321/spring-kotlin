@@ -4,10 +4,10 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 class Comment {
-    var commentId: Int = 1
-    var boardId: Int = 1
-    var parentCommentId: Int = 1
-    var level: Int = 0
+    var commentId: Int = 0
+    var boardId: Int = 0
+    var parentCommentId: Int? = null
+    var level: Int = 1
     var content: String = ""
     var up: Int = 0
     var writer: String = ""

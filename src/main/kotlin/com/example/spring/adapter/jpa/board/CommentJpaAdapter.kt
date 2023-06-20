@@ -43,8 +43,8 @@ class CommentJpaAdapter(
         }
     }
 
-    override fun countChildComment(parentCommentId: Int, commentId: Int): Int =
-        commentJpaRepository.countByParentCommentIdAndCommentIdIsNot(parentCommentId, commentId)
+    override fun countChildComment(parentCommentId: Int): Int =
+        commentJpaRepository.countByParentCommentId(parentCommentId)
 
     override fun deleteComment(commentId: Int) =
         commentJpaRepository.findByIdOrNull(commentId)?.let {

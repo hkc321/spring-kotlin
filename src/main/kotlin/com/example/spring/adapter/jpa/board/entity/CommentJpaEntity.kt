@@ -10,16 +10,16 @@ class CommentJpaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    var commentId: Int = 1
+    var commentId: Int = 0
 
     @Column(name = "board_id")
-    var boardId: Int = 1
+    var boardId: Int = 0
 
     @Column(name = "parent_comment_id")
-    var parentCommentId: Int = 1
+    var parentCommentId: Int? = null
 
     @Column(name = "level")
-    var level: Int = 0
+    var level: Int = 1
 
     @Column(name = "content")
     var content: String = ""

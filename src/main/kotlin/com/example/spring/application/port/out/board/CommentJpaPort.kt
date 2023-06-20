@@ -34,7 +34,7 @@ interface CommentJpaPort {
     /**
      * 대댓글 갯수 검색
      * */
-    fun countChildComment(parentCommentId: Int, commentId: Int): Int
+    fun countChildComment(parentCommentId: Int): Int
 
     /**
      * 댓글 삭제

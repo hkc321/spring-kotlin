@@ -29,7 +29,7 @@ class BoardService(private val boardJpaPort: BoardJpaPort, private val commentJp
         pageComment.apply {
             this.map {
                 it.childCommentCount =
-                    commentJpaPort.countChildComment(it.parentCommentId, it.commentId)
+                    commentJpaPort.countChildComment(it.commentId)
             }
             return BoardReadTopLevelCommentOnBoardResponse(
                 this.isEmpty,
