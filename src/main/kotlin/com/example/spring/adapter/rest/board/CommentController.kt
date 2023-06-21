@@ -1,7 +1,9 @@
 package com.example.spring.adapter.rest.board
 
+import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.rest.board.dto.CommentReadChildCommentResponse
 import com.example.spring.adapter.rest.board.dto.CommentRequest
+import com.example.spring.adapter.rest.board.dto.CommentResponse
 import com.example.spring.adapter.rest.board.dto.CommentUpdateCommentRequest
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.config.BaseController
@@ -17,11 +19,14 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("comment")
 class CommentController(private val commentUseCase: CommentUseCase) : BaseController() {
+    val commentJpaMapper = CommentJpaMapper.INSTANCE
+
     @PostMapping("")
-    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<Comment> {
+    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<CommentResponse> {
         val createdComment: Comment = commentUseCase.createComment(body.toDomain())
         val location = "/comment/${createdComment.commentId}"
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location).body(createdComment)
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location)
+            .body(commentJpaMapper.toCommentResponse(createdComment))
     }
 
     @GetMapping("{commentId}")
