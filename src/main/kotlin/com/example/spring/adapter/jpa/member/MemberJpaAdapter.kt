@@ -1,11 +1,12 @@
 package com.example.spring.adapter.jpa.member
 
 
-import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.application.port.out.member.MemberJpaPort
-import com.example.spring.domain.member.Member
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
+import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.config.MemberAlreadyExistException
+import com.example.spring.config.MemberDataNotFoundException
+import com.example.spring.domain.member.Member
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -14,57 +15,50 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
-     * ID,PW 확인
-     * */
-    override fun checkAuth(member: Member): Member? {
-        val findMember: Member = memberJpaMapper.toMember(memberJpaRepository.findByEmail(member.email))
-
-        if (findMember != null) {
-            if (!findMember.comparePW(member.pw)) {
-                findMember.authStatus = Member.Status.WRONG_PW
-            } else {
-                findMember.authStatus = Member.Status.AUTHENTIC
-            }
-            return findMember
-        }
-        return null
-    }
-
-    /**
      * Member 찾기
      * */
-    override fun findMemberByEmail(email: String): MemberJpaEntity? {
-        return memberJpaRepository.findByEmail(email)
-    }
+    override fun findMemberByEmail(email: String): Member =
+        memberJpaRepository.findByEmail(email)
+            ?.let {
+                memberJpaMapper.toMember(it)
+            } ?: throw MemberDataNotFoundException()
 
     /**
      * Member 찾기
      * */
     override fun findMemberByMemberId(memberId: Int): Member? {
-        return memberJpaMapper.toMember(memberJpaRepository.findByMemberId(memberId))
+        memberJpaRepository.findByMemberId(memberId)?.let {
+            return memberJpaMapper.toMember(it)
+        } ?: throw MemberDataNotFoundException()
     }
 
     /**
      * Member 등록
      * */
-    override fun registerMember(member: Member): Member? {
-        // 아이디 있으면 가입 금지
-        val findMember: MemberJpaEntity? = memberJpaRepository.findByEmail(member.email)
-
-        if (findMember == null) {
-            return memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
-        } else {
-            return null
+    override fun createMember(member: Member): Member =
+        memberJpaRepository.findByEmail(member.email)
+            ?.run {
+                throw MemberAlreadyExistException()
+            } ?: run {
+            memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
         }
-    }
 
-    @Transactional
-    override fun saveRefreshToken(id: String, token: String) {
-        memberJpaRepository.findByEmail(id)!!.refreshToken = token
-    }
+    override fun updateMember(member: Member): Member =
+        memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
 
-    override fun findMemberByRefreshToken(token: String): MemberJpaEntity {
-        return memberJpaRepository.findByRefreshToken(token)
-    }
+    override fun deleteMember(email: String) =
+        memberJpaRepository.findByEmail(email)
+            ?.let {
+                memberJpaRepository.deleteById(it.memberId)
+            } ?: throw MemberDataNotFoundException()
+
+    override fun saveRefreshToken(member: Member): Member =
+        memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
+
+    override fun findMemberByRefreshToken(token: String): Member =
+        memberJpaRepository.findByRefreshToken(token)
+            ?.let {
+                memberJpaMapper.toMember(it)
+            } ?: throw MemberDataNotFoundException()
 
 }

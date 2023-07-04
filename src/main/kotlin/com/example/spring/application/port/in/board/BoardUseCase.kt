@@ -1,38 +1,62 @@
 package com.example.spring.application.port.`in`.board
 
-import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
-import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
 import com.example.spring.domain.board.Board
+import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 
 interface BoardUseCase {
     /**
-     * 게시글 전체 목록 조회
+     * 게시판 생성
      * */
-    fun readBoardList(boardReadBoardListRequest: BoardReadBoardListRequest): HashMap<String, Any>
+    fun createBoard(commend: Commend.CreateCommend): Board
 
     /**
-     * 게시글 상세 조회
+     * 게시판 리스트 조회
      * */
-    fun readBoard(boardId: Int): Board
+    fun readBoardPageList(commend: Commend.ReadListCommend): Page<Board>
 
     /**
-     * 게시글 작성
+     * 게시판 읽기
      * */
-    fun writeBoard(board: Board): Board
+    fun readBoard(commend: Commend.ReadCommend): Board
 
     /**
-     * 게시글 수정
+     * 게시판 수정
      * */
-    fun updateBoard(board: Board, boardId: Int): Board
+    fun updateBoard(commend: Commend.UpdateCommend): Board
 
     /**
-     * 게시글 삭제
+     * 게시판 삭제
      * */
-    fun deleteBoard(boardId: Int)
+    fun deleteBoard(commend: Commend.DeleteCommend)
 
-    /**
-     * 게시글에 대한 댓글 검색
-     * */
-    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): BoardReadTopLevelCommentOnBoardResponse
+    sealed class Commend {
+        data class CreateCommend(
+            val name: String,
+            val description: String,
+            val writer: String
+        ) : Commend()
+
+        data class ReadListCommend(
+            var keyword: String? = null, // 검색 키워드
+            var searchType: String? = null, // 검색 유형
+            var pageable: Pageable
+        ) : Commend()
+
+        data class ReadCommend(
+            val boardId: Int
+        ) : Commend()
+
+        data class UpdateCommend(
+            val boardId: Int,
+            val name: String,
+            val description: String,
+            val modifier: String
+        ) : Commend()
+
+        data class DeleteCommend(
+            val boardId: Int
+        ) : Commend()
+
+    }
 }

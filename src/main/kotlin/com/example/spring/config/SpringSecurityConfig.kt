@@ -1,11 +1,12 @@
 package com.example.spring.config
 
-import com.example.spring.config.filter.CustomJwtAuthorizationFilter
-import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
-import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
+import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsServiceImpl
+import com.example.spring.config.filter.CustomJwtAuthorizationFilter
+import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
+import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -25,7 +26,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 class SpringSecurityConfig(
     private val jwtService: JwtService,
     private val authenticationConfiguration: AuthenticationConfiguration,
-    private val memberJpaPort: MemberJpaPort,
+    private val memberUseCase: MemberUseCase,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) {
     @Bean
@@ -35,27 +36,25 @@ class SpringSecurityConfig(
                 .requestMatchers("/swagger-ui.html")
                 .requestMatchers("/static/**")
             it.ignoring()
-                .requestMatchers("/member/register")
+                .requestMatchers("/members/register")
         }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http {
-            csrf {
-                disable()
-            }
-
+            csrf { disable() }
+            httpBasic { disable() }
             authorizeRequests {
-                authorize("/member/login", permitAll)
-                authorize("/member/register", permitAll)
-                authorize("/member/why", hasAuthority("b"))
+                authorize("/members/login", permitAll)
+                authorize("/members/register", permitAll)
+                authorize("/members/why", hasAuthority("b"))
                 authorize(anyRequest, authenticated)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
             addFilterBefore<BasicAuthenticationFilter>(
                 CustomJwtAuthorizationFilter(
                     jwtService,
-                    memberJpaPort,
+                    memberUseCase,
                     userDetailsServiceImpl
                 )
             )
@@ -67,9 +66,6 @@ class SpringSecurityConfig(
     }
 
     @Bean
-    fun passwordEncoder() = BCryptPasswordEncoder()
-
-    @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager {
         return config.authenticationManager
     }
@@ -78,8 +74,8 @@ class SpringSecurityConfig(
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
             jwtService,
-            memberJpaPort
-        ).apply { setFilterProcessesUrl("/member/login") }
+            memberUseCase
+        ).apply { setFilterProcessesUrl("/members/login") }
     }
 
 }

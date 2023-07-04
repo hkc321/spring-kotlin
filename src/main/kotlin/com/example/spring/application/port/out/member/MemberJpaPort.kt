@@ -7,7 +7,7 @@ interface MemberJpaPort {
     /**
      * Member 찾기
      * */
-    fun findMemberByEmail(email: String): MemberJpaEntity?
+    fun findMemberByEmail(email: String): Member
 
     /**
      * Member 찾기
@@ -17,20 +17,25 @@ interface MemberJpaPort {
     /**
      * Member 등록
      * */
-    fun registerMember(member: Member): Member?
+    fun createMember(member: Member): Member
 
     /**
-     * ID,PW 확인
+     * Member 수정
      * */
-    fun checkAuth(member: Member): Member?
+    fun updateMember(member: Member): Member
+
+    /**
+     * Member 삭제
+     * */
+    fun deleteMember(email: String)
 
     /**
      * Refresh 토큰 저장
      * */
-    fun saveRefreshToken(email: String, token: String)
+    fun saveRefreshToken(member: Member): Member
 
     /**
      * Member 찾기
      * */
-    fun findMemberByRefreshToken(token: String): MemberJpaEntity
+    fun findMemberByRefreshToken(token: String): Member
 }

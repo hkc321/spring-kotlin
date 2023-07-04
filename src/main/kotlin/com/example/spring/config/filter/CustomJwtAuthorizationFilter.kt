@@ -1,11 +1,11 @@
 package com.example.spring.config.filter
 
-import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.domain.member.Jwt
+import com.example.spring.domain.member.Member
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
@@ -23,11 +23,10 @@ import org.springframework.web.filter.OncePerRequestFilter
  * */
 class CustomJwtAuthorizationFilter(
     private val jwtService: JwtService,
-    private val memberJpaPort: MemberJpaPort,
+    private val memberUseCase: MemberUseCase,
     private val userDetailsServiceImpl: UserDetailsServiceImpl
 ) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
-    val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     override fun doFilterInternal(
         request: HttpServletRequest,
@@ -89,12 +88,18 @@ class CustomJwtAuthorizationFilter(
         val principal = if (refresh == null) {
             check(jwtService.checkValidToken(access))
             check(jwtService.isTokenExpired(access).not())
-            userDetailsServiceImpl.loadUserByUsername(jwtService.extractEmail(access))
+            UserDetailsImpl(
+                memberUseCase.readMember(
+                    MemberUseCase.Commend.ReadCommend(jwtService.extractEmail(access))
+                )
+            )
         } else {
             check(jwtService.checkValidToken(access))
             check(jwtService.checkValidToken(refresh))
             check(jwtService.isTokenExpired(refresh).not())
-            val member = memberJpaMapper.toMember(memberJpaPort.findMemberByRefreshToken(refresh))
+            val member: Member = memberUseCase.findMemberByRefreshToken(
+                MemberUseCase.Commend.FindMemberByRefreshTokenCommend(refresh)
+            )
 //            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
 //            if (expireIn7Day) reissueRefreshToken(member.username, response)
             reissueAccessToken(member.email, response)

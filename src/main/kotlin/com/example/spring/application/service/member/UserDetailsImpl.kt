@@ -21,7 +21,7 @@ class UserDetailsImpl(private val member: Member) : UserDetails {
      * @return the password
      */
     override fun getPassword(): String {
-        return member.pw
+        return member.password
     }
 
     /**

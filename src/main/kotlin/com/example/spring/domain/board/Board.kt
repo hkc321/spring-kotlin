@@ -1,21 +1,25 @@
 package com.example.spring.domain.board
 
+import com.example.spring.config.domain.CommonDateDomain
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-class Board {
-    var boardId: Int = 0
-    var title: String = ""
-    var content: String = ""
-    var up: Int = 0
-    var writer: String = ""
-    var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    var updatedAt: String? = null
+class Board(
+    boardId: Int = 0,
+    name: String,
+    description: String,
+    writer: String,
+    modifier: String
+) : CommonDateDomain() {
+    val boardId: Int = boardId
+    var name: String = name
+    var description: String = description
+    var writer: String = writer
+    var modifier: String = modifier
 
-    fun updateBoard(board: Board): Board {
-        this.title = board.title
-        this.content = board.content
-        this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-        return this
+    fun update(name: String, description: String, modifier: String) {
+        this.name = name
+        this.description = description
+        this.modifier = modifier
+        this.updatedAt = LocalDateTime.now()
     }
 }

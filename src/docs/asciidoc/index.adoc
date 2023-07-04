@@ -23,7 +23,7 @@ Member Domain API Doc
 == URI
 
 === /member/register
-Try to regist member with email/pw.
+Try to regist member with email/password.
 
 ==== Sample Request
 include::{snippets}/member/register/http-request.adoc[]
@@ -49,7 +49,7 @@ include::{snippets}/member/register/response-fields.adoc[]
 
 
 === /member/login
-Try to log in member with email/pw.
+Try to log in member with email/password.
 
 ==== success
 If success, it returns 2 tokens(access/refresh) in header

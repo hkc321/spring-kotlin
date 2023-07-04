@@ -1,4 +1,4 @@
-package com.example.spring.config.common
+package com.example.spring.config.pagination
 
 open class PaginationRequest {
     var page: Int = 1 // 현재 페이지 번호

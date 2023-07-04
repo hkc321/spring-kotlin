@@ -1,4 +1,4 @@
-package com.example.spring.config.common
+package com.example.spring.config.pagination
 
 class Pagination(
     totalRecordCount: Int,

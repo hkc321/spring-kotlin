@@ -1,39 +1,51 @@
 package com.example.spring.adapter.jpa.board.entity
 
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
+import com.example.spring.config.entity.CommonDateEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import org.hibernate.annotations.ColumnDefault
+import org.hibernate.annotations.DynamicUpdate
 
+@DynamicUpdate
 @Entity
 @Table(name = "comment")
-class CommentJpaEntity {
+class CommentJpaEntity(
+    commentId: Int = 0,
+    board: BoardJpaEntity,
+    post: PostJpaEntity,
+    parentComment: CommentJpaEntity? = null,
+    level: Int,
+    content: String,
+    writer: MemberJpaEntity
+) : CommonDateEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id", nullable = false)
-    var commentId: Int = 0
+    val commentId: Int = commentId
 
-    @Column(name = "board_id")
-    var boardId: Int = 0
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "board_id", nullable = false)
+    var board: BoardJpaEntity = board
 
-    @Column(name = "parent_comment_id")
-    var parentCommentId: Int? = null
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "post_id", nullable = false)
+    var post: PostJpaEntity = post
 
-    @Column(name = "level")
-    var level: Int = 1
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "parent_comment_id", nullable = true)
+    var parentComment: CommentJpaEntity? = parentComment
 
-    @Column(name = "content")
-    var content: String = ""
+    @Column(nullable = false)
+    var level: Int = level
 
-    @Column(name = "up")
+    @Column(nullable = false)
+    @ColumnDefault("0")
     var up: Int = 0
 
-    @Column(name = "writer")
-    var writer: String = ""
+    @Column(nullable = false)
+    var content: String = content
 
-    @Column(name = "created_at")
-    var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-    @Column(name = "updated_at")
-    var updatedAt: String? = null
-
+    @ManyToOne
+    @JoinColumn(name = "writer", nullable = false)
+    var writer: MemberJpaEntity = writer
 }

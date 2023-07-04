@@ -1,24 +1,33 @@
 package com.example.spring.domain.member
 
+import com.example.spring.config.domain.CommonDateDomain
 import com.fasterxml.jackson.annotation.JsonIgnore
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 
 
-class Member {
-    var memberId: Int = 0
-    var email: String = ""
+class Member(
+    memberId: Int = 0,
+    email: String,
+    password: String,
+    role: String,
+) : CommonDateDomain() {
+    val memberId: Int = memberId
+    var email: String = email
 
     @JsonIgnore
-    var pw: String = ""
-    var authStatus: Status = Status.NONE
-    var role: String = ""
+    var password: String = password
+    var role: String = role
     var refreshToken: String? = null
 
-    enum class Status {
-        NONE, WRONG_ID, WRONG_PW, AUTHENTIC
+    fun update(password: String) {
+        this.password = password
     }
 
-    fun comparePW(pw: String): Boolean {
-        return BCryptPasswordEncoder().matches(pw, this.pw)
+    fun saveRefreshToken(token: String) {
+        this.refreshToken = token
+    }
+
+    fun comparePassword(encoder: PasswordEncoder, password: String): Boolean {
+        return encoder.matches(password, this.password)
     }
 }

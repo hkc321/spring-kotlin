@@ -1,60 +1,104 @@
 package com.example.spring.adapter.rest.board
 
-import com.example.spring.adapter.rest.board.dto.BoardReadBoardListRequest
-import com.example.spring.adapter.rest.board.dto.BoardRequest
-import com.example.spring.adapter.rest.board.dto.BoardReadTopLevelCommentOnBoardResponse
-import com.example.spring.adapter.rest.board.dto.BoardUpdateBoardRequest
+import com.example.spring.adapter.rest.board.dto.BoardCommonResponse
+import com.example.spring.adapter.rest.board.dto.BoardCreateRequest
+import com.example.spring.adapter.rest.board.dto.BoardReadPageListResponse
+import com.example.spring.adapter.rest.board.dto.BoardUpdateRequest
+import com.example.spring.adapter.rest.board.mapper.BoardRestMapper
 import com.example.spring.application.port.`in`.board.BoardUseCase
-import com.example.spring.config.BaseController
-import com.example.spring.domain.board.Board
+import jakarta.validation.constraints.Pattern
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
 import org.springframework.data.web.SortDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.net.URI
+import java.security.Principal
 
+@Validated
 @RestController
-@RequestMapping("board")
-class BoardController(private val boardUseCase: BoardUseCase) : BaseController() {
-    @GetMapping("")
-    fun readBoardList(
-        @ModelAttribute boardReadBoardListRequest: BoardReadBoardListRequest
-    ): ResponseEntity<Any> =
-        ResponseEntity.ok(boardUseCase.readBoardList(boardReadBoardListRequest))
-
-
-    @GetMapping("{boardId}")
-    fun readBoard(@PathVariable("boardId") boardId: Int): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.readBoard(boardId))
+@RequestMapping("boards")
+class BoardController(private val boardUseCase: BoardUseCase) {
+    val boardRestMapper = BoardRestMapper.INSTANCE
 
     @PostMapping("")
-    fun writeBoard(@RequestBody body: BoardRequest): ResponseEntity<Board> {
-        val createdBoard: Board = boardUseCase.writeBoard(body.toDomain())
+    fun createBoard(@RequestBody body: BoardCreateRequest, principal: Principal): ResponseEntity<BoardCommonResponse> {
+        val createdBoard = boardUseCase.createBoard(
+            BoardUseCase.Commend.CreateCommend(
+                name = body.name,
+                description = body.description,
+                writer = principal.name
+            )
+        )
         val location = "/board/${createdBoard.boardId}"
-        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location).body(createdBoard)
+        return ResponseEntity.created(URI.create(location)).body(
+            boardRestMapper.toBoardCommonResponse(createdBoard)
+        )
     }
 
+    @GetMapping("")
+    fun readBoardPageList(
+        @RequestParam("keyword") keyword: String? = null,
+        @RequestParam("searchType")
+        @Pattern(
+            regexp = "\\b(?:title|content|writer)\\b",
+            message = "[searchType]: content, description 혹은 writer만 허용됩니다."
+        ) searchType: String? = null,
+        @PageableDefault(
+            page = 0,
+            size = 20
+        )
+        @SortDefault.SortDefaults(
+            SortDefault(sort = ["boardId"], direction = Sort.Direction.DESC)
+        )
+        pageable: Pageable
+    ): ResponseEntity<BoardReadPageListResponse> =
+        ResponseEntity.ok(
+            boardUseCase.readBoardPageList(
+                BoardUseCase.Commend.ReadListCommend(
+                    keyword = keyword,
+                    searchType = searchType,
+                    pageable = pageable
+                )
+            ).map {
+                boardRestMapper.toBoardCommonResponse(it)
+            }.run {
+                boardRestMapper.toBoardReadPageListResponse(this)
+            }
+        )
+
+    @GetMapping("{boardId}")
+    fun readBoard(@PathVariable("boardId") boardId: Int): ResponseEntity<BoardCommonResponse> =
+        ResponseEntity.ok(
+            boardRestMapper.toBoardCommonResponse(
+                boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(boardId = boardId))
+            )
+        )
+
     @PatchMapping("{boardId}")
-    fun updateBoard(@RequestBody body: BoardUpdateBoardRequest, @PathVariable boardId: Int): ResponseEntity<Board> =
-        ResponseEntity.ok(boardUseCase.updateBoard(body.toDomain(), boardId))
+    fun updateBoard(
+        @RequestBody body: BoardUpdateRequest,
+        @PathVariable("boardId") boardId: Int,
+        principal: Principal
+    ): ResponseEntity<BoardCommonResponse> =
+        ResponseEntity.ok(
+            boardRestMapper.toBoardCommonResponse(
+                boardUseCase.updateBoard(
+                    BoardUseCase.Commend.UpdateCommend(
+                        boardId = boardId,
+                        name = body.name,
+                        description = body.description,
+                        modifier = principal.name
+                    )
+                )
+            )
+        )
 
     @DeleteMapping("{boardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteBoard(@PathVariable("boardId") boardId: Int) = boardUseCase.deleteBoard(boardId)
-
-    @GetMapping("{boardId}/comment")
-    fun readTopLevelCommentOnBoard(
-        @PathVariable("boardId") boardId: Int,
-        @PageableDefault(
-            page = 0,
-            size = 10
-        )
-        @SortDefault.SortDefaults(
-            SortDefault(sort = ["parentCommentId"], direction = Sort.Direction.DESC)
-        )
-        pageable: Pageable
-    ): ResponseEntity<BoardReadTopLevelCommentOnBoardResponse> =
-        ResponseEntity.ok(boardUseCase.readTopLevelCommentOnBoard(boardId, pageable))
+    fun deleteBoard(@PathVariable("boardId") boardId: Int) =
+        boardUseCase.deleteBoard(BoardUseCase.Commend.DeleteCommend(boardId = boardId))
 }

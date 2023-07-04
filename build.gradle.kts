@@ -35,6 +35,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kaptTest("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -48,8 +49,18 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("com.epages:restdocs-api-spec-mockmvc:0.18.2")
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
-    implementation("com.linecorp.kotlin-jdsl:hibernate-kotlin-jdsl-jakarta:2.2.0.RELEASE")
-    implementation("org.hibernate:hibernate-core:6.2.4.Final") // up to 6 version
+    //kotlin-jdsl
+    val jdslVersion = "2.2.0.RELEASE"
+    implementation("com.linecorp.kotlin-jdsl:hibernate-kotlin-jdsl-jakarta:$jdslVersion")
+    implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter-jakarta:$jdslVersion")
+    implementation("org.hibernate:hibernate-core:6.2.4.Final")
+    //validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+}
+allOpen {
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
 }
 
 openapi3 {

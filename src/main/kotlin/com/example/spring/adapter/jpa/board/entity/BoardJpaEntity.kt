@@ -1,32 +1,36 @@
 package com.example.spring.adapter.jpa.board.entity
 
+import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
+import com.example.spring.config.entity.CommonDateEntity
 import jakarta.persistence.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import org.hibernate.annotations.DynamicUpdate
 
+@DynamicUpdate
 @Entity
 @Table(name = "board")
-class BoardJpaEntity {
+class BoardJpaEntity(
+    boardId: Int = 0,
+    name: String,
+    description: String,
+    writer: MemberJpaEntity,
+    modifier: MemberJpaEntity
+) : CommonDateEntity() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id", nullable = false)
-    var boardId: Int = 0
+    val boardId: Int = boardId
 
-    @Column(name = "title", nullable = false)
-    var title: String = ""
+    @Column(nullable = false, unique = true)
+    var name: String = name
 
-    @Column(name = "content", nullable = false)
-    var content: String = ""
+    @Column(nullable = false)
+    var description: String = description
 
-    @Column(name = "up")
-    var up: Int = 0
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "writer", nullable = false)
+    var writer: MemberJpaEntity = writer
 
-    @Column(name = "writer", nullable = false)
-    var writer: String = ""
-
-    @Column(name = "created_at")
-    var createdAt: String = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-
-    @Column(name = "updated_at")
-    var updatedAt: String? = null
+    @ManyToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "modifier", nullable = true)
+    var modifier: MemberJpaEntity = modifier
 }

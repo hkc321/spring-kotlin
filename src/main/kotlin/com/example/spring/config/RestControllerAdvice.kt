@@ -1,6 +1,9 @@
 package com.example.spring.config
 
 import com.example.spring.config.dto.ErrorCode
+import com.fasterxml.jackson.databind.exc.InvalidFormatException
+import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import jakarta.validation.ConstraintViolationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -17,19 +20,35 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<Any> {
+    @ExceptionHandler(ConstraintViolationException::class)
+    fun constraintViolationException(ex: ConstraintViolationException): ResponseEntity<BaseResponseException> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
                 BaseResponseException(
                     ErrorCode.INVALID_PARAMETER,
-                    "파라미터를 확인해주세요."
+                    ex.message.toString()
+                )
+            )
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException::class)
+    fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<BaseResponseException> {
+        val msg = when (val causeException = ex.cause) {
+            is InvalidFormatException -> "입력 받은 [${causeException.value}] 를 [${causeException.targetType}] 으로 변환중 에러가 발생했습니다."
+            is MissingKotlinParameterException -> "Parameter is missing: [${causeException.parameter.name}]"
+            else -> "파라미터를 확인해주세요"
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ErrorCode.INVALID_PARAMETER,
+                    msg
                 )
             )
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun methodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<Any> {
+    fun methodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<BaseResponseException> {
         val builder = StringBuilder()
         builder.append("[")
         builder.append(ex.errorCode)
@@ -50,7 +69,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<Any> {
+    fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<BaseResponseException> {
         val bindingResult: BindingResult = ex.bindingResult
         val builder = StringBuilder()
         for (fieldError in bindingResult.fieldErrors) {
@@ -72,8 +91,52 @@ class ControllerAdvice {
             )
     }
 
-    @ExceptionHandler(NoDataException::class)
-    fun noDataException(ex: NoDataException): ResponseEntity<Any> {
+    @ExceptionHandler(CommentDataNotFoundException::class)
+    fun commentDataNotFoundException(ex: CommentDataNotFoundException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
+
+    @ExceptionHandler(PostDataNotFoundException::class)
+    fun postDataNotFoundException(ex: PostDataNotFoundException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
+
+    @ExceptionHandler(BoardDataNotFoundException::class)
+    fun boardDataNotFoundException(ex: BoardDataNotFoundException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
+
+    @ExceptionHandler(MemberDataNotFoundException::class)
+    fun memberDataNotFoundException(ex: MemberDataNotFoundException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
+
+    @ExceptionHandler(MemberAlreadyExistException::class)
+    fun memberAlreadyExistException(ex: MemberAlreadyExistException): ResponseEntity<BaseResponseException> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
                 BaseResponseException(
@@ -97,7 +160,33 @@ class ControllerAdvice {
     }
 }
 
-data class NoDataException(
-    var code: ErrorCode,
-    override var message: String = "데이터가 존재하지 않습니다"
+data class CommentDataNotFoundException(
+    val boardId: Int,
+    val postId: Int,
+    val commentId: Int,
+    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
+    override var message: String = "댓글이 존재하지 않습니다. [boardId: $boardId, postId: $postId, commentId: $commentId]"
+) : RuntimeException(message, null)
+
+data class BoardDataNotFoundException(
+    val boardId: Int,
+    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
+    override var message: String = "게시판이 존재하지 않습니다. [boardId: $boardId]"
+) : RuntimeException(message, null)
+
+data class PostDataNotFoundException(
+    val boardId: Int,
+    val postId: Int,
+    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
+    override var message: String = "게시글이 존재하지 않습니다. [boardId: $boardId, postId: $postId]"
+) : RuntimeException(message, null)
+
+data class MemberDataNotFoundException(
+    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
+    override var message: String = "사용자가 존재하지 않습니다."
+) : RuntimeException(message, null)
+
+data class MemberAlreadyExistException(
+    val code: ErrorCode = ErrorCode.ALREADY_EXIST,
+    override var message: String = "이미 존재하는 아이디입니다."
 ) : RuntimeException(message, null)

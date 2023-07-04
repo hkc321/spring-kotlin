@@ -1,41 +1,79 @@
 package com.example.spring.adapter.rest.member
 
-import com.example.spring.adapter.rest.member.dto.MemberRequest
+import com.example.spring.adapter.rest.member.dto.MemberCommonResponse
+import com.example.spring.adapter.rest.member.dto.MemberCreateRequest
+import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
+import com.example.spring.adapter.rest.member.dto.MemberUpdateRequest
+import com.example.spring.adapter.rest.member.mapper.MemberRestMapper
 import com.example.spring.application.port.`in`.member.MemberUseCase
+import com.example.spring.domain.member.Member
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
+import java.net.URI
 import java.util.*
 
 @RestController
-@RequestMapping("member")
+@RequestMapping("members")
 class MemberController(private val memberUseCase: MemberUseCase) {
+    private val memberRestMapper = MemberRestMapper.INSTANCE
 
     @PostMapping("register")
-    fun register(@RequestBody body: MemberRequest): ResponseEntity<Any> {
-        return memberUseCase.join(body.toDomain())
+    fun createMember(@RequestBody body: MemberCreateRequest): ResponseEntity<MemberCommonResponse> {
+        val createdMember: Member =
+            memberUseCase.createMember(
+                MemberUseCase.Commend.CreateCommend(
+                    email = body.email,
+                    password = body.password,
+                    role = body.role
+                )
+            )
+        val location = "/members/${createdMember.email}"
+        return ResponseEntity.created(URI.create(location)).body(memberRestMapper.toMemberCommonResponse(createdMember))
     }
 
+    @GetMapping("{memberEmail}")
+    fun readMember(@PathVariable("memberEmail") memberEmail: String): ResponseEntity<MemberCommonResponse> =
+        ResponseEntity.ok(
+            memberRestMapper.toMemberCommonResponse(
+                memberUseCase.readMember(
+                    MemberUseCase.Commend.ReadCommend(
+                        memberEmail
+                    )
+                )
+            )
+        )
+
+    @PatchMapping("{memberEmail}")
+    fun updateMember(
+        @PathVariable("memberEmail") memberEmail: String,
+        @RequestBody body: MemberUpdateRequest
+    ): ResponseEntity<MemberCommonResponse> =
+        ResponseEntity.ok(
+            memberRestMapper.toMemberCommonResponse(
+                memberUseCase.updateMember(
+                    MemberUseCase.Commend.UpdateCommend(
+                        memberEmail,
+                        body.password
+                    )
+                )
+            )
+
+        )
+
+    @DeleteMapping("{memberEmail}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    fun deleteMember(@PathVariable("memberEmail") memberEmail: String) =
+        memberUseCase.deleteMember(MemberUseCase.Commend.DeleteCommend(memberEmail))
+
+    /**
+     * Spring Security 에서 실행
+     * */
     @PostMapping("login")
-    fun login(@RequestBody body: MemberRequest): ResponseEntity<Any> {
+    fun login(@RequestBody body: MemberLoginRequest): ResponseEntity<Any> {
         return ResponseEntity
             .status(HttpStatus.OK)
             .body("성공")
     }
 
-    @PostMapping("why")
-    fun why(): ResponseEntity<Any> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("성공")
-    }
-
-    @GetMapping("test")
-    fun test(): String {
-        return "test"
-    }
 }

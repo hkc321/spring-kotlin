@@ -1,9 +1,10 @@
 package com.example.spring.application.port.out.board
 
+import com.example.spring.adapter.rest.board.dto.CommentCommonResponse
+import com.example.spring.application.port.`in`.board.CommentUseCase
+import com.example.spring.domain.board.Board
 import com.example.spring.domain.board.Comment
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Slice
+import com.example.spring.domain.board.Post
 
 interface CommentJpaPort {
     /**
@@ -14,12 +15,7 @@ interface CommentJpaPort {
     /**
      * 댓글 조회
      * */
-    fun readComment(commentId: Int): Comment
-
-    /**
-     * 대댓글 조회
-     * */
-    fun readChildComment(commentId: Int, pageable: Pageable): Slice<Comment>
+    fun readComment(boardId: Int, postId: Int, commentId: Int): Comment
 
     /**
      * 댓글 수정
@@ -27,17 +23,7 @@ interface CommentJpaPort {
     fun updateComment(comment: Comment): Comment
 
     /**
-     * 게시글에 대한 댓글 검색
-     * */
-    fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment>
-
-    /**
-     * 대댓글 갯수 검색
-     * */
-    fun countChildComment(parentCommentId: Int): Int
-
-    /**
      * 댓글 삭제
      * */
-    fun deleteComment(commentId: Int)
+    fun deleteComment(boardId: Int, postId: Int, commentId: Int)
 }

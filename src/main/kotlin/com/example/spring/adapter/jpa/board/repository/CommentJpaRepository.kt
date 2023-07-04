@@ -1,17 +1,15 @@
 package com.example.spring.adapter.jpa.board.repository
 
+import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.board.entity.CommentJpaEntity
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Slice
+import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface CommentJpaRepository : JpaRepository<CommentJpaEntity, Int> {
-    fun findPageByBoardIdAndLevel(boardId: Int, pageable: Pageable, level: Int = 1): Page<CommentJpaEntity>
-    fun countByParentCommentId(parentCommentId: Int): Int
-    fun findByParentCommentIdAndLevelGreaterThan(
-        parentCommentId: Int,
-        pageable: Pageable,
-        level: Int = 1
-    ): Slice<CommentJpaEntity>
+    fun findByBoardAndPostAndLevel(boardJpaEntity: BoardJpaEntity, postJpaEntity: PostJpaEntity, level: Int)
+    fun findByBoardAndPostAndCommentId(
+        boardJpaEntity: BoardJpaEntity,
+        postJpaEntity: PostJpaEntity,
+        commentId: Int
+    ): CommentJpaEntity?
 }

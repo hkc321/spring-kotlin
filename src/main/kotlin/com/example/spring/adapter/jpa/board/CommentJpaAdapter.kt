@@ -3,51 +3,35 @@ package com.example.spring.adapter.jpa.board
 import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.application.port.out.board.CommentJpaPort
-import com.example.spring.config.NoDataException
-import com.example.spring.config.dto.ErrorCode
+import com.example.spring.config.CommentDataNotFoundException
 import com.example.spring.domain.board.Comment
-import org.springframework.data.domain.Page
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Slice
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class CommentJpaAdapter(
-    private val commentJpaRepository: CommentJpaRepository
+    private val commentJpaRepository: CommentJpaRepository,
+    private val commentJpaMapper: CommentJpaMapper
 ) : CommentJpaPort {
-    val commentJpaMapper = CommentJpaMapper.INSTANCE
 
     override fun createComment(comment: Comment): Comment =
-        commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toEntity(comment)))
+        commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toJpaEntity(comment)))
 
-    override fun readComment(commentId: Int): Comment {
-        commentJpaRepository.findByIdOrNull(commentId)?.let {
+    override fun readComment(boardId: Int, postId: Int, commentId: Int): Comment =
+        commentJpaRepository.findByIdOrNull(
+            commentId
+        )?.let {
             return commentJpaMapper.toComment(it)
-        } ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
-    }
+        } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
 
-    override fun readChildComment(commentId: Int, pageable: Pageable): Slice<Comment> =
-        commentJpaRepository.findByParentCommentIdAndLevelGreaterThan(commentId, pageable).map {
-            commentJpaMapper.toComment(it)
-        }
 
-    @Transactional
     override fun updateComment(comment: Comment): Comment =
-        commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toEntity(comment)))
+        commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toJpaEntity(comment)))
 
-    override fun readTopLevelCommentOnBoard(boardId: Int, pageable: Pageable): Page<Comment> {
-        return commentJpaRepository.findPageByBoardIdAndLevel(boardId, pageable).map {
-            commentJpaMapper.toComment(it)
-        }
-    }
-
-    override fun countChildComment(parentCommentId: Int): Int =
-        commentJpaRepository.countByParentCommentId(parentCommentId)
-
-    override fun deleteComment(commentId: Int) =
+    override fun deleteComment(boardId: Int, postId: Int, commentId: Int) {
         commentJpaRepository.findByIdOrNull(commentId)?.let {
             commentJpaRepository.deleteById(commentId)
-        } ?: throw NoDataException(ErrorCode.DATA_NOT_FOUND)
+        } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
+    }
+
 }

@@ -1,8 +1,8 @@
 package com.example.spring.application.service.member
 
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.domain.member.Member
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserDetailsServiceImpl(private val memberJpaPort: MemberJpaPort) : UserDetailsService {
-    val memberJpaMapper = MemberJpaMapper.INSTANCE
 
     /**
      * Locates the user based on the username. In the actual implementation, the search
@@ -23,10 +22,6 @@ class UserDetailsServiceImpl(private val memberJpaPort: MemberJpaPort) : UserDet
      * @throws UsernameNotFoundException if the user could not be found or the user has no
      * GrantedAuthority
      */
-    override fun loadUserByUsername(username: String): UserDetails {
-        val member: MemberJpaEntity = memberJpaPort.findMemberByEmail(username)
-            ?: throw UsernameNotFoundException("존재하지 않는 username 입니다.")
-
-        return UserDetailsImpl(memberJpaMapper.toMember(member))
-    }
+    override fun loadUserByUsername(username: String): UserDetails =
+        UserDetailsImpl(memberJpaPort.findMemberByEmail(username))
 }

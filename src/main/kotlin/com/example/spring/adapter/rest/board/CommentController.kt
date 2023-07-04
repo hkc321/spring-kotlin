@@ -1,60 +1,151 @@
 package com.example.spring.adapter.rest.board
 
-import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
-import com.example.spring.adapter.rest.board.dto.CommentReadChildCommentResponse
-import com.example.spring.adapter.rest.board.dto.CommentRequest
-import com.example.spring.adapter.rest.board.dto.CommentResponse
-import com.example.spring.adapter.rest.board.dto.CommentUpdateCommentRequest
+import com.example.spring.adapter.rest.board.dto.*
+import com.example.spring.adapter.rest.board.mapper.CommentRestMapper
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Comment
-import org.springframework.data.domain.Pageable
-import org.springframework.data.domain.Sort
-import org.springframework.data.web.PageableDefault
-import org.springframework.data.web.SortDefault
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Pattern
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
+@Validated
 @RestController
-@RequestMapping("comment")
+@RequestMapping("boards/{boardId}/posts/{postId}/comments")
 class CommentController(private val commentUseCase: CommentUseCase) : BaseController() {
-    val commentJpaMapper = CommentJpaMapper.INSTANCE
+    private val commentRestMapper = CommentRestMapper.INSTANCE
 
     @PostMapping("")
-    fun createComment(@RequestBody body: CommentRequest): ResponseEntity<CommentResponse> {
-        val createdComment: Comment = commentUseCase.createComment(body.toDomain())
-        val location = "/comment/${createdComment.commentId}"
+    fun createComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @Valid @RequestBody body: CommentCreateRequest,
+        principal: Principal
+    ): ResponseEntity<CommentCommonResponse> {
+        val createdComment: Comment = commentUseCase.createComment(
+            CommentUseCase.Commend.CreateCommend(
+                boardId = boardId,
+                postId = postId,
+                parentCommentId = body.parentCommentId,
+                level = body.level,
+                content = body.content,
+                writer = principal.name
+            )
+        )
+        val location =
+            "/boards/${createdComment.boardId}/posts/${createdComment.postId}/comments/${createdComment.commentId}"
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", location)
-            .body(commentJpaMapper.toCommentResponse(createdComment))
+            .body(
+                commentRestMapper.toCommentCommonResponse(createdComment)
+            )
     }
 
+    @GetMapping("")
+    fun readTopLevelComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @RequestParam("size", required = true) @Max(value = 50, message = "[size]: 50 이하여야 합니다.") size: Int,
+        @RequestParam("cursor", required = false) cursor: Int?,
+        @RequestParam("orderBy", required = true)
+        @Pattern(
+            regexp = "\\b(?:up|recent)\\b",
+            message = "[orderBy]: up 혹은 recent만 허용됩니다."
+        ) orderBy: String
+    ): ResponseEntity<CommentTopLevelResponse> =
+        ResponseEntity.ok(
+            commentUseCase.readTopLevelComment(
+                CommentUseCase.Commend.ReadTopLevelCommend(
+                    boardId,
+                    postId,
+                    size,
+                    cursor,
+                    orderBy
+                )
+            ).let {
+                it.first.map { comment ->
+                    commentRestMapper.toCommentCommonResponse(comment)
+                }.let { changed ->
+                    CommentTopLevelResponse(changed, it.second)
+                }
+            }
+        )
+
     @GetMapping("{commentId}")
-    fun readComment(@PathVariable("commentId") commentId: Int): ResponseEntity<Comment> =
-        ResponseEntity.ok(commentUseCase.readComment(commentId))
+    fun readComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @PathVariable("commentId") commentId: Int
+    ): ResponseEntity<CommentCommonResponse> =
+        ResponseEntity.ok(
+            commentRestMapper.toCommentCommonResponse(
+                commentUseCase.readComment(
+                    CommentUseCase.Commend.ReadCommend(
+                        boardId = boardId,
+                        postId = postId,
+                        commentId = commentId
+                    )
+                )
+            )
+        )
+
 
     @GetMapping("{commentId}/childComment")
     fun readChildComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
-        @PageableDefault(
-            page = 0,
-            size = 20
+        @RequestParam("size", required = true) @Max(value = 50, message = "[size]: 50 이하여야 합니다.") size: Int,
+        @RequestParam("cursor", required = false) cursor: Int?
+    ): ResponseEntity<CommentChildResponse> =
+        ResponseEntity.ok(
+            commentUseCase.readChildComment(
+                CommentUseCase.Commend.ReadChildCommend(
+                    boardId,
+                    postId,
+                    commentId,
+                    size,
+                    cursor
+                )
+            ).let {
+                it.first.map { comment ->
+                    commentRestMapper.toCommentCommonResponse(comment)
+                }.let { changed ->
+                    CommentChildResponse(changed, it.second)
+                }
+
+            }
         )
-        @SortDefault.SortDefaults(
-            SortDefault(sort = ["commentId"], direction = Sort.Direction.ASC)
-        )
-        pageable: Pageable
-    ): ResponseEntity<CommentReadChildCommentResponse> =
-        ResponseEntity.ok(commentUseCase.readChildComment(commentId, pageable))
 
     @PatchMapping("{commentId}")
     fun updateComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
-        @RequestBody body: CommentUpdateCommentRequest
-    ): ResponseEntity<Comment> =
-        ResponseEntity.ok(commentUseCase.updateComment(commentId, body.toDomain()))
+        @RequestBody body: CommentUpdateRequest
+    ): ResponseEntity<CommentCommonResponse> =
+        ResponseEntity.ok(
+            commentRestMapper.toCommentCommonResponse(
+                commentUseCase.updateComment(
+                    CommentUseCase.Commend.UpdateCommend(
+                        boardId,
+                        postId,
+                        commentId,
+                        body.content
+                    )
+                )
+            )
+        )
 
     @DeleteMapping("{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteComment(@PathVariable("commentId") commentId: Int) = commentUseCase.deleteComment(commentId)
+    fun deleteComment(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @PathVariable("commentId") commentId: Int
+    ) = commentUseCase.deleteComment(CommentUseCase.Commend.DeleteCommend(boardId, postId, commentId))
 }

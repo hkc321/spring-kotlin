@@ -1,11 +1,13 @@
 package com.example.spring.config.filter
 
-import com.example.spring.config.dto.ErrorCode
-import com.example.spring.adapter.rest.member.dto.MemberRequest
-import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
+import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
+import com.example.spring.config.dto.ErrorCode
+import com.example.spring.domain.member.Member
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -13,6 +15,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
+import org.springframework.security.authentication.InternalAuthenticationServiceException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
@@ -25,7 +29,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class CustomUsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
     private val jwtService: JwtService,
-    private val memberJpaPort: MemberJpaPort
+    private val memberUseCase: MemberUseCase
 ) : UsernamePasswordAuthenticationFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
@@ -36,12 +40,19 @@ class CustomUsernamePasswordAuthenticationFilter(
         log.info("try authentication")
         try {
             val om = ObjectMapper()
-            val loginInput = om.readValue(request.inputStream, MemberRequest::class.java)
-            val authentication = UsernamePasswordAuthenticationToken(loginInput.email, loginInput.pw)
+            val loginInput = om.readValue(request.inputStream, MemberLoginRequest::class.java)
+            val authentication = UsernamePasswordAuthenticationToken(loginInput.email, loginInput.password)
             return authenticationManager.authenticate(authentication)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            throw UsernameNotFoundException("Bad Credential")
+        } catch (ex: UnrecognizedPropertyException) {
+            throw UsernameNotFoundException(ErrorCode.INVALID_PARAMETER.name)
+        } catch (ex: InternalAuthenticationServiceException) {
+            throw UsernameNotFoundException(ErrorCode.DATA_NOT_FOUND.name)
+        } catch (ex: BadCredentialsException) {
+            throw UsernameNotFoundException(ErrorCode.WRONG_PASSWORD.name)
+        } catch (ex: Exception) {
+            log.warn("login unknown error")
+            ex.printStackTrace()
+            throw UsernameNotFoundException(ErrorCode.INTERNAL_SERVER_ERROR.name)
         }
     }
 
@@ -60,12 +71,17 @@ class CustomUsernamePasswordAuthenticationFilter(
         val accessToken: String = jwtService.createAccessToken(principal.username)
         val refreshToken: String = jwtService.createRefreshToken()
 
-        memberJpaPort.saveRefreshToken(principal.username, refreshToken)
+        val member: Member = memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(principal.username))
+        memberUseCase.saveRefreshToken(
+            MemberUseCase.Commend.SaveRefreshTokenCommend(
+                member.email, refreshToken
+            )
+        )
 
         jwtService.setHeaderOfAccessToken(response, accessToken)
         jwtService.setHeaderOfRefreshToken(response, refreshToken)
 
-        jwtService.setResponseMessage("true", response, "login success")
+        jwtService.setResponseMessage(true, response, "login success")
     }
 
     /**
@@ -78,12 +94,15 @@ class CustomUsernamePasswordAuthenticationFilter(
     ) {
         log.info("fail authentication")
         val failMessage = when (failed!!.message) {
-            ErrorCode.ITEM_NOT_EXIST.name -> ErrorCode.ITEM_NOT_EXIST.name
-            ErrorCode.WRONG_PASSWORD.name -> ErrorCode.WRONG_PASSWORD.name
+            ErrorCode.DATA_NOT_FOUND.name -> "사용자가 존재하지 않습니다."
+            ErrorCode.WRONG_PASSWORD.name -> "비밀번호가 올바르지 않습니다."
+            ErrorCode.INVALID_PARAMETER.name -> "프로퍼티 이름이 올바르지 않습니다. required:[email, password]"
             else -> ErrorCode.UNKNOWN_ERROR.name
         }
-        response.status = HttpStatus.BAD_REQUEST.value()
-//        val failMessage = failed!!.message
-        jwtService.setResponseMessage("false", response, "login fail: $failMessage")
+        response.status = when (failed!!.message) {
+            ErrorCode.INTERNAL_SERVER_ERROR.name -> HttpStatus.INTERNAL_SERVER_ERROR.value()
+            else -> HttpStatus.BAD_REQUEST.value()
+        }
+        jwtService.setResponseMessage(false, response, "$failMessage")
     }
 }
