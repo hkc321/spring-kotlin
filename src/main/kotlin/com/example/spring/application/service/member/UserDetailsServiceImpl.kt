@@ -1,8 +1,6 @@
 package com.example.spring.application.service.member
 
-import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
 import com.example.spring.application.port.out.member.MemberJpaPort
-import com.example.spring.domain.member.Member
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException

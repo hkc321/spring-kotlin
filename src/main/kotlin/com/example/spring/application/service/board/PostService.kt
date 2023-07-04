@@ -1,16 +1,10 @@
 package com.example.spring.application.service.board
 
-import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
-import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
-import com.example.spring.adapter.rest.board.dto.PostCommonResponse
-import com.example.spring.adapter.rest.board.dto.PostReadPageListResponse
 import com.example.spring.adapter.rest.board.mapper.PostRestMapper
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.port.out.board.PostJpaPort
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
-import com.example.spring.application.port.out.member.MemberJpaPort
-import com.example.spring.domain.board.Board
 import com.example.spring.domain.board.Post
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service

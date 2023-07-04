@@ -1,7 +1,7 @@
 package com.example.spring.application.service.member
 
-import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.port.`in`.member.MemberUseCase
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.domain.member.Member
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service

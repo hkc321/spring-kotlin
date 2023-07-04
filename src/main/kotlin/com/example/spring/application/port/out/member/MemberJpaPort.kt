@@ -1,6 +1,5 @@
 package com.example.spring.application.port.out.member
 
-import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.domain.member.Member
 
 interface MemberJpaPort {

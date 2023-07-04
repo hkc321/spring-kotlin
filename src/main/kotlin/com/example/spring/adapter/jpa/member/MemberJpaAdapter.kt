@@ -8,7 +8,6 @@ import com.example.spring.config.MemberAlreadyExistException
 import com.example.spring.config.MemberDataNotFoundException
 import com.example.spring.domain.member.Member
 import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
 
 @Repository
 class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : MemberJpaPort {

@@ -3,7 +3,6 @@ package com.example.spring.adapter.rest.board.mapper
 import com.example.spring.adapter.rest.board.dto.BoardCommonResponse
 import com.example.spring.adapter.rest.board.dto.BoardReadPageListResponse
 import com.example.spring.domain.board.Board
-import com.example.spring.domain.board.BoardTest
 import org.mapstruct.Mapper
 import org.mapstruct.Mapping
 import org.mapstruct.Mappings

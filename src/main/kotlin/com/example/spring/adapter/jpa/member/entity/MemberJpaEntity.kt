@@ -1,7 +1,6 @@
 package com.example.spring.adapter.jpa.member.entity
 
 import com.example.spring.config.entity.CommonDateEntity
-import com.example.spring.domain.member.MemberRole
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.annotations.DynamicUpdate

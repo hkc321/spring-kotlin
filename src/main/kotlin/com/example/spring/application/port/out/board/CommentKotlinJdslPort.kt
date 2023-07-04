@@ -1,10 +1,6 @@
 package com.example.spring.application.port.out.board
 
-import com.example.spring.adapter.rest.board.dto.CommentCommonResponse
-import com.example.spring.application.port.`in`.board.CommentUseCase
-import com.example.spring.domain.board.Board
 import com.example.spring.domain.board.Comment
-import com.example.spring.domain.board.Post
 
 interface CommentKotlinJdslPort {
     /**

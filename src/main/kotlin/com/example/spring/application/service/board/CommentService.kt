@@ -1,9 +1,5 @@
 package com.example.spring.application.service.board
 
-import com.example.spring.adapter.rest.board.dto.CommentChildResponse
-import com.example.spring.adapter.rest.board.dto.CommentCommonResponse
-import com.example.spring.adapter.rest.board.dto.CommentTopLevelResponse
-import com.example.spring.adapter.rest.board.mapper.CommentRestMapper
 import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase

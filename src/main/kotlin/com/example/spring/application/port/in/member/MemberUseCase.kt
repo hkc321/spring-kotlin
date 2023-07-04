@@ -1,10 +1,7 @@
 package com.example.spring.application.port.`in`.member
 
-import com.example.spring.adapter.rest.member.dto.MemberCommonResponse
-import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.domain.member.Member
 import com.example.spring.domain.member.MemberRole
-import org.springframework.data.domain.Pageable
 
 interface MemberUseCase {
     /**

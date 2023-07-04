@@ -1,8 +1,5 @@
 package com.example.spring.application.port.`in`.board
 
-import com.example.spring.adapter.rest.board.dto.CommentChildResponse
-import com.example.spring.adapter.rest.board.dto.CommentCommonResponse
-import com.example.spring.adapter.rest.board.dto.CommentTopLevelResponse
 import com.example.spring.domain.board.Comment
 
 interface CommentUseCase {
