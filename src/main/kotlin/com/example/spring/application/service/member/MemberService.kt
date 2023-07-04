@@ -29,7 +29,7 @@ class MemberService(
     @Transactional
     override fun updateMember(commend: MemberUseCase.Commend.UpdateCommend): Member {
         val member: Member = memberJpaPort.findMemberByEmail(commend.email)
-        member.update(commend.password)
+        member.update(passwordEncoder.encode(commend.password))
         return memberJpaPort.updateMember(member)
     }
 
