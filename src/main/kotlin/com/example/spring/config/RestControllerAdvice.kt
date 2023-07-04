@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindingResult
+import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -19,6 +20,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
+    fun httpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ErrorCode.NOT_SUPPORT_HTTP_METHOD,
+                    ex.message.toString()
+                )
+            )
+    }
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun constraintViolationException(ex: ConstraintViolationException): ResponseEntity<BaseResponseException> {
