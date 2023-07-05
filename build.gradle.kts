@@ -36,6 +36,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kaptTest("org.mapstruct:mapstruct-processor:1.5.5.Final")
@@ -56,6 +57,10 @@ dependencies {
     implementation("org.hibernate:hibernate-core:6.2.4.Final")
     //validation
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    //kotest
+    testImplementation("io.kotest:kotest-runner-junit5:5.6.2") // kotlin junit 처럼 쓸 수 있는 Spec 들이 정의 됨
+    testImplementation("io.kotest:kotest-assertions-core:5.6.2") // shouldBe... etc 와같이 Assertions 의 기능을 제공
+    testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3") // spring boot test 를 위해서 추가
 }
 allOpen {
     annotation("jakarta.persistence.Entity")
