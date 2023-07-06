@@ -18,10 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
-import org.springframework.restdocs.operation.preprocess.Preprocessors
-import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.test.web.servlet.MockMvc
@@ -32,7 +29,7 @@ import org.springframework.transaction.annotation.Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class BoardControllerTest : RestdocsTestDsl {
+class BoardControllerDocsTest : RestdocsTestDsl {
     @Autowired
     private lateinit var mockMvc: MockMvc
 
@@ -128,7 +125,7 @@ class BoardControllerTest : RestdocsTestDsl {
                             requestFields
                         )
                         .responseHeaders(
-                            headerWithName(HttpHeaders.LOCATION).description("Location header")
+                            header(HttpHeaders.LOCATION, "Location header")
                         )
                         .responseFields(
                             responseFields

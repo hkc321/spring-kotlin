@@ -36,7 +36,6 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.11.5")
     implementation("org.mapstruct:mapstruct:1.5.5.Final")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
     annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kapt("org.mapstruct:mapstruct-processor:1.5.5.Final")
     kaptTest("org.mapstruct:mapstruct-processor:1.5.5.Final")

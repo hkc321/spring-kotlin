@@ -23,7 +23,7 @@ class PostService(
     override fun createPost(commend: PostUseCase.Commend.CreateCommend): Post =
         postJpaPort.createPost(
             Post(
-                board = commend.boardId,
+                boardId = commend.boardId,
                 title = commend.title,
                 content = commend.content,
                 writer = commend.writer

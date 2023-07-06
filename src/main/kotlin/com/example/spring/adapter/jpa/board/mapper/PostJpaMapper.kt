@@ -15,7 +15,7 @@ class PostJpaMapper(
         return postJpaEntity.let {
             Post(
                 postId = it.postId,
-                board = it.board.boardId,
+                boardId = it.board.boardId,
                 title = it.title,
                 content = it.content,
                 writer = it.writer.email
