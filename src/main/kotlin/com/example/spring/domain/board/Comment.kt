@@ -5,16 +5,16 @@ import java.time.LocalDateTime
 
 class Comment(
     commentId: Int = 0,
-    board: Int,
-    post: Int,
+    boardId: Int,
+    postId: Int,
     parentComment: Int?,
     level: Int,
     content: String,
     writer: String
 ) : CommonDateDomain() {
     val commentId: Int = commentId
-    var boardId: Int = board
-    var postId: Int = post
+    var boardId: Int = boardId
+    var postId: Int = postId
     var parentComment: Int? = parentComment
     var level: Int = level
     var content: String = content

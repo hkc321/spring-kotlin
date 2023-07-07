@@ -20,8 +20,8 @@ class CommentJpaMapper(
         return commentJpaEntity.let {
             Comment(
                 commentId = it.commentId,
-                board = it.board.boardId,
-                post = it.post.postId,
+                boardId = it.board.boardId,
+                postId = it.post.postId,
                 parentComment = when (it.parentComment) {
                     null -> null
                     else -> it.parentComment!!.commentId

@@ -3,6 +3,7 @@ package config
 import com.epages.restdocs.apispec.*
 import org.hamcrest.Matcher
 import org.hamcrest.Matchers
+import org.hamcrest.core.AnyOf
 import org.springframework.restdocs.headers.HeaderDescriptor
 import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.operation.preprocess.Preprocessors
@@ -12,6 +13,8 @@ import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.snippet.Snippet
 import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.ResultActionsDsl
+import org.springframework.test.web.servlet.result.JsonPathResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 interface RestdocsTestDsl {
     fun ResultActions.andDocument(
@@ -42,6 +45,9 @@ interface RestdocsTestDsl {
 
     fun makeSnippets(resourceSnippetParameters: ResourceSnippetParameters): Array<ResourceSnippet> =
         arrayOf(ResourceDocumentation.resource(resourceSnippetParameters))
+
+    fun snippetsBuilder() =
+        ResourceSnippetParametersBuilder()
 
     fun field(path: String, type: JsonFieldType, description: String, optional: Boolean = false): FieldDescriptor {
         val field = PayloadDocumentation.fieldWithPath(path)
@@ -74,4 +80,13 @@ interface RestdocsTestDsl {
 
     fun exist(): Matcher<Any> =
         Matchers.notNullValue()
+
+    fun nullOrString(): AnyOf<Any> =
+        Matchers.anyOf(Matchers.instanceOf(String::class.java), Matchers.nullValue())
+
+    fun nullOrInt(): AnyOf<Any> =
+        Matchers.anyOf(Matchers.instanceOf(Int::class.java), Matchers.nullValue())
+
+    fun json(path: String): JsonPathResultMatchers =
+        MockMvcResultMatchers.jsonPath(path)
 }

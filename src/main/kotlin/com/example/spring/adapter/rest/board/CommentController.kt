@@ -7,6 +7,7 @@ import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Comment
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -49,7 +50,9 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
     fun readTopLevelComment(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
-        @RequestParam("size", required = true) @Max(value = 50, message = "[size]: 50 이하여야 합니다.") size: Int,
+        @RequestParam("size", required = true)
+        @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
+        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.") size: Int,
         @RequestParam("cursor", required = false) cursor: Int?,
         @RequestParam("orderBy", required = true)
         @Pattern(
@@ -99,7 +102,9 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
-        @RequestParam("size", required = true) @Max(value = 50, message = "[size]: 50 이하여야 합니다.") size: Int,
+        @RequestParam("size", required = true)
+        @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
+        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.")size: Int,
         @RequestParam("cursor", required = false) cursor: Int?
     ): ResponseEntity<CommentChildResponse> =
         ResponseEntity.ok(

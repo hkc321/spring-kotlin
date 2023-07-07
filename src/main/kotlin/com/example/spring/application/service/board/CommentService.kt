@@ -21,8 +21,8 @@ class CommentService(
     override fun createComment(commend: CommentUseCase.Commend.CreateCommend): Comment =
         commentJpaPort.createComment(
             Comment(
-                board = commend.boardId,
-                post = commend.postId,
+                boardId = commend.boardId,
+                postId = commend.postId,
                 content = commend.content,
                 level = commend.level,
                 parentComment = commend.parentCommentId,
@@ -76,7 +76,7 @@ class CommentService(
         return commentJpaPort.updateComment(comment)
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     override fun deleteComment(commend: CommentUseCase.Commend.DeleteCommend) =
         commentJpaPort.deleteComment(commend.boardId, commend.postId, commend.commentId)
 }
