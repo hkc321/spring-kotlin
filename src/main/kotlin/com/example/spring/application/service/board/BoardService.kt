@@ -30,7 +30,7 @@ class BoardService(
         boardKotlinJdslPort.readBoardPageList(commend.keyword, commend.searchType, commend.pageable)
 
     @Transactional(readOnly = true)
-    override fun readBoard(commend: BoardUseCase.Commend.ReadCommend): Board = boardJpaPort.readBoard(commend.boardId)
+    override fun readBoard(commend: BoardUseCase.Commend.ReadCommend): Board = boardKotlinJdslPort.readBoard(commend.boardId)
 
     @Transactional
     override fun updateBoard(commend: BoardUseCase.Commend.UpdateCommend): Board {
