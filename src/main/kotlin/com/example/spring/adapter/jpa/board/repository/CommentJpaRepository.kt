@@ -12,4 +12,6 @@ interface CommentJpaRepository : JpaRepository<CommentJpaEntity, Int> {
         postJpaEntity: PostJpaEntity,
         commentId: Int
     ): CommentJpaEntity?
+
+    fun countByParentComment(commentJpaEntity: CommentJpaEntity): Int
 }

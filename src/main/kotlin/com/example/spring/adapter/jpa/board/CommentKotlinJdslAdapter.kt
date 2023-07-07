@@ -9,6 +9,7 @@ import com.example.spring.domain.board.Comment
 import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.associate
+import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.listQuery
 import com.linecorp.kotlinjdsl.spring.data.singleQuery
@@ -26,55 +27,63 @@ class CommentKotlinJdslAdapter(
         cursor: Int?,
         orderBy: String
     ): Pair<List<Comment>, Int?> {
-        val comments: List<Comment> = queryFactory.listQuery<CommentJpaEntity> {
+        val cursorComment = cursor?.let {
+            queryFactory.singleQuery<CommentJpaEntity> {
+                select(entity(CommentJpaEntity::class))
+                from(entity(CommentJpaEntity::class))
+                where(column(CommentJpaEntity::commentId).equal(cursor))
+            }
+        }
+
+        var comments: List<Comment> = queryFactory.listQuery<CommentJpaEntity> {
             select(entity(CommentJpaEntity::class))
             from(entity(CommentJpaEntity::class))
+            fetch(CommentJpaEntity::writer)
             associate(CommentJpaEntity::board)
             associate(CommentJpaEntity::post)
             whereAnd(
                 column(BoardJpaEntity::boardId).equal(boardId),
                 column(PostJpaEntity::postId).equal(postId),
                 column(CommentJpaEntity::parentComment).isNull(),
-                cursor?.let {
-                    column(CommentJpaEntity::commentId).lessThan(cursor)
-                }
             )
-            orderBy(
-                when (orderBy) {
-                    "up" -> ExpressionOrderSpec(column(CommentJpaEntity::up), false)
-                    else -> ExpressionOrderSpec(column(CommentJpaEntity::commentId), false)
+            // where
+            cursorComment?.let {
+                if (orderBy == "up") {
+                    whereOr(
+                        and(
+                            column(CommentJpaEntity::up).equal(it.up),
+                            column(CommentJpaEntity::commentId).lessThan(it.commentId)
+                        ),
+                        column(CommentJpaEntity::up).lessThan(it.up)
+                    )
+                } else {
+                    whereAnd(
+                        column(CommentJpaEntity::commentId).lessThan(it.commentId)
+                    )
                 }
-            )
-            limit(size)
+            }
+            //orderby
+            if (orderBy == "up") {
+                orderBy(
+                    ExpressionOrderSpec(column(CommentJpaEntity::up), false),
+                    ExpressionOrderSpec(column(CommentJpaEntity::commentId), false)
+                )
+            } else {
+                orderBy(ExpressionOrderSpec(column(CommentJpaEntity::commentId), false))
+            }
+            limit(size + 1)
         }.map {
             commentJpaMapper.toComment(it)
         }
 
-        val lastCommentId: Int? = when (comments.isNotEmpty()) {
-            true -> comments.first().commentId
-            else -> null
+        var lastValue: Int? = null
+        if (comments.size > size) {
+            comments = comments.toMutableList()
+            comments.removeLast()
+            lastValue = comments.last().commentId
         }
 
-        val nextCursor: Int? = when (lastCommentId != null) {
-            true ->
-                queryFactory.singleQuery<Int?> {
-                    select(column(CommentJpaEntity::commentId))
-                    from(entity(CommentJpaEntity::class))
-                    associate(CommentJpaEntity::board)
-                    associate(CommentJpaEntity::post)
-                    whereAnd(
-                        column(BoardJpaEntity::boardId).equal(boardId),
-                        column(PostJpaEntity::postId).equal(postId),
-                        column(CommentJpaEntity::parentComment).isNull(),
-                        column(CommentJpaEntity::commentId).lessThan(lastCommentId)
-                    )
-                    limit(1)
-                }
-
-            else -> null
-        }
-
-        return Pair(comments, nextCursor?.let { lastCommentId } ?: let { null })
+        return Pair(comments, lastValue?.let { lastValue } ?: let { null })
     }
 
     override fun readChildComment(

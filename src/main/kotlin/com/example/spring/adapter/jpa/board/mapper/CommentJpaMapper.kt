@@ -32,6 +32,8 @@ class CommentJpaMapper(
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
+                up = it.up
+                childCommentCount = commentJpaRepository.countByParentComment(it)
             }
         }
     }
@@ -52,6 +54,7 @@ class CommentJpaMapper(
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
+                up = it.up
             }
         }
     }
