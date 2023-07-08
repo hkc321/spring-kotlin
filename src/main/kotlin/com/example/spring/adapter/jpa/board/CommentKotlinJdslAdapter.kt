@@ -83,7 +83,7 @@ class CommentKotlinJdslAdapter(
             lastValue = comments.last().commentId
         }
 
-        return Pair(comments, lastValue?.let { lastValue } ?: let { null })
+        return Pair(comments, lastValue?.let { it } ?: let { null })
     }
 
     override fun readChildComment(
@@ -101,9 +101,10 @@ class CommentKotlinJdslAdapter(
             )
         }
 
-        val comments: List<Comment> = queryFactory.listQuery<CommentJpaEntity> {
+        var comments: List<Comment> = queryFactory.listQuery<CommentJpaEntity> {
             select(entity(CommentJpaEntity::class))
             from(entity(CommentJpaEntity::class))
+            fetch(CommentJpaEntity::writer)
             associate(CommentJpaEntity::board)
             associate(CommentJpaEntity::post)
             whereAnd(
@@ -111,38 +112,21 @@ class CommentKotlinJdslAdapter(
                 column(PostJpaEntity::postId).equal(postId),
                 column(CommentJpaEntity::parentComment).equal(parentComment),
                 cursor?.let {
-                    column(CommentJpaEntity::commentId).lessThan(cursor)
+                    column(CommentJpaEntity::commentId).greaterThan(cursor)
                 }
             )
-            limit(size)
+            limit(size + 1)
         }.map {
             commentJpaMapper.toComment(it)
         }
 
-        val lastCommentId: Int? = when (comments.isNotEmpty()) {
-            true -> comments.last().commentId
-            else -> null
+        var lastValue: Int? = null
+        if (comments.size > size) {
+            comments = comments.toMutableList()
+            comments.removeLast()
+            lastValue = comments.last().commentId
         }
 
-        val nextCursor: Int? = when (lastCommentId != null) {
-            true ->
-                queryFactory.singleQuery<Int?> {
-                    select(column(CommentJpaEntity::commentId))
-                    from(entity(CommentJpaEntity::class))
-                    associate(CommentJpaEntity::board)
-                    associate(CommentJpaEntity::post)
-                    whereAnd(
-                        column(BoardJpaEntity::boardId).equal(boardId),
-                        column(PostJpaEntity::postId).equal(postId),
-                        column(CommentJpaEntity::parentComment).equal(parentComment),
-                        column(CommentJpaEntity::commentId).lessThan(lastCommentId)
-                    )
-                    limit(1)
-                }
-
-            else -> null
-        }
-
-        return Pair(comments, nextCursor?.let { lastCommentId } ?: let { null })
+        return Pair(comments, lastValue?.let { it } ?: let { null })
     }
 }
