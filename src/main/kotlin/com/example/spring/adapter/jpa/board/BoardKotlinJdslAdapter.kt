@@ -4,10 +4,13 @@ import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
 import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.application.port.out.board.BoardKotlinJdslPort
+import com.example.spring.config.BoardDataNotFoundException
 import com.example.spring.domain.board.Board
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.*
+import jakarta.persistence.NoResultException
+import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
@@ -18,16 +21,21 @@ class BoardKotlinJdslAdapter(
     private val queryFactory: SpringDataQueryFactory,
     private val boardJpaMapper: BoardJpaMapper
 ) : BoardKotlinJdslPort {
-    override fun readBoard(boardId: Int): Board =
-        queryFactory.singleQuery<BoardJpaEntity> {
-            select(entity(BoardJpaEntity::class))
-            from(entity(BoardJpaEntity::class))
-            fetch(BoardJpaEntity::writer)
-            fetch(BoardJpaEntity::modifier)
-            where(column(BoardJpaEntity::boardId).equal(boardId))
-        }.let {
-            boardJpaMapper.toBoard(it)
+    override fun readBoard(boardId: Int): Board {
+        try {
+            return queryFactory.singleQuery<BoardJpaEntity> {
+                select(entity(BoardJpaEntity::class))
+                from(entity(BoardJpaEntity::class))
+                fetch(BoardJpaEntity::writer)
+                fetch(BoardJpaEntity::modifier)
+                where(column(BoardJpaEntity::boardId).equal(boardId))
+            }.let {
+                boardJpaMapper.toBoard(it)
+            }
+        } catch (ex: NoResultException) {
+            throw BoardDataNotFoundException(boardId = boardId)
         }
+    }
 
 
     override fun readBoardPageList(keyword: String?, searchType: String?, pageable: Pageable): Page<Board> =
