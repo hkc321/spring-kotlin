@@ -36,11 +36,11 @@ class PostService(
 
     @Transactional(readOnly = true)
     override fun readPost(commend: PostUseCase.Commend.ReadCommend): Post =
-        postJpaPort.readPost(boardJpaPort.readBoard(commend.boardId), commend.postId)
+        postKotlinJdslPort.readPost(boardJpaPort.readBoard(commend.boardId), commend.postId)
 
     @Transactional
     override fun updatePost(commend: PostUseCase.Commend.UpdateCommend): Post {
-        val post: Post = postJpaPort.readPost(boardJpaPort.readBoard(commend.boardId), commend.postId)
+        val post: Post = postKotlinJdslPort.readPost(boardJpaPort.readBoard(commend.boardId), commend.postId)
         post.update(commend.title, commend.content)
 
         return postJpaPort.updatePost(post)

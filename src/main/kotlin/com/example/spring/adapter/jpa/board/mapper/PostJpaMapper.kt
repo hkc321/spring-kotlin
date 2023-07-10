@@ -1,5 +1,6 @@
 package com.example.spring.adapter.jpa.board.mapper
 
+import com.example.spring.adapter.jpa.board.PostKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
@@ -19,6 +20,21 @@ class PostJpaMapper(
                 title = it.title,
                 content = it.content,
                 writer = it.writer.email
+            ).apply {
+                createdAt = it.createdAt
+                updatedAt = it.updatedAt
+            }
+        }
+    }
+
+    fun toPost(postPageResult: PostKotlinJdslAdapter.PostPageResult): Post {
+        return postPageResult.let {
+            Post(
+                postId = it.postId,
+                boardId = it.board.boardId,
+                title = it.title,
+                content = it.content,
+                writer = it.writer
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
