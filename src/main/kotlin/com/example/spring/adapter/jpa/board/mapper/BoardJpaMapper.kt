@@ -1,5 +1,6 @@
 package com.example.spring.adapter.jpa.board.mapper
 
+import com.example.spring.adapter.jpa.board.BoardKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import com.example.spring.domain.board.Board
@@ -15,6 +16,21 @@ class BoardJpaMapper(private val memberJpaRepository: MemberJpaRepository) {
                 description = it.description,
                 writer = it.writer.email,
                 modifier = it.modifier.email
+            ).apply {
+                createdAt = it.createdAt
+                updatedAt = it.updatedAt
+            }
+        }
+    }
+
+    fun toBoard(boardJpaEntity: BoardKotlinJdslAdapter.BoardPageResult): Board {
+        return boardJpaEntity.let {
+            Board(
+                boardId = it.boardId,
+                name = it.name,
+                description = it.description,
+                writer = it.writer,
+                modifier = it.modifier
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt

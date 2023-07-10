@@ -10,7 +10,6 @@ import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.service.board.PostService
 import com.example.spring.domain.board.Board
-import com.example.spring.domain.board.BoardTest
 import com.example.spring.domain.board.Post
 import com.example.spring.domain.member.Member
 import org.junit.jupiter.api.Assertions.*
@@ -52,7 +51,15 @@ class BoardJpaAdapterTest() {
     @Test
     @Transactional
     fun qwertt () {
-        commentKotlinJdslAdapter.readTopLevelComment(1,1,20,1, "recnet")
+        val pageable: PageRequest = PageRequest.of(0, 20)
+        boardKotlinJdslAdapter.ppp(pageable)
+//            .forEach {
+//            println(it.modifier)
+//            println("!23123wqaeqwe")
+////            println(it.modifier.email)
+//        }
+        println("qweqweqweqweqwe")
+//        commentKotlinJdslAdapter.readTopLevelComment(2,2,20,7, "recent")
     }
 
 
