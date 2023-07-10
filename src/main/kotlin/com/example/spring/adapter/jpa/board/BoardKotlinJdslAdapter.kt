@@ -23,6 +23,7 @@ class BoardKotlinJdslAdapter(
             select(entity(BoardJpaEntity::class))
             from(entity(BoardJpaEntity::class))
             fetch(BoardJpaEntity::writer)
+            fetch(BoardJpaEntity::modifier)
             where(column(BoardJpaEntity::boardId).equal(boardId))
         }.let {
             boardJpaMapper.toBoard(it)
