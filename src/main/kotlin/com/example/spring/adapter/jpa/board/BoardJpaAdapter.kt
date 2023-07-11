@@ -19,7 +19,7 @@ class BoardJpaAdapter(
         boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toJpaEntity(board)))
 
     override fun readBoard(boardId: Int): Board =
-        boardJpaRepository.findByBoardId(boardId)
+        boardJpaRepository.findByIdOrNull(boardId)
             ?.let {
                 return boardJpaMapper.toBoard(it)
             }
