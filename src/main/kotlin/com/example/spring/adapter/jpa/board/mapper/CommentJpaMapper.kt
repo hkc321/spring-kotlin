@@ -5,6 +5,10 @@ import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.adapter.jpa.board.repository.PostJpaRepository
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
+import com.example.spring.config.BoardDataNotFoundException
+import com.example.spring.config.CommentDataNotFoundException
+import com.example.spring.config.MemberDataNotFoundException
+import com.example.spring.config.PostDataNotFoundException
 import com.example.spring.domain.board.Comment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -42,15 +46,21 @@ class CommentJpaMapper(
         return comment.let {
             CommentJpaEntity(
                 commentId = it.commentId,
-                board = boardJpaRepository.findByBoardId(it.boardId)!!,
-                post = postJpaRepository.findByIdOrNull(it.postId)!!,
+                board = boardJpaRepository.findByIdOrNull(it.boardId)
+                    ?: throw BoardDataNotFoundException(boardId = it.boardId),
+                post = postJpaRepository.findByIdOrNull(it.postId)
+                    ?: throw PostDataNotFoundException(boardId = it.boardId, postId = it.postId),
                 parentComment = when (it.parentComment) {
                     null -> null
-                    else -> commentJpaRepository.findByIdOrNull(it.parentComment)
+                    else -> commentJpaRepository.findByIdOrNull(it.parentComment) ?: throw CommentDataNotFoundException(
+                        boardId = it.boardId,
+                        postId = it.postId,
+                        commentId = it.commentId
+                    )
                 },
                 level = it.level,
                 content = it.content,
-                writer = memberJpaRepository.findByEmail(it.writer)!!
+                writer = memberJpaRepository.findByEmail(it.writer) ?: throw MemberDataNotFoundException()
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt

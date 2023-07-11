@@ -4,6 +4,8 @@ import com.example.spring.adapter.jpa.board.PostKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
+import com.example.spring.config.BoardDataNotFoundException
+import com.example.spring.config.MemberDataNotFoundException
 import com.example.spring.domain.board.Post
 import org.springframework.stereotype.Repository
 
@@ -46,10 +48,10 @@ class PostJpaMapper(
         return post.let {
             PostJpaEntity(
                 postId = it.postId,
-                board = boardJpaRepository.findByBoardId(it.boardId)!!,
+                board = boardJpaRepository.findByBoardId(it.boardId) ?: throw BoardDataNotFoundException(boardId = it.boardId),
                 title = it.title,
                 content = it.content,
-                writer = memberJpaRepository.findByEmail(it.writer)!!
+                writer = memberJpaRepository.findByEmail(it.writer) ?: throw MemberDataNotFoundException()
             ).apply {
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
