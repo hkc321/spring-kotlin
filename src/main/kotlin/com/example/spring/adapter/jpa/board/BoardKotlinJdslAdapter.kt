@@ -7,10 +7,8 @@ import com.example.spring.application.port.out.board.BoardKotlinJdslPort
 import com.example.spring.config.BoardDataNotFoundException
 import com.example.spring.domain.board.Board
 import com.linecorp.kotlinjdsl.querydsl.expression.column
-import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.*
 import jakarta.persistence.NoResultException
-import org.springframework.dao.EmptyResultDataAccessException
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Repository
@@ -23,11 +21,17 @@ class BoardKotlinJdslAdapter(
 ) : BoardKotlinJdslPort {
     override fun readBoard(boardId: Int): Board {
         try {
-            return queryFactory.singleQuery<BoardJpaEntity> {
-                select(entity(BoardJpaEntity::class))
+            return queryFactory.singleQuery<BoardResult> {
+                selectMulti(
+                    column(BoardJpaEntity::boardId),
+                    column(BoardJpaEntity::name),
+                    column(BoardJpaEntity::description),
+                    column(BoardJpaEntity::createdAt),
+                    column(BoardJpaEntity::updatedAt),
+                    nestedCol(column(BoardJpaEntity::writer), MemberJpaEntity::email),
+                    nestedCol(column(BoardJpaEntity::modifier), MemberJpaEntity::email),
+                )
                 from(entity(BoardJpaEntity::class))
-                fetch(BoardJpaEntity::writer)
-                fetch(BoardJpaEntity::modifier)
                 where(column(BoardJpaEntity::boardId).equal(boardId))
             }.let {
                 boardJpaMapper.toBoard(it)
@@ -39,7 +43,7 @@ class BoardKotlinJdslAdapter(
 
 
     override fun readBoardPageList(keyword: String?, searchType: String?, pageable: Pageable): Page<Board> =
-        queryFactory.pageQuery<BoardPageResult>(pageable) {
+        queryFactory.pageQuery<BoardResult>(pageable) {
             selectMulti(
                 column(BoardJpaEntity::boardId),
                 column(BoardJpaEntity::name),
@@ -64,7 +68,7 @@ class BoardKotlinJdslAdapter(
             boardJpaMapper.toBoard(it)
         }
 
-    data class BoardPageResult(
+    data class BoardResult(
         val boardId: Int,
         var name: String,
         var description: String,

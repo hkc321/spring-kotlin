@@ -23,7 +23,7 @@ class BoardJpaMapper(private val memberJpaRepository: MemberJpaRepository) {
         }
     }
 
-    fun toBoard(boardJpaEntity: BoardKotlinJdslAdapter.BoardPageResult): Board {
+    fun toBoard(boardJpaEntity: BoardKotlinJdslAdapter.BoardResult): Board {
         return boardJpaEntity.let {
             Board(
                 boardId = it.boardId,

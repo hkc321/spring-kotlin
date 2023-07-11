@@ -34,7 +34,7 @@ class BoardService(
 
     @Transactional
     override fun updateBoard(commend: BoardUseCase.Commend.UpdateCommend): Board {
-        val board: Board = boardJpaPort.readBoard(commend.boardId)
+        val board: Board = boardKotlinJdslPort.readBoard(commend.boardId)
         board.update(
             name = commend.name,
             description = commend.description,
