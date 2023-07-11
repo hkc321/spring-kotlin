@@ -65,6 +65,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("postId").value(postId),
             MockMvcResultMatchers.jsonPath("parentCommentId").value(nullOrInt()),
             MockMvcResultMatchers.jsonPath("level").exists(),
+            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("childCommentCount").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
@@ -106,6 +108,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("postId", JsonFieldType.NUMBER, "PostId of comment", false),
                         field("parentCommentId", JsonFieldType.NUMBER, "ParentCommentId of comment", true),
                         field("level", JsonFieldType.NUMBER, "Level of comment", false),
+                        field("up", JsonFieldType.NUMBER, "Up(who click like) of comment", false),
+                        field("childCommentCount", JsonFieldType.NUMBER, "Number of childComments", false),
                         field("content", JsonFieldType.STRING, "Content of comment", false),
                         field("writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
@@ -178,6 +182,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("comments[].parentCommentId", JsonFieldType.NUMBER, "ParentCommentId of comment", true),
                         field("comments[].level", JsonFieldType.NUMBER, "Level of comment", false),
                         field("comments[].content", JsonFieldType.STRING, "Content of comment", false),
+                        field("comments[].up", JsonFieldType.NUMBER, "Up(who click like) of comment", false),
+                        field("comments[].childCommentCount", JsonFieldType.NUMBER, "Number of childComments", false),
                         field("comments[].writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("comments[].createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
                         field("comments[].updatedAt", JsonFieldType.STRING, "Updated datetime of comment", true),
@@ -190,7 +196,60 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readComment() {
+        val token = jwtService.createAccessToken("test")
+        val boardId = 2
+        val postId = 2
+        val commentId = 5
 
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("commentId").exists(),
+            MockMvcResultMatchers.jsonPath("boardId").value(boardId),
+            MockMvcResultMatchers.jsonPath("postId").value(postId),
+            MockMvcResultMatchers.jsonPath("parentCommentId").value(nullOrInt()),
+            MockMvcResultMatchers.jsonPath("level").exists(),
+            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("childCommentCount").exists(),
+            MockMvcResultMatchers.jsonPath("content").exists(),
+            MockMvcResultMatchers.jsonPath("writer").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
+        ).andDocument(
+            "GET-boards-{boardId}-posts-{postId}-comments-{commentId}",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("comments")
+                    .summary("Read comment")
+                    .description("Read comment with send info")
+                    .pathParameters(
+                        parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
+                        parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
+                        parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
+                    )
+                    .responseSchema(Schema("commentRead.Response"))
+                    .responseFields(
+                        field("commentId", JsonFieldType.NUMBER, "Unique comment ID", false),
+                        field("boardId", JsonFieldType.NUMBER, "BoardId of comment", false),
+                        field("postId", JsonFieldType.NUMBER, "PostId of comment", false),
+                        field("parentCommentId", JsonFieldType.NUMBER, "ParentCommentId of comment", true),
+                        field("level", JsonFieldType.NUMBER, "Level of comment", false),
+                        field("up", JsonFieldType.NUMBER, "Up(who click like) of comment", false),
+                        field("childCommentCount", JsonFieldType.NUMBER, "Number of childComments", false),
+                        field("content", JsonFieldType.STRING, "Content of comment", false),
+                        field("writer", JsonFieldType.STRING, "Writer of comment", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of comment", true)
+                    )
+                    .build()
+            )
+        )
     }
 
     @Test
@@ -242,6 +301,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("comments[].postId", JsonFieldType.NUMBER, "PostId of comment", false),
                         field("comments[].parentCommentId", JsonFieldType.NUMBER, "ParentCommentId of comment", true),
                         field("comments[].level", JsonFieldType.NUMBER, "Level of comment", false),
+                        field("comments[].up", JsonFieldType.NUMBER, "Up(who click like) of comment", false),
+                        field("comments[].childCommentCount", JsonFieldType.NUMBER, "Number of childComments", false),
                         field("comments[].content", JsonFieldType.STRING, "Content of comment", false),
                         field("comments[].writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("comments[].createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
@@ -282,6 +343,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("postId").value(postId),
             MockMvcResultMatchers.jsonPath("parentCommentId").value(nullOrInt()),
             MockMvcResultMatchers.jsonPath("level").exists(),
+            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("childCommentCount").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
@@ -309,6 +372,8 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("postId", JsonFieldType.NUMBER, "PostId of comment", false),
                         field("parentCommentId", JsonFieldType.NUMBER, "ParentCommentId of comment", true),
                         field("level", JsonFieldType.NUMBER, "Level of comment", false),
+                        field("up", JsonFieldType.NUMBER, "Up(who click like) of comment", false),
+                        field("childCommentCount", JsonFieldType.NUMBER, "Number of childComments", false),
                         field("content", JsonFieldType.STRING, "Content of comment", false),
                         field("writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
