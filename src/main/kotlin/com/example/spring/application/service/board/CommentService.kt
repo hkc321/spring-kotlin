@@ -1,6 +1,5 @@
 package com.example.spring.application.service.board
 
-import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.CommentJpaPort

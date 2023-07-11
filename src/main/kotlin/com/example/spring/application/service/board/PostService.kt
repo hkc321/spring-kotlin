@@ -1,7 +1,7 @@
 package com.example.spring.application.service.board
 
+import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase
-import com.example.spring.application.port.out.board.BoardKotlinJdslPort
 import com.example.spring.application.port.out.board.PostJpaPort
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
 import com.example.spring.domain.board.Post
@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 class PostService(
     private val postJpaPort: PostJpaPort,
     private val postKotlinJdslPort: PostKotlinJdslPort,
-    private val boardKotlinJdslPort: BoardKotlinJdslPort
+    private val boardUseCase: BoardUseCase
 ) : PostUseCase {
 
     @Transactional
@@ -34,11 +34,17 @@ class PostService(
 
     @Transactional(readOnly = true)
     override fun readPost(commend: PostUseCase.Commend.ReadCommend): Post =
-        postKotlinJdslPort.readPost(boardKotlinJdslPort.readBoard(commend.boardId), commend.postId)
+        postKotlinJdslPort.readPost(
+            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
+            commend.postId
+        )
 
     @Transactional
     override fun updatePost(commend: PostUseCase.Commend.UpdateCommend): Post {
-        val post: Post = postKotlinJdslPort.readPost(boardKotlinJdslPort.readBoard(commend.boardId), commend.postId)
+        val post: Post = postKotlinJdslPort.readPost(
+            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
+            commend.postId
+        )
         post.update(commend.title, commend.content)
 
         return postJpaPort.updatePost(post)
@@ -46,6 +52,9 @@ class PostService(
 
     @Transactional
     override fun deletePost(commend: PostUseCase.Commend.DeleteCommend) {
-        postJpaPort.deletePost(boardKotlinJdslPort.readBoard(commend.boardId), commend.postId)
+        postJpaPort.deletePost(
+            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
+            commend.postId
+        )
     }
 }
