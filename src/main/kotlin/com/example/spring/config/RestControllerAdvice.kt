@@ -21,6 +21,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
+    @ExceptionHandler(WriterNotMatchException::class)
+    fun writerNotMatchException(ex: WriterNotMatchException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(
+                BaseResponseException(
+                    ErrorCode.INVALID_USER,
+                    ex.message
+                )
+            )
+    }
+
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun httpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<BaseResponseException> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
@@ -171,6 +182,11 @@ class ControllerAdvice {
             )
     }
 }
+
+data class WriterNotMatchException(
+    val code: ErrorCode = ErrorCode.INVALID_USER,
+    override var message: String = "작성자만 수정이 가능합니다."
+) : RuntimeException(message, null)
 
 data class CommentDataNotFoundException(
     val boardId: Int,

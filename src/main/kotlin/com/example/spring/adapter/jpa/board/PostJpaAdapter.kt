@@ -28,8 +28,5 @@ class PostJpaAdapter(
         postJpaMapper.toPost(postJpaRepository.save(postJpaMapper.toJpaEntity(post)))
 
     override fun deletePost(board: Board, postId: Int) =
-        postJpaRepository.findByIdOrNull(postId)
-            ?.let {
-                postJpaRepository.deleteById(postId)
-            } ?: throw PostDataNotFoundException(boardId = board.boardId, postId = postId)
+        postJpaRepository.deleteById(postId)
 }

@@ -1,5 +1,6 @@
 package com.example.spring.domain.board
 
+import com.example.spring.config.WriterNotMatchException
 import com.example.spring.config.domain.CommonDateDomain
 import java.time.LocalDateTime
 
@@ -22,8 +23,17 @@ class Comment(
     var childCommentCount: Int = 0
     var writer: String = writer
 
-    fun update(content: String) {
+    fun update(content: String, modifier: String) {
+        this.checkWriter(modifier)
         this.content = content
         updatedAt = LocalDateTime.now()
+    }
+
+    fun checkWriter(modifier: String): Boolean {
+        if (this.writer == modifier) {
+            return true
+        } else {
+            throw WriterNotMatchException()
+        }
     }
 }

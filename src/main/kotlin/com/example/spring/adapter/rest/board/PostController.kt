@@ -98,7 +98,8 @@ class PostController(private val postUseCase: PostUseCase) {
     fun updatePost(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
-        @RequestBody body: PostUpdateRequest
+        @RequestBody body: PostUpdateRequest,
+        principal: Principal
     ): ResponseEntity<PostCommonResponse> =
         ResponseEntity.ok(
             postRestMapper.toPostCommonResponse(
@@ -107,7 +108,8 @@ class PostController(private val postUseCase: PostUseCase) {
                         boardId = boardId,
                         postId = postId,
                         title = body.title,
-                        content = body.content
+                        content = body.content,
+                        modifier = principal.name
                     )
                 )
             )
@@ -115,6 +117,12 @@ class PostController(private val postUseCase: PostUseCase) {
 
     @DeleteMapping("{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deletePost(@PathVariable("boardId") boardId: Int, @PathVariable("postId") postId: Int) =
-        postUseCase.deletePost(PostUseCase.Commend.DeleteCommend(boardId = boardId, postId = postId))
+    fun deletePost(@PathVariable("boardId") boardId: Int, @PathVariable("postId") postId: Int, principal: Principal) =
+        postUseCase.deletePost(
+            PostUseCase.Commend.DeleteCommend(
+                boardId = boardId,
+                postId = postId,
+                modifier = principal.name
+            )
+        )
 }

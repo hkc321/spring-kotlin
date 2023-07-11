@@ -72,13 +72,15 @@ interface CommentUseCase {
             override val boardId: Int,
             override val postId: Int,
             val commentId: Int,
-            val content: String
+            val content: String,
+            val modifier: String
         ) : Commend()
 
         data class DeleteCommend(
             override val boardId: Int,
             override val postId: Int,
-            val commentId: Int
+            val commentId: Int,
+            val modifier: String
         ) : Commend()
 
     }

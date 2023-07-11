@@ -70,12 +70,16 @@ class CommentService(
                 postId = commend.postId,
                 commentId = commend.commentId
             )
-        comment.update(commend.content)
+        comment.update(commend.content, commend.modifier)
 
         return commentJpaPort.updateComment(comment)
     }
 
     @Transactional
-    override fun deleteComment(commend: CommentUseCase.Commend.DeleteCommend) =
-        commentJpaPort.deleteComment(commend.boardId, commend.postId, commend.commentId)
+    override fun deleteComment(commend: CommentUseCase.Commend.DeleteCommend) {
+        val comment = readComment(CommentUseCase.Commend.ReadCommend(commend.boardId, commend.postId, commend.commentId))
+        comment.checkWriter(commend.modifier)
+
+        commentJpaPort.deleteComment(comment.boardId, comment.postId, comment.commentId)
+    }
 }

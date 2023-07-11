@@ -18,20 +18,15 @@ class CommentJpaAdapter(
         commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toJpaEntity(comment)))
 
     override fun readComment(boardId: Int, postId: Int, commentId: Int): Comment =
-        commentJpaRepository.findByIdOrNull(
-            commentId
-        )?.let {
-            return commentJpaMapper.toComment(it)
-        } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
+        commentJpaRepository.findByIdOrNull(commentId)
+            ?.let {
+                return commentJpaMapper.toComment(it)
+            } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
 
 
     override fun updateComment(comment: Comment): Comment =
         commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toJpaEntity(comment)))
 
-    override fun deleteComment(boardId: Int, postId: Int, commentId: Int) {
-        commentJpaRepository.findByIdOrNull(commentId)?.let {
-            commentJpaRepository.deleteById(commentId)
-        } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
-    }
-
+    override fun deleteComment(boardId: Int, postId: Int, commentId: Int) =
+        commentJpaRepository.deleteById(commentId)
 }

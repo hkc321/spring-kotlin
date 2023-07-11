@@ -131,7 +131,8 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
-        @RequestBody body: CommentUpdateRequest
+        @RequestBody body: CommentUpdateRequest,
+        principal: Principal
     ): ResponseEntity<CommentCommonResponse> =
         ResponseEntity.ok(
             commentRestMapper.toCommentCommonResponse(
@@ -140,7 +141,8 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
                         boardId,
                         postId,
                         commentId,
-                        body.content
+                        body.content,
+                        principal.name
                     )
                 )
             )
@@ -151,6 +153,7 @@ class CommentController(private val commentUseCase: CommentUseCase) : BaseContro
     fun deleteComment(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
-        @PathVariable("commentId") commentId: Int
-    ) = commentUseCase.deleteComment(CommentUseCase.Commend.DeleteCommend(boardId, postId, commentId))
+        @PathVariable("commentId") commentId: Int,
+        principal: Principal
+    ) = commentUseCase.deleteComment(CommentUseCase.Commend.DeleteCommend(boardId, postId, commentId, principal.name))
 }

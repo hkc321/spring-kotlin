@@ -56,12 +56,14 @@ interface PostUseCase {
             override val boardId: Int,
             val postId: Int,
             val title: String,
-            val content: String
+            val content: String,
+            val modifier: String
         ) : Commend()
 
         data class DeleteCommend(
             override val boardId: Int,
-            val postId: Int
+            val postId: Int,
+            val modifier: String,
         ) : Commend()
 
     }

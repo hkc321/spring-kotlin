@@ -45,16 +45,20 @@ class PostService(
             boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
             commend.postId
         )
-        post.update(commend.title, commend.content)
+        post.update(commend.title, commend.content, commend.modifier)
 
         return postJpaPort.updatePost(post)
     }
 
     @Transactional
     override fun deletePost(commend: PostUseCase.Commend.DeleteCommend) {
+        val board = boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
+        val post = postKotlinJdslPort.readPost(board, commend.postId)
+        post.checkWriter(commend.modifier)
+
         postJpaPort.deletePost(
-            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
-            commend.postId
+            board,
+            post.postId
         )
     }
 }
