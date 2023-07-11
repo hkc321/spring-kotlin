@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 class CommentService(
     private val commentJpaPort: CommentJpaPort,
     private val commentKotlinJdslPort: CommentKotlinJdslPort,
-    private val boardUseCase: BoardUseCase,
     private val postUseCase: PostUseCase,
 ) : CommentUseCase {
 
@@ -32,7 +31,6 @@ class CommentService(
 
     @Transactional(readOnly = true)
     override fun readTopLevelComment(commend: CommentUseCase.Commend.ReadTopLevelCommend): Pair<List<Comment>, Int?> {
-        boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
         return commentKotlinJdslPort.readTopLevelComment(
@@ -45,12 +43,14 @@ class CommentService(
     }
 
     @Transactional(readOnly = true)
-    override fun readComment(commend: CommentUseCase.Commend.ReadCommend): Comment =
-        commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
+    override fun readComment(commend: CommentUseCase.Commend.ReadCommend): Comment {
+        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
+
+        return commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
+    }
 
     @Transactional(readOnly = true)
     override fun readChildComment(commend: CommentUseCase.Commend.ReadChildCommend): Pair<List<Comment>, Int?> {
-        boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
         commentJpaPort.readComment(commend.boardId, commend.postId, commend.parentCommentId)
 
