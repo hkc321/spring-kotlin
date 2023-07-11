@@ -13,6 +13,7 @@ import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.listQuery
 import com.linecorp.kotlinjdsl.spring.data.singleQuery
+import jakarta.persistence.NoResultException
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -27,11 +28,15 @@ class CommentKotlinJdslAdapter(
         cursor: Int?,
         orderBy: String
     ): Pair<List<Comment>, Int?> {
-        val cursorComment = cursor?.let {
-            queryFactory.singleQuery<CommentJpaEntity> {
-                select(entity(CommentJpaEntity::class))
-                from(entity(CommentJpaEntity::class))
-                where(column(CommentJpaEntity::commentId).equal(cursor))
+        val cursorComment: CommentJpaEntity? = cursor?.let {
+            try {
+                queryFactory.singleQuery<CommentJpaEntity?> {
+                    select(entity(CommentJpaEntity::class))
+                    from(entity(CommentJpaEntity::class))
+                    where(column(CommentJpaEntity::commentId).equal(cursor))
+                }
+            } catch (ex: NoResultException) {
+                null
             }
         }
 
@@ -61,7 +66,9 @@ class CommentKotlinJdslAdapter(
                         column(CommentJpaEntity::commentId).lessThan(it.commentId)
                     )
                 }
-            }
+            } ?: cursor?.let{whereAnd(column(CommentJpaEntity::commentId).lessThan(0))} // 존재하지 않는 최상위 게시글을 커서로 넘긴 경우 빈 리스트 반환되도록 설정}
+
+
             //orderby
             if (orderBy == "up") {
                 orderBy(
@@ -83,7 +90,7 @@ class CommentKotlinJdslAdapter(
             lastValue = comments.last().commentId
         }
 
-        return Pair(comments, lastValue?.let { it } ?: let { null })
+        return Pair(comments, lastValue ?: let { null })
     }
 
     override fun readChildComment(
@@ -127,6 +134,6 @@ class CommentKotlinJdslAdapter(
             lastValue = comments.last().commentId
         }
 
-        return Pair(comments, lastValue?.let { it } ?: let { null })
+        return Pair(comments, lastValue ?: let { null })
     }
 }
