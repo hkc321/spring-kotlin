@@ -118,13 +118,11 @@ class JwtService(
             .body
     }
 
-    override fun isTokenExpired(token: String): Boolean {
-        return extractClaims(token).expiration.before(Date())
-    }
+    override fun isTokenExpired(token: String): Boolean =
+        extractClaims(token).expiration.before(Date())
 
-    override fun extractEmail(token: String): String {
-        return extractClaims(token).subject
-    }
+    override fun extractEmail(token: String): String =
+        extractClaims(token).toMap()["email"].toString()
 
     /**
      * 인증정보 만들기
