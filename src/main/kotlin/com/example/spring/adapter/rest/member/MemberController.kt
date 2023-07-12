@@ -1,14 +1,12 @@
 package com.example.spring.adapter.rest.member
 
-import com.example.spring.adapter.rest.member.dto.MemberCommonResponse
-import com.example.spring.adapter.rest.member.dto.MemberCreateRequest
-import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
-import com.example.spring.adapter.rest.member.dto.MemberUpdateRequest
+import com.example.spring.adapter.rest.member.dto.*
 import com.example.spring.adapter.rest.member.mapper.MemberRestMapper
 import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.domain.member.Member
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 import java.security.Principal
@@ -65,6 +63,10 @@ class MemberController(private val memberUseCase: MemberUseCase) {
                 )
             )
         )
+
+    @PatchMapping("{memberId}/memberRole")
+    fun updateMemberRole(@PathVariable("memberId") memberId: Int, @RequestBody body: MemberUpdateRoleRequest) =
+        memberRestMapper.toMemberCommonResponse(memberUseCase.updateMemberRole(MemberUseCase.Commend.UpdateRoleCommend(memberId, body.role)))
 
     @DeleteMapping("{memberId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

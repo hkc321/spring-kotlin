@@ -24,6 +24,11 @@ interface MemberJpaPort {
     fun updateMember(member: Member): Member
 
     /**
+     * Member Role 수정
+     * */
+    fun updateMemberRole(member: Member): Member
+
+    /**
      * Member 삭제
      * */
     fun deleteMember(memberId: Int)

@@ -45,6 +45,7 @@ class SpringSecurityConfig(
             authorizeRequests {
                 authorize("/members/login", permitAll)
                 authorize("/members/register", permitAll)
+                authorize("/members/{memberId}/memberRole", hasRole("ROLE_ADMIN"))
                 authorize("/members/why", hasAuthority("b"))
                 authorize(anyRequest, authenticated)
             }

@@ -46,6 +46,9 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     override fun updateMember(member: Member): Member =
         memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
 
+    override fun updateMemberRole(member: Member): Member =
+        memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
+
     override fun deleteMember(memberId: Int) =
         memberJpaRepository.deleteById(memberId)
 

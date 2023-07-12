@@ -27,6 +27,11 @@ class Member(
         this.updatedAt = LocalDateTime.now()
     }
 
+    fun updateRole(role: MemberRole) {
+        this.role = role.name
+        this.updatedAt = LocalDateTime.now()
+    }
+
     fun saveRefreshToken(token: String) {
         this.refreshToken = token
         this.updatedAt = LocalDateTime.now()

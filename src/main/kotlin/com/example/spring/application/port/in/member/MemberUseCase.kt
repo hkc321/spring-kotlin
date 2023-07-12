@@ -20,6 +20,11 @@ interface MemberUseCase {
     fun updateMember(commend: Commend.UpdateCommend): Member
 
     /**
+     * Member Role 수정
+     * */
+    fun updateMemberRole(commend: Commend.UpdateRoleCommend): Member
+
+    /**
      * Member 제거
      * */
     fun deleteMember(commend: Commend.DeleteCommend)
@@ -54,6 +59,11 @@ interface MemberUseCase {
             val memberId: Int,
             val password: String,
             val accessor: String
+        ) : Commend()
+
+        data class UpdateRoleCommend(
+            val memberId: Int,
+            val role: MemberRole
         ) : Commend()
 
         data class DeleteCommend(

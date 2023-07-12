@@ -38,6 +38,12 @@ class MemberService(
         member.update(passwordEncoder.encode(commend.password), commend.accessor)
         return memberJpaPort.updateMember(member)
     }
+    @Transactional
+    override fun updateMemberRole(commend: MemberUseCase.Commend.UpdateRoleCommend): Member {
+        val member: Member = memberJpaPort.findMemberByMemberId(commend.memberId)
+        member.updateRole(commend.role)
+        return memberJpaPort.updateMemberRole(member)
+    }
 
     @Transactional
     override fun deleteMember(commend: MemberUseCase.Commend.DeleteCommend) {
