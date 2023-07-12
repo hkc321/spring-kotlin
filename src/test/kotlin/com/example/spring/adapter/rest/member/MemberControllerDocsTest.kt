@@ -66,13 +66,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .requestSchema(Schema("memberCreate.Request"))
                     .requestFields(
                         field("email", JsonFieldType.STRING, "Email of member", false),
-                        field("password", JsonFieldType.STRING, "Password of member", false),
-                        field(
-                            "role",
-                            JsonFieldType.STRING,
-                            "Role of Member. Only ROLE_STANDARD or ROLE_ADMIN allowed. Default is ROLE_STANDARD",
-                            true
-                        )
+                        field("password", JsonFieldType.STRING, "Password of member", false)
                     )
                     .responseHeaders(
                         header(HttpHeaders.LOCATION, "Location header")
@@ -213,6 +207,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
+                    .requestSchema(Schema("memberUpdate.Request"))
                     .requestFields(
                         field("password", JsonFieldType.STRING, "Password of member", false)
                     )
