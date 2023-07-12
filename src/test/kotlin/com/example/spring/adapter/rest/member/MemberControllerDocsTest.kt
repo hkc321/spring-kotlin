@@ -2,6 +2,7 @@ package com.example.spring.adapter.rest.member
 
 import com.epages.restdocs.apispec.*
 import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.application.service.member.JwtService
 import com.example.spring.config.MemberDataNotFoundException
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl
@@ -23,6 +24,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 class MemberControllerDocsTest : RestdocsTestDsl {
     @Autowired
     private lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var jwtService: JwtService
 
     @Autowired
     private lateinit var memberJpaPort: MemberJpaPort
@@ -48,7 +52,8 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         ).andDocument(
             "POST-members-register",
             snippets = makeSnippets(
-                ResourceSnippetParameters.builder()
+                snippetsBuilder()
+                    .tag("members")
                     .summary("Register member")
                     .description("Register member with email and password.")
                     .requestSchema(Schema("memberCreate.Request"))
@@ -97,7 +102,8 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         result.andDocument(
             "POST-members-login",
             snippets = makeSnippets(
-                ResourceSnippetParameters.builder()
+                snippetsBuilder()
+                    .tag("members")
                     .summary("Login member")
                     .description("Login with email and password.")
                     .requestSchema(Schema("memberLogin.Request"))
@@ -117,6 +123,52 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .build()
             )
         )
+    }
+    @Test
+    fun readMember() {
+        val token = jwtService.createAccessToken("test")
+        val email = "test"
+
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.get("/members/{memberEmail}", email)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            json("email").exists()
+        ).andDocument(
+            "GET-members-{memberEmail}",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Read member")
+                    .description("Read member with send info.")
+                    .pathParameters(
+                        parameter("memberEmail", SimpleType.STRING, "Email of member")
+                    )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
+                    .responseSchema(Schema("memberRead.Response"))
+                    .responseFields(
+                        field("email", JsonFieldType.STRING, "memberEmail", false)
+                    )
+                    .build()
+            )
+        )
+    }
+
+    @Test
+    fun updateMember() {
+
+    }
+
+    @Test
+    fun deleteMember() {
+
     }
 
 }
