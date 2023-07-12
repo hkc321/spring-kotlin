@@ -120,9 +120,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                         .description("Create board with send info")
                         .requestSchema(Schema("boardCreate.Request"))
                         .responseSchema(Schema("boardCreate.Response"))
-                        .requestHeaders(
-                            header("Authorization", "access token")
-                        )
                         .requestFields(
                             requestFields
                         )
@@ -233,9 +230,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .queryParameters(
                                 queryParameters
                             )
-                            .requestHeaders(
-                                header("Authorization", "access token")
-                            )
                             .responseSchema(Schema("boardList.Response"))
                             .responseFields(
                                 responseFields
@@ -311,9 +305,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
                                     .description("Unique board ID")
-                            )
-                            .requestHeaders(
-                                header("Authorization", "access token")
                             )
                             .responseFields(
                                 responseFields
@@ -407,9 +398,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                         ResourceSnippetParameters.builder()
                             .summary("Update board detail")
                             .description("Update board detail")
-                            .requestHeaders(
-                                header("Authorization", "access token")
-                            )
                             .requestSchema(Schema("boardUpdate.Request"))
                             .requestFields(
                                 requestFields
@@ -471,9 +459,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
                                     .description("Unique board ID")
-                            )
-                            .requestHeaders(
-                                header("Authorization", "access token")
                             )
                             .build()
                     )

@@ -161,9 +161,6 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .responseSchema(Schema("memberRead.Response"))
                     .responseFields(
                         field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),

@@ -80,9 +80,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .requestSchema(Schema("commentCreate.Request"))
                     .requestFields(
                         field(
@@ -174,9 +171,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true),
                         parameter("orderBy", SimpleType.STRING, "Only up or recent are allowed as sorting criteria", false)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .responseSchema(Schema("commentReadTopLevel.Response"))
                     .responseFields(
                         field("comments[]", JsonFieldType.ARRAY, "Comments list", true),
@@ -237,9 +231,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .responseSchema(Schema("commentRead.Response"))
                     .responseFields(
                         field("commentId", JsonFieldType.NUMBER, "Unique comment ID", false),
@@ -299,9 +290,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                             false
                         ),
                         parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true)
-                    )
-                    .requestHeaders(
-                        header("Authorization", "access token")
                     )
                     .responseSchema(Schema("commentChild.Response"))
                     .responseFields(
@@ -371,9 +359,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .requestSchema(Schema("commentUpdate.Request"))
                     .requestFields(
                         field("content", JsonFieldType.STRING, "Content of comment")
@@ -442,9 +427,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
-                    )
-                    .requestHeaders(
-                        header("Authorization", "access token")
                     )
                     .build()
             )

@@ -84,9 +84,6 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .requestSchema(Schema("postCreate.Request"))
                     .requestFields(
                         field("title", JsonFieldType.STRING, "Title of post", false),
@@ -171,9 +168,6 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         ),
                         parameter("sort", SimpleType.STRING, "Sort by request. Default is [postId,DESC]", true)
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .responseSchema(Schema("postReadPageList.Response"))
                     .responseFields(
                         field("currentPage", JsonFieldType.NUMBER, "Number of current page", false),
@@ -230,9 +224,6 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "BoardId of post", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                     )
-                    .requestHeaders(
-                        header("Authorization", "access token")
-                    )
                     .responseSchema(Schema("postRead.Response"))
                     .responseFields(
                         field("postId", JsonFieldType.NUMBER, "Unique post ID", false),
@@ -286,9 +277,6 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
-                    )
-                    .requestHeaders(
-                        header("Authorization", "access token")
                     )
                     .requestSchema(Schema("postUpdate.Request"))
                     .requestFields(
@@ -344,9 +332,6 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
-                    )
-                    .requestHeaders(
-                        header("Authorization", "access token")
                     )
                     .build()
             )
