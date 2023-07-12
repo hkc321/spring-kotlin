@@ -42,8 +42,7 @@ interface MemberUseCase {
     sealed class Commend {
         data class CreateCommend(
             val email: String,
-            val password: String,
-            var role: MemberRole
+            val password: String
         )
 
         data class ReadCommend(

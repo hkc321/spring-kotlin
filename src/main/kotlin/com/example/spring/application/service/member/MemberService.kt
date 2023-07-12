@@ -3,6 +3,7 @@ package com.example.spring.application.service.member
 import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.domain.member.Member
+import com.example.spring.domain.member.MemberRole
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,7 +19,7 @@ class MemberService(
             Member(
                 email = commend.email,
                 password = passwordEncoder.encode(commend.password),
-                role = commend.role.name
+                role = MemberRole.ROLE_STANDARD.name
             )
         )
 

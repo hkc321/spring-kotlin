@@ -25,8 +25,7 @@ class MemberController(private val memberUseCase: MemberUseCase) {
             memberUseCase.createMember(
                 MemberUseCase.Commend.CreateCommend(
                     email = body.email,
-                    password = body.password,
-                    role = body.role
+                    password = body.password
                 )
             )
         val location = "/members/${createdMember.email}"
