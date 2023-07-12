@@ -6,6 +6,7 @@ import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.config.dto.ErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -48,6 +49,8 @@ class CustomUsernamePasswordAuthenticationFilter(
             throw UsernameNotFoundException(ErrorCode.DATA_NOT_FOUND.name)
         } catch (ex: BadCredentialsException) {
             throw UsernameNotFoundException(ErrorCode.WRONG_PASSWORD.name)
+        } catch (ex: MismatchedInputException) {
+            throw UsernameNotFoundException(ErrorCode.EMPTY_INPUT.name)
         } catch (ex: Exception) {
             log.warn("login unknown error")
             ex.printStackTrace()
@@ -95,6 +98,7 @@ class CustomUsernamePasswordAuthenticationFilter(
             ErrorCode.DATA_NOT_FOUND.name -> "사용자가 존재하지 않습니다."
             ErrorCode.WRONG_PASSWORD.name -> "비밀번호가 올바르지 않습니다."
             ErrorCode.INVALID_PARAMETER.name -> "프로퍼티 이름이 올바르지 않습니다. required:[email, password]"
+            ErrorCode.EMPTY_INPUT.name -> "빈 값이 전달되었습니다. request body를 확인해 주세요"
             else -> ErrorCode.UNKNOWN_ERROR.name
         }
         response.status = when (failed!!.message) {

@@ -67,10 +67,19 @@ class ControllerAdvice {
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
     fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<BaseResponseException> {
-        val msg = when (val causeException = ex.cause) {
-            is InvalidFormatException -> "입력 받은 [${causeException.value}] 를 [${causeException.targetType}] 으로 변환중 에러가 발생했습니다."
+        var msg: String = when (val causeException = ex.cause) {
+            is InvalidFormatException -> "입력 받은 [${causeException.value}] 를 변환중 에러가 발생했습니다."
             is MissingKotlinParameterException -> "Parameter is missing: [${causeException.parameter.name}]"
             else -> "파라미터를 확인해주세요"
+        }
+        if (ex.cause is InvalidFormatException) {
+            msg += " 오직 ["
+            (ex.cause as InvalidFormatException).targetType.fields.map {
+                msg += it.name + ", "
+            }
+            msg = msg.trim()
+            msg = msg.substring(0, msg.length - 1)
+            msg += "] 만 가능합니다"
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
