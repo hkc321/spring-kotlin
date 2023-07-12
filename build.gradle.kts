@@ -69,8 +69,8 @@ allOpen {
 
 openapi3 {
     this.setServer("http://localhost:8080")
-    title = "restdocs-swagger Test API Documentation"
-    description = "Spring REST Docs with SwaggerUI"
+    title = "API Documentation"
+    description = "Except for login and member registration, JWT is required. Click the 'Authorize' button to register JWT globally. JWT can be obtained through login."
     version = "0.0.1-SNAPSHOT"
     format = "yaml"
 //    outputDirectory = "src/main/resources/static"
