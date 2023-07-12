@@ -4,6 +4,7 @@ import com.example.spring.config.AccessorNotMatchException
 import com.example.spring.config.domain.CommonDateDomain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.password.PasswordEncoder
+import java.time.LocalDateTime
 
 
 class Member(
@@ -23,10 +24,12 @@ class Member(
     fun update(password: String, accessor: String) {
         this.checkAccessor(accessor)
         this.password = password
+        this.updatedAt = LocalDateTime.now()
     }
 
     fun saveRefreshToken(token: String) {
         this.refreshToken = token
+        this.updatedAt = LocalDateTime.now()
     }
 
     fun checkAccessor(accessor: String): Boolean {
