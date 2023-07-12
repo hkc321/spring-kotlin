@@ -1,7 +1,6 @@
 package com.example.spring.adapter.rest.board
 
 import com.epages.restdocs.apispec.*
-import com.epages.restdocs.apispec.ResourceDocumentation.headerWithName
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
@@ -44,7 +43,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun createBoard() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
         input["name"] = "testqqq"
         input["description"] = "test"
@@ -121,6 +120,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                         .description("Create board with send info")
                         .requestSchema(Schema("boardCreate.Request"))
                         .responseSchema(Schema("boardCreate.Response"))
+                        .requestHeaders(
+                            header("Authorization", "access token")
+                        )
                         .requestFields(
                             requestFields
                         )
@@ -144,7 +146,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun `GET boards`() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
 
         //when
         var result = mockMvc.perform(
@@ -231,6 +233,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .queryParameters(
                                 queryParameters
                             )
+                            .requestHeaders(
+                                header("Authorization", "access token")
+                            )
                             .responseSchema(Schema("boardList.Response"))
                             .responseFields(
                                 responseFields
@@ -243,7 +248,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun `GET board-{boardId}`() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
 
         val responseFields = arrayOf(
@@ -307,6 +312,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
                                     .description("Unique board ID")
                             )
+                            .requestHeaders(
+                                header("Authorization", "access token")
+                            )
                             .responseFields(
                                 responseFields
                             )
@@ -319,7 +327,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun `PATCH boards-{boardId}`() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
         input["name"] = "testasd"
         input["description"] = "test"
@@ -399,6 +407,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                         ResourceSnippetParameters.builder()
                             .summary("Update board detail")
                             .description("Update board detail")
+                            .requestHeaders(
+                                header("Authorization", "access token")
+                            )
                             .requestSchema(Schema("boardUpdate.Request"))
                             .requestFields(
                                 requestFields
@@ -423,7 +434,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun `DELETE board-{boardId}`() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val board = Board(
             name = "testtest",
             description = "testtest",
@@ -460,6 +471,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
                                     .description("Unique board ID")
+                            )
+                            .requestHeaders(
+                                header("Authorization", "access token")
                             )
                             .build()
                     )

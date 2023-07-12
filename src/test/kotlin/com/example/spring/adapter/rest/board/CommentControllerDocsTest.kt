@@ -1,20 +1,15 @@
 package com.example.spring.adapter.rest.board
 
-import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.epages.restdocs.apispec.SimpleType
 import com.example.spring.application.port.out.board.CommentJpaPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.config.CommentDataNotFoundException
-import com.example.spring.config.PostDataNotFoundException
-import com.example.spring.domain.board.Board
 import com.example.spring.domain.board.Comment
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl
-import org.hamcrest.Matchers
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-
 import org.junit.jupiter.api.Assertions.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -40,9 +35,12 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Autowired
     private lateinit var commentJpaPort: CommentJpaPort
 
+    @Autowired
+    private lateinit var memberJpaPort: MemberJpaPort
+
     @Test
     fun createComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, Any?>()
         input["parentCommentId"] = null
         input["level"] = 0
@@ -81,6 +79,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
+                    )
+                    .requestHeaders(
+                        header("Authorization", "access token")
                     )
                     .requestSchema(Schema("commentCreate.Request"))
                     .requestFields(
@@ -133,7 +134,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readTopLevelComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
 
@@ -173,6 +174,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true),
                         parameter("orderBy", SimpleType.STRING, "Only up or recent are allowed as sorting criteria", false)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .responseSchema(Schema("commentReadTopLevel.Response"))
                     .responseFields(
                         field("comments[]", JsonFieldType.ARRAY, "Comments list", true),
@@ -196,7 +200,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
         val commentId = 5
@@ -233,6 +237,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .responseSchema(Schema("commentRead.Response"))
                     .responseFields(
                         field("commentId", JsonFieldType.NUMBER, "Unique comment ID", false),
@@ -254,7 +261,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readChildComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
         val commentId = 5
@@ -293,6 +300,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         ),
                         parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .responseSchema(Schema("commentChild.Response"))
                     .responseFields(
                         field("comments[]", JsonFieldType.ARRAY, "Comments list", true),
@@ -316,7 +326,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun updateComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, Any?>()
         input["content"] = "testContent"
         val boardId = 2
@@ -361,6 +371,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .requestSchema(Schema("commentUpdate.Request"))
                     .requestFields(
                         field("content", JsonFieldType.STRING, "Content of comment")
@@ -386,7 +399,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun deleteComment() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
         val comment = commentJpaPort.createComment(
@@ -429,6 +442,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                         parameter("commentId", SimpleType.INTEGER, "Unique comment ID", false)
+                    )
+                    .requestHeaders(
+                        header("Authorization", "access token")
                     )
                     .build()
             )

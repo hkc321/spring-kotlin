@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.Schema
 import com.epages.restdocs.apispec.SimpleType
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.port.out.board.PostJpaPort
+import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.config.PostDataNotFoundException
 import com.example.spring.domain.board.Board
@@ -41,12 +42,15 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Autowired
     private lateinit var boardJpaPort: BoardJpaPort
+    
+    @Autowired
+    private lateinit var memberJpaPort: MemberJpaPort
 
 
     @Test
     @Transactional
     fun createPost() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
         input["content"] = "test"
@@ -79,6 +83,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .description("Create post with send info")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false)
+                    )
+                    .requestHeaders(
+                        header("Authorization", "access token")
                     )
                     .requestSchema(Schema("postCreate.Request"))
                     .requestFields(
@@ -114,7 +121,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readPostPageList() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
 
         //when
@@ -164,6 +171,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         ),
                         parameter("sort", SimpleType.STRING, "Sort by request. Default is [postId,DESC]", true)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .responseSchema(Schema("postReadPageList.Response"))
                     .responseFields(
                         field("currentPage", JsonFieldType.NUMBER, "Number of current page", false),
@@ -187,7 +197,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readPost() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
 
@@ -220,6 +230,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "BoardId of post", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
                     .responseSchema(Schema("postRead.Response"))
                     .responseFields(
                         field("postId", JsonFieldType.NUMBER, "Unique post ID", false),
@@ -238,7 +251,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun updatePost() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
         input["content"] = "test"
@@ -270,11 +283,14 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .tag("posts")
                     .summary("Update post")
                     .description("Update post with send info")
-                    .requestSchema(Schema("postUpdate.Request"))
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
                     )
+                    .requestHeaders(
+                        header("Authorization", "access token")
+                    )
+                    .requestSchema(Schema("postUpdate.Request"))
                     .requestFields(
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false)
@@ -298,7 +314,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun deletePost() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val post = Post(
             boardId = boardId,
@@ -328,6 +344,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
+                    )
+                    .requestHeaders(
+                        header("Authorization", "access token")
                     )
                     .build()
             )

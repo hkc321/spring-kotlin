@@ -126,7 +126,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     }
     @Test
     fun readMember() {
-        val token = jwtService.createAccessToken("test")
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val email = "test"
 
         //when
