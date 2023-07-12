@@ -102,7 +102,7 @@ class CustomJwtAuthorizationFilter(
             )
 //            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
 //            if (expireIn7Day) reissueRefreshToken(member.username, response)
-            reissueAccessToken(member.email, response)
+            reissueAccessToken(member, response)
             UserDetailsImpl(member)
         }
 
@@ -110,11 +110,11 @@ class CustomJwtAuthorizationFilter(
     }
 
     private fun reissueAccessToken(
-        username: String,
+        member: Member,
         response: HttpServletResponse
     ) {
         log.info("reissue AccessToken")
-        val reissuedAccessToken = jwtService.createAccessToken(username)
+        val reissuedAccessToken = jwtService.createAccessToken(member)
         jwtService.setHeaderOfAccessToken(response, reissuedAccessToken)
     }
 }

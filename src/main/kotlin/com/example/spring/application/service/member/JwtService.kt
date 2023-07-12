@@ -2,6 +2,7 @@ package com.example.spring.application.service.member
 
 import com.example.spring.config.filter.JwtExceptionResponse
 import com.example.spring.domain.member.Jwt
+import com.example.spring.domain.member.Member
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
@@ -52,12 +53,12 @@ class JwtService(
         return refreshTime
     }
 
-    override fun createAccessToken(email: String): String {
+    override fun createAccessToken(member: Member): String {
         val tokenValidTime = getAccessTime() * 60 * 1000L
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(email)
-        claims["email"] = email
+        val claims: Claims = Jwts.claims().setSubject(member.memberId.toString())
+        claims["email"] = member.email
 
         val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
@@ -78,7 +79,7 @@ class JwtService(
 
         val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
-            .setSubject(Jwt.ACCESS)
+            .setSubject(Jwt.REFRESH)
             .setIssuedAt(now)  // 토큰 발행 시간 정보
             .setExpiration(refreshValidTime) // 만료시간
             .signWith(getSingingKey(), SignatureAlgorithm.HS256) // signature에 들어갈 secret, 암호화 알고리즘

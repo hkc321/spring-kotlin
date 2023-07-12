@@ -70,4 +70,7 @@ class UserDetailsImpl(private val member: Member) : UserDetails {
     override fun isEnabled(): Boolean {
         return enabled
     }
+
+    fun getMember(): Member =
+        member
 }

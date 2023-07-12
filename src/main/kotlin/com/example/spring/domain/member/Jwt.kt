@@ -10,7 +10,7 @@ interface Jwt {
     /**
      * JWT Access Token 생성
      * */
-    fun createAccessToken(email: String): String
+    fun createAccessToken(member: Member): String
 
     /**
      * JWT Refresh Token 생성

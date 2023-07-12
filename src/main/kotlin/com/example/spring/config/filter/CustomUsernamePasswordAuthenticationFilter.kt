@@ -5,7 +5,6 @@ import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.config.dto.ErrorCode
-import com.example.spring.domain.member.Member
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
 import jakarta.servlet.FilterChain
@@ -68,13 +67,12 @@ class CustomUsernamePasswordAuthenticationFilter(
         log.info("success authentication - provide JWT")
         val principal: UserDetailsImpl = authResult!!.principal as UserDetailsImpl
 
-        val accessToken: String = jwtService.createAccessToken(principal.username)
+        val accessToken: String = jwtService.createAccessToken(principal.getMember())
         val refreshToken: String = jwtService.createRefreshToken()
 
-        val member: Member = memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(principal.username))
         memberUseCase.saveRefreshToken(
             MemberUseCase.Commend.SaveRefreshTokenCommend(
-                member.email, refreshToken
+                principal.username, refreshToken
             )
         )
 
