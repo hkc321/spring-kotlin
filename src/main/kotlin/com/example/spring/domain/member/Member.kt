@@ -1,5 +1,6 @@
 package com.example.spring.domain.member
 
+import com.example.spring.config.AccessorNotMatchException
 import com.example.spring.config.domain.CommonDateDomain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -19,12 +20,21 @@ class Member(
     var role: String = role
     var refreshToken: String? = null
 
-    fun update(password: String) {
+    fun update(password: String, accessor: String) {
+        this.checkAccessor(accessor)
         this.password = password
     }
 
     fun saveRefreshToken(token: String) {
         this.refreshToken = token
+    }
+
+    fun checkAccessor(accessor: String): Boolean {
+        if (this.email == accessor ) {
+            return true
+        } else {
+            throw AccessorNotMatchException()
+        }
     }
 
     fun comparePassword(encoder: PasswordEncoder, password: String): Boolean {

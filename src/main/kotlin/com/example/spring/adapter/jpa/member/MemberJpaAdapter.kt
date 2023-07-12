@@ -7,6 +7,7 @@ import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.config.MemberAlreadyExistException
 import com.example.spring.config.MemberDataNotFoundException
 import com.example.spring.domain.member.Member
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -25,8 +26,8 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     /**
      * Member 찾기
      * */
-    override fun findMemberByMemberId(memberId: Int): Member? {
-        memberJpaRepository.findByMemberId(memberId)?.let {
+    override fun findMemberByMemberId(memberId: Int): Member {
+        memberJpaRepository.findByIdOrNull(memberId)?.let {
             return memberJpaMapper.toMember(it)
         } ?: throw MemberDataNotFoundException()
     }
@@ -45,11 +46,8 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
     override fun updateMember(member: Member): Member =
         memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
 
-    override fun deleteMember(email: String) =
-        memberJpaRepository.findByEmail(email)
-            ?.let {
-                memberJpaRepository.deleteById(it.memberId)
-            } ?: throw MemberDataNotFoundException()
+    override fun deleteMember(memberId: Int) =
+        memberJpaRepository.deleteById(memberId)
 
     override fun saveRefreshToken(member: Member): Member =
         memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))

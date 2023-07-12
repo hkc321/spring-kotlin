@@ -11,7 +11,7 @@ interface MemberJpaPort {
     /**
      * Member 찾기
      * */
-    fun findMemberByMemberId(memberId: Int): Member?
+    fun findMemberByMemberId(memberId: Int): Member
 
     /**
      * Member 등록
@@ -26,7 +26,7 @@ interface MemberJpaPort {
     /**
      * Member 삭제
      * */
-    fun deleteMember(email: String)
+    fun deleteMember(memberId: Int)
 
     /**
      * Refresh 토큰 저장

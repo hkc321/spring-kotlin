@@ -40,34 +40,35 @@ interface MemberUseCase {
     fun findMemberByRefreshToken(commend: Commend.FindMemberByRefreshTokenCommend): Member
 
     sealed class Commend {
-        abstract val email: String
-
         data class CreateCommend(
-            override val email: String,
+            val email: String,
             val password: String,
             var role: MemberRole
-        ) : Commend()
+        )
 
         data class ReadCommend(
-            override val email: String
+            val memberId: Int,
+            val accessor: String
         ) : Commend()
 
         data class UpdateCommend(
-            override val email: String,
-            val password: String
+            val memberId: Int,
+            val password: String,
+            val accessor: String
         ) : Commend()
 
         data class DeleteCommend(
-            override val email: String
+            val memberId: Int,
+            val accessor: String
         ) : Commend()
 
         data class SaveRefreshTokenCommend(
-            override val email: String,
+            val email: String,
             val token: String
         ) : Commend()
 
         data class FindMemberByRefreshTokenCommend(
             val token: String
-        )
+        ) : Commend()
     }
 }

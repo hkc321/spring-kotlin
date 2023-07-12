@@ -21,6 +21,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
+    @ExceptionHandler(AccessorNotMatchException::class)
+    fun accessorNotMatchException(ex: AccessorNotMatchException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(
+                BaseResponseException(
+                    ErrorCode.INVALID_USER,
+                    ex.message
+                )
+            )
+    }
+
     @ExceptionHandler(WriterNotMatchException::class)
     fun writerNotMatchException(ex: WriterNotMatchException): ResponseEntity<BaseResponseException> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -182,6 +193,11 @@ class ControllerAdvice {
             )
     }
 }
+
+data class AccessorNotMatchException(
+    val code: ErrorCode = ErrorCode.INVALID_USER,
+    override var message: String = "본인의 정보만 접근 가능합니다."
+) : RuntimeException(message, null)
 
 data class WriterNotMatchException(
     val code: ErrorCode = ErrorCode.INVALID_USER,

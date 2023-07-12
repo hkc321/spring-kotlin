@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.net.URI
+import java.security.Principal
 import java.util.*
 
 @RestController
@@ -32,39 +33,44 @@ class MemberController(private val memberUseCase: MemberUseCase) {
         return ResponseEntity.created(URI.create(location)).body(memberRestMapper.toMemberCommonResponse(createdMember))
     }
 
-    @GetMapping("{memberEmail}")
-    fun readMember(@PathVariable("memberEmail") memberEmail: String): ResponseEntity<MemberCommonResponse> =
+    @GetMapping("{memberId}")
+    fun readMember(
+        @PathVariable("memberId") memberId: Int,
+        principal: Principal
+    ): ResponseEntity<MemberCommonResponse> =
         ResponseEntity.ok(
             memberRestMapper.toMemberCommonResponse(
                 memberUseCase.readMember(
                     MemberUseCase.Commend.ReadCommend(
-                        memberEmail
+                        memberId,
+                        principal.name
                     )
                 )
             )
         )
 
-    @PatchMapping("{memberEmail}")
+    @PatchMapping("{memberId}")
     fun updateMember(
-        @PathVariable("memberEmail") memberEmail: String,
-        @RequestBody body: MemberUpdateRequest
+        @PathVariable("memberId") memberId: Int,
+        @RequestBody body: MemberUpdateRequest,
+        principal: Principal
     ): ResponseEntity<MemberCommonResponse> =
         ResponseEntity.ok(
             memberRestMapper.toMemberCommonResponse(
                 memberUseCase.updateMember(
                     MemberUseCase.Commend.UpdateCommend(
-                        memberEmail,
-                        body.password
+                        memberId,
+                        body.password,
+                        principal.name
                     )
                 )
             )
-
         )
 
-    @DeleteMapping("{memberEmail}")
+    @DeleteMapping("{memberId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteMember(@PathVariable("memberEmail") memberEmail: String) =
-        memberUseCase.deleteMember(MemberUseCase.Commend.DeleteCommend(memberEmail))
+    fun deleteMember(@PathVariable("memberId") memberId: Int, principal: Principal) =
+        memberUseCase.deleteMember(MemberUseCase.Commend.DeleteCommend(memberId, principal.name))
 
     /**
      * Spring Security 에서 실행

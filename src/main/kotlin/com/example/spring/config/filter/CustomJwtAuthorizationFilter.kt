@@ -90,7 +90,7 @@ class CustomJwtAuthorizationFilter(
             check(jwtService.isTokenExpired(access).not())
             UserDetailsImpl(
                 memberUseCase.readMember(
-                    MemberUseCase.Commend.ReadCommend(jwtService.extractEmail(access))
+                    MemberUseCase.Commend.ReadCommend(jwtService.extractClaims(access).subject.toInt(), jwtService.extractEmail(access))
                 )
             )
         } else {

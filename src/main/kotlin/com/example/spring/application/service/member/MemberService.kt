@@ -23,19 +23,28 @@ class MemberService(
         )
 
     @Transactional(readOnly = true)
-    override fun readMember(commend: MemberUseCase.Commend.ReadCommend): Member =
-        memberJpaPort.findMemberByEmail(commend.email)
+    override fun readMember(commend: MemberUseCase.Commend.ReadCommend): Member {
+        val member: Member = memberJpaPort.findMemberByMemberId(commend.memberId)
+        member.checkAccessor(commend.accessor)
+
+        return member
+    }
+
 
     @Transactional
     override fun updateMember(commend: MemberUseCase.Commend.UpdateCommend): Member {
-        val member: Member = memberJpaPort.findMemberByEmail(commend.email)
-        member.update(passwordEncoder.encode(commend.password))
+        val member: Member = memberJpaPort.findMemberByMemberId(commend.memberId)
+        member.update(passwordEncoder.encode(commend.password), commend.accessor)
         return memberJpaPort.updateMember(member)
     }
 
     @Transactional
-    override fun deleteMember(commend: MemberUseCase.Commend.DeleteCommend) =
-        memberJpaPort.deleteMember(commend.email)
+    override fun deleteMember(commend: MemberUseCase.Commend.DeleteCommend) {
+        val member: Member = memberJpaPort.findMemberByMemberId(commend.memberId)
+        member.checkAccessor(commend.accessor)
+
+        memberJpaPort.deleteMember(member.memberId)
+    }
 
     override fun logout() {
         TODO("Not yet implemented")
