@@ -4,6 +4,8 @@ import com.epages.restdocs.apispec.*
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.config.MemberDataNotFoundException
+import com.example.spring.domain.member.Member
+import com.example.spring.domain.member.MemberRole
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl
 import org.junit.jupiter.api.Assertions
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
@@ -71,6 +74,9 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                             true
                         )
                     )
+                    .responseHeaders(
+                        header(HttpHeaders.LOCATION, "Location header")
+                    )
                     .responseSchema(Schema("memberCreate.Response"))
                     .responseFields(
                         field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),
@@ -84,7 +90,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         )
 
         val jsonNode = ObjectMapper().readTree(result.andReturn().response.contentAsString)
-        val createdMemberId= jsonNode["memberId"].asInt()
+        val createdMemberId = jsonNode["memberId"].asInt()
 
         memberJpaPort.deleteMember(createdMemberId)
         Assertions.assertThrows(MemberDataNotFoundException::class.java) {
@@ -132,6 +138,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
             )
         )
     }
+
     @Test
     fun readMember() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
@@ -152,7 +159,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
         ).andDocument(
-            "GET-members-{memberEmail}",
+            "GET-members-{memberId}",
             snippets = makeSnippets(
                 snippetsBuilder()
                     .tag("members")
@@ -176,12 +183,91 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun updateMember() {
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val memberId = 1
+        val input = mutableMapOf<String, String>()
+        input["password"] = "test"
 
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.patch("/members/{memberId}", memberId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(input))
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("memberId").exists(),
+            MockMvcResultMatchers.jsonPath("email").exists(),
+            MockMvcResultMatchers.jsonPath("role").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").exists()
+        ).andDocument(
+            "PATCH-members-{memberId}",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Update member")
+                    .description("Update member with send info.")
+                    .pathParameters(
+                        parameter("memberId", SimpleType.NUMBER, "Unique member ID")
+                    )
+                    .requestFields(
+                        field("password", JsonFieldType.STRING, "Password of member", false)
+                    )
+                    .responseSchema(Schema("memberUpdate.Response"))
+                    .responseFields(
+                        field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),
+                        field("email", JsonFieldType.STRING, "Email of member", false),
+                        field("role", JsonFieldType.STRING, "Role of member", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of member", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of member", false)
+                    )
+                    .build()
+            )
+        )
     }
 
     @Test
     fun deleteMember() {
+        val createdMember = memberJpaPort.createMember(
+            Member(
+                email = "testCreated",
+                password = "1234",
+                role = MemberRole.ROLE_STANDARD.name
+            )
+        )
 
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(createdMember.email))
+        val memberId = createdMember.memberId
+
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.delete("/members/{memberId}", memberId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isNoContent
+        ).andDocument(
+            "DELETE-members-{memberId}",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Delete member")
+                    .description("Delete member with send info.")
+                    .pathParameters(
+                        parameter("memberId", SimpleType.NUMBER, "Unique member ID")
+                    )
+                    .build()
+            )
+        )
+
+        Assertions.assertThrows(MemberDataNotFoundException::class.java) {
+            memberJpaPort.findMemberByMemberId(memberId)
+        }
     }
 
 }
