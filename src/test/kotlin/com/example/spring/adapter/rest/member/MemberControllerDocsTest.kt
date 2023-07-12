@@ -48,7 +48,11 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         // then
         result.andExpectAll(
             MockMvcResultMatchers.status().isCreated,
-            MockMvcResultMatchers.jsonPath("email").exists()
+            MockMvcResultMatchers.jsonPath("memberId").exists(),
+            MockMvcResultMatchers.jsonPath("email").exists(),
+            MockMvcResultMatchers.jsonPath("role").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
         ).andDocument(
             "POST-members-register",
             snippets = makeSnippets(
@@ -69,18 +73,22 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     )
                     .responseSchema(Schema("memberCreate.Response"))
                     .responseFields(
-                        field("email", JsonFieldType.STRING, "Email of member", false)
+                        field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),
+                        field("email", JsonFieldType.STRING, "Email of member", false),
+                        field("role", JsonFieldType.STRING, "Role of member", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of member", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of member", true)
                     )
                     .build()
             )
         )
 
         val jsonNode = ObjectMapper().readTree(result.andReturn().response.contentAsString)
-        val createdEmail= jsonNode["email"].asText()
+        val createdMemberId= jsonNode["memberId"].asInt()
 
-        memberJpaPort.deleteMember(createdEmail)
+        memberJpaPort.deleteMember(createdMemberId)
         Assertions.assertThrows(MemberDataNotFoundException::class.java) {
-            memberJpaPort.findMemberByEmail(createdEmail)
+            memberJpaPort.findMemberByMemberId(createdMemberId)
         }
 
     }
@@ -127,18 +135,22 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     @Test
     fun readMember() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
-        val email = "test"
+        val memberId = 1
 
         //when
         var result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/members/{memberEmail}", email)
+            RestDocumentationRequestBuilders.get("/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
 
         result.andExpectAll(
             MockMvcResultMatchers.status().isOk,
-            json("email").exists()
+            MockMvcResultMatchers.jsonPath("memberId").exists(),
+            MockMvcResultMatchers.jsonPath("email").exists(),
+            MockMvcResultMatchers.jsonPath("role").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
         ).andDocument(
             "GET-members-{memberEmail}",
             snippets = makeSnippets(
@@ -147,14 +159,18 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .summary("Read member")
                     .description("Read member with send info.")
                     .pathParameters(
-                        parameter("memberEmail", SimpleType.STRING, "Email of member")
+                        parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
                     .requestHeaders(
                         header("Authorization", "access token")
                     )
                     .responseSchema(Schema("memberRead.Response"))
                     .responseFields(
-                        field("email", JsonFieldType.STRING, "memberEmail", false)
+                        field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),
+                        field("email", JsonFieldType.STRING, "Email of member", false),
+                        field("role", JsonFieldType.STRING, "Role of member", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of member", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of member", true)
                     )
                     .build()
             )
