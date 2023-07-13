@@ -41,8 +41,8 @@ class JwtAuthorizationExceptionFilter(
 }
 
 data class JwtExceptionResponse(
-    val status: HttpStatus,
-    val message: String,
+    val errorCode: String,
+    val errorMessage: String,
 ) {
     fun toJsonString(): String {
         return this.toString()

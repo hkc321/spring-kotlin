@@ -42,7 +42,7 @@ class CustomJwtAuthorizationFilter(
                             response = response,
                             status = HttpStatus.BAD_REQUEST,
                             errorType = Jwt.HEADER_EXCEPTION,
-                            message = "잘못된 헤더입니다."
+                            message = "Authorization 헤더가 누락되었습니다."
                         )
                         return
                     }

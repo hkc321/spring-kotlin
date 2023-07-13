@@ -159,7 +159,7 @@ class JwtService(
     ) {
         response.status = status.value()
         response.contentType = "application/json; charset=UTF-8"
-        response.writer.write(objectMapper.writeValueAsString(JwtExceptionResponse(status, "$errorType: $message")))
+        response.writer.write(objectMapper.writeValueAsString(JwtExceptionResponse(errorType, message)))
     }
 
     override fun extractAccessToken(request: HttpServletRequest): String {
