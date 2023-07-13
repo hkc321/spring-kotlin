@@ -1,6 +1,6 @@
 package com.example.spring.config.controller
 
-import com.example.spring.config.exception.BaseResponseException
+import com.example.spring.config.dto.BaseResponseException
 import com.example.spring.config.code.ErrorCode
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
