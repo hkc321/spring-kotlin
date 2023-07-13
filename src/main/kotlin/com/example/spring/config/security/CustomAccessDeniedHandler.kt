@@ -1,4 +1,4 @@
-package com.example.spring.config
+package com.example.spring.config.security
 
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.config.code.ErrorCode

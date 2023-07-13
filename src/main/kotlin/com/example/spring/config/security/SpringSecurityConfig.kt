@@ -1,4 +1,4 @@
-package com.example.spring.config
+package com.example.spring.config.security
 
 import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService

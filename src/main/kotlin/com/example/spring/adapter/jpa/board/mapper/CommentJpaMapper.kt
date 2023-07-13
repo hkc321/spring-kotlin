@@ -5,10 +5,10 @@ import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.adapter.jpa.board.repository.PostJpaRepository
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
-import com.example.spring.config.BoardDataNotFoundException
-import com.example.spring.config.CommentDataNotFoundException
-import com.example.spring.config.MemberDataNotFoundException
-import com.example.spring.config.PostDataNotFoundException
+import com.example.spring.config.controller.BoardDataNotFoundException
+import com.example.spring.config.controller.CommentDataNotFoundException
+import com.example.spring.config.controller.MemberDataNotFoundException
+import com.example.spring.config.controller.PostDataNotFoundException
 import com.example.spring.domain.board.Comment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

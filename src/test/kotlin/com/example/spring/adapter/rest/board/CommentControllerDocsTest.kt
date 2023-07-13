@@ -5,7 +5,7 @@ import com.epages.restdocs.apispec.SimpleType
 import com.example.spring.application.port.out.board.CommentJpaPort
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
-import com.example.spring.config.CommentDataNotFoundException
+import com.example.spring.config.controller.CommentDataNotFoundException
 import com.example.spring.domain.board.Comment
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl

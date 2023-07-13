@@ -1,6 +1,6 @@
 package com.example.spring.domain.member
 
-import com.example.spring.config.AccessorNotMatchException
+import com.example.spring.config.controller.AccessorNotMatchException
 import com.example.spring.config.domain.CommonDateDomain
 import com.fasterxml.jackson.annotation.JsonIgnore
 import org.springframework.security.crypto.password.PasswordEncoder

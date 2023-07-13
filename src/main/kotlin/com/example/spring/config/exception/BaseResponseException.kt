@@ -1,4 +1,4 @@
-package com.example.spring.config
+package com.example.spring.config.exception
 
 import com.example.spring.config.code.ErrorCode
 

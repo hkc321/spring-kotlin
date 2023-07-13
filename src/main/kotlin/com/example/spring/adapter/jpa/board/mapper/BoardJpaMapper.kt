@@ -3,7 +3,7 @@ package com.example.spring.adapter.jpa.board.mapper
 import com.example.spring.adapter.jpa.board.BoardKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
-import com.example.spring.config.MemberDataNotFoundException
+import com.example.spring.config.controller.MemberDataNotFoundException
 import com.example.spring.domain.board.Board
 import org.springframework.stereotype.Repository
 

@@ -4,7 +4,7 @@ import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
 import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.application.port.out.board.BoardKotlinJdslPort
-import com.example.spring.config.BoardDataNotFoundException
+import com.example.spring.config.controller.BoardDataNotFoundException
 import com.example.spring.domain.board.Board
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.spring.data.*
