@@ -398,8 +398,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             )
         )
         val commentId = comment.commentId
-        println(commentId)
-        println("qweqweqwewqeqe")
 
         //when
         var result = mockMvc.perform(
