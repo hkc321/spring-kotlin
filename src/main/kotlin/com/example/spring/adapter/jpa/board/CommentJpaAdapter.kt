@@ -3,7 +3,7 @@ package com.example.spring.adapter.jpa.board
 import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.application.port.out.board.CommentJpaPort
-import com.example.spring.config.controller.CommentDataNotFoundException
+import com.example.spring.application.service.board.exception.CommentDataNotFoundException
 import com.example.spring.domain.board.Comment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

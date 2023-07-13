@@ -4,8 +4,8 @@ package com.example.spring.adapter.jpa.member
 import com.example.spring.adapter.jpa.member.mapper.MemberJpaMapper
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import com.example.spring.application.port.out.member.MemberJpaPort
-import com.example.spring.config.controller.MemberAlreadyExistException
-import com.example.spring.config.controller.MemberDataNotFoundException
+import com.example.spring.application.service.member.exception.MemberAlreadyExistException
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.member.Member
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

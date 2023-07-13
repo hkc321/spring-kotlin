@@ -3,7 +3,7 @@ package com.example.spring.adapter.jpa.board
 import com.example.spring.adapter.jpa.board.mapper.BoardJpaMapper
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.application.port.out.board.BoardJpaPort
-import com.example.spring.config.controller.BoardDataNotFoundException
+import com.example.spring.application.service.board.exception.BoardDataNotFoundException
 import com.example.spring.domain.board.Board
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository

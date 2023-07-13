@@ -3,8 +3,8 @@ package com.example.spring.adapter.rest.board
 import com.epages.restdocs.apispec.*
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.application.service.board.exception.BoardDataNotFoundException
 import com.example.spring.application.service.member.JwtService
-import com.example.spring.config.controller.BoardDataNotFoundException
 import com.example.spring.domain.board.Board
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl

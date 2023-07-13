@@ -1,7 +1,7 @@
 package com.example.spring.domain.board
 
-import com.example.spring.config.controller.WriterNotMatchException
 import com.example.spring.config.domain.CommonDateDomain
+import com.example.spring.config.exception.WriterNotMatchException
 import java.time.LocalDateTime
 
 class Comment(

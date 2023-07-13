@@ -1,7 +1,14 @@
 package com.example.spring.config.controller
 
+import com.example.spring.application.service.board.exception.BoardDataNotFoundException
+import com.example.spring.application.service.board.exception.CommentDataNotFoundException
+import com.example.spring.application.service.board.exception.PostDataNotFoundException
+import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
+import com.example.spring.application.service.member.exception.MemberAlreadyExistException
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.config.dto.BaseResponseException
 import com.example.spring.config.code.ErrorCode
+import com.example.spring.config.exception.WriterNotMatchException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import jakarta.validation.ConstraintViolationException
@@ -22,8 +29,8 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
-    @ExceptionHandler(AccessorNotMatchException::class)
-    fun accessorNotMatchException(ex: AccessorNotMatchException): ResponseEntity<BaseResponseException> {
+    @ExceptionHandler(MemberAccessorNotMatchException::class)
+    fun memberAccessorNotMatchException(ex: MemberAccessorNotMatchException): ResponseEntity<BaseResponseException> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(
                 BaseResponseException(
@@ -203,44 +210,3 @@ class ControllerAdvice {
             )
     }
 }
-
-data class AccessorNotMatchException(
-    val code: ErrorCode = ErrorCode.INVALID_USER,
-    override var message: String = "본인의 정보만 접근 가능합니다."
-) : RuntimeException(message, null)
-
-data class WriterNotMatchException(
-    val code: ErrorCode = ErrorCode.INVALID_USER,
-    override var message: String = "작성자만 수정이 가능합니다."
-) : RuntimeException(message, null)
-
-data class CommentDataNotFoundException(
-    val boardId: Int,
-    val postId: Int,
-    val commentId: Int,
-    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
-    override var message: String = "댓글이 존재하지 않습니다. [boardId: $boardId, postId: $postId, commentId: $commentId]"
-) : RuntimeException(message, null)
-
-data class BoardDataNotFoundException(
-    val boardId: Int,
-    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
-    override var message: String = "게시판이 존재하지 않습니다. [boardId: $boardId]"
-) : RuntimeException(message, null)
-
-data class PostDataNotFoundException(
-    val boardId: Int,
-    val postId: Int,
-    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
-    override var message: String = "게시글이 존재하지 않습니다. [boardId: $boardId, postId: $postId]"
-) : RuntimeException(message, null)
-
-data class MemberDataNotFoundException(
-    val code: ErrorCode = ErrorCode.DATA_NOT_FOUND,
-    override var message: String = "사용자가 존재하지 않습니다."
-) : RuntimeException(message, null)
-
-data class MemberAlreadyExistException(
-    val code: ErrorCode = ErrorCode.ALREADY_EXIST,
-    override var message: String = "이미 존재하는 아이디입니다."
-) : RuntimeException(message, null)

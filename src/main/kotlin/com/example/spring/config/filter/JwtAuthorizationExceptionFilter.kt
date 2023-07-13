@@ -1,7 +1,7 @@
 package com.example.spring.config.filter
 
 import com.example.spring.application.service.member.JwtService
-import com.example.spring.config.controller.MemberDataNotFoundException
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException

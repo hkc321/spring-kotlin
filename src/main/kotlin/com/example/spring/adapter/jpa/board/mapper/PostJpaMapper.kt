@@ -4,8 +4,8 @@ import com.example.spring.adapter.jpa.board.PostKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
-import com.example.spring.config.controller.BoardDataNotFoundException
-import com.example.spring.config.controller.MemberDataNotFoundException
+import com.example.spring.application.service.board.exception.BoardDataNotFoundException
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.board.Post
 import org.springframework.stereotype.Repository
 

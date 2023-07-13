@@ -5,7 +5,7 @@ import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.example.spring.adapter.jpa.board.mapper.PostJpaMapper
 import com.example.spring.adapter.jpa.member.entity.MemberJpaEntity
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
-import com.example.spring.config.controller.PostDataNotFoundException
+import com.example.spring.application.service.board.exception.PostDataNotFoundException
 import com.example.spring.domain.board.Board
 import com.example.spring.domain.board.Post
 import com.linecorp.kotlinjdsl.querydsl.expression.column

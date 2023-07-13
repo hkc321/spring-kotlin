@@ -4,7 +4,7 @@ import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
-import com.example.spring.config.controller.MemberDataNotFoundException
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import io.jsonwebtoken.ExpiredJwtException
