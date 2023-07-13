@@ -4,7 +4,7 @@ import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
 import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
-import com.example.spring.config.dto.ErrorCode
+import com.example.spring.config.code.ErrorCode
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException

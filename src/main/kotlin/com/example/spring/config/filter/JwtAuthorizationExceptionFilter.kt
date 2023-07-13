@@ -1,6 +1,8 @@
 package com.example.spring.config.filter
 
 import com.example.spring.application.service.member.JwtService
+import com.example.spring.config.MemberDataNotFoundException
+import com.example.spring.config.code.ErrorCode
 import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
@@ -27,6 +29,10 @@ class JwtAuthorizationExceptionFilter(
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.EXPIRED_EXCEPTION, ex)
         } catch (ex: JwtException) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.JWT_EXCEPTION, ex)
+        } catch (ex: NullPointerException) {
+            setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.NULL_POINTER.name, ex)
+        } catch (ex: MemberDataNotFoundException) {
+            setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.INVALID_USER.name, ex)
         } catch (ex: Exception) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, Jwt.EXCEPTION, ex)
         }
@@ -36,7 +42,10 @@ class JwtAuthorizationExceptionFilter(
      * 에러 메시지 설정
      * */
     fun setErrorResponse(res: HttpServletResponse, status: HttpStatus, errorType: String, ex: Throwable) {
-        jwtService.setErrorResponseMessage(res, status, errorType, ex.message ?: "")
+        when (errorType) {
+            ErrorCode.NULL_POINTER.name -> jwtService.setErrorResponseMessage(res, status, errorType, "토큰값이 비어있습니다.")
+            else -> jwtService.setErrorResponseMessage(res, status, errorType, ex.message ?: "")
+        }
     }
 }
 

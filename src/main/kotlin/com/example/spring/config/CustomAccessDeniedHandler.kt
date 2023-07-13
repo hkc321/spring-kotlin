@@ -1,33 +1,27 @@
 package com.example.spring.config
 
-import com.example.spring.config.dto.ErrorCode
-import com.fasterxml.jackson.databind.ObjectMapper
+import com.example.spring.application.service.member.JwtService
+import com.example.spring.config.code.ErrorCode
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.security.access.AccessDeniedException
 import org.springframework.security.web.access.AccessDeniedHandler
+import org.springframework.stereotype.Component
 
-class CustomAccessDeniedHandler(private val objectMapper: ObjectMapper) : AccessDeniedHandler {
+@Component
+class CustomAccessDeniedHandler(private val jwtService: JwtService) : AccessDeniedHandler {
+    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
     override fun handle(
-        request: HttpServletRequest?,
+        request: HttpServletRequest,
         response: HttpServletResponse,
-        accessDeniedException: AccessDeniedException?
+        accessDeniedException: AccessDeniedException
     ) {
-        response.status = HttpStatus.FORBIDDEN.value()
-        response.contentType = "application/json;charset=UTF-8"
-        response.writer.write(
-            objectMapper.writeValueAsString(
-                AccessDeniedResponse(
-                    ErrorCode.FORBIDDEN,
-                    "권한이 없습니다."
-                )
-            )
-        )
-    }
+        log.warn("[authority error] ${accessDeniedException.message}")
 
-    data class AccessDeniedResponse(
-        val errorCode: ErrorCode,
-        val errorMessage: String
-    )
+        jwtService.setErrorResponseMessage(response, HttpStatus.FORBIDDEN, ErrorCode.FORBIDDEN.name, "권한이 없습니다.")
+    }
 }

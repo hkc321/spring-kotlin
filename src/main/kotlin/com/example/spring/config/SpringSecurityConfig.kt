@@ -6,7 +6,6 @@ import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
-import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -26,7 +25,9 @@ class SpringSecurityConfig(
     private val jwtService: JwtService,
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val memberUseCase: MemberUseCase,
-    private val userDetailsServiceImpl: UserDetailsServiceImpl
+    private val userDetailsServiceImpl: UserDetailsServiceImpl,
+    private val customAccessDeniedHandler: CustomAccessDeniedHandler,
+    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
 ) {
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer =
@@ -47,8 +48,7 @@ class SpringSecurityConfig(
                 authorize("/members/login", permitAll)
                 authorize("/members/register", permitAll)
                 authorize("/members/{memberId}/role", hasRole("ROLE_ADMIN"))
-                authorize("/members/why", hasAuthority("b"))
-                authorize(anyRequest, authenticated)
+                authorize(anyRequest, permitAll)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
             addFilterBefore<BasicAuthenticationFilter>(
@@ -60,7 +60,8 @@ class SpringSecurityConfig(
             )
             addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))
             exceptionHandling {
-                accessDeniedHandler = CustomAccessDeniedHandler(ObjectMapper())
+                accessDeniedHandler = customAccessDeniedHandler
+                authenticationEntryPoint = customAuthenticationEntryPoint
             }
             formLogin { disable() }
             logout { }

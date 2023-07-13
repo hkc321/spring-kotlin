@@ -1,6 +1,6 @@
 package com.example.spring.config
 
-import com.example.spring.config.dto.ErrorCode
+import com.example.spring.config.code.ErrorCode
 
 data class BaseResponseException(
     val errorCode: ErrorCode,

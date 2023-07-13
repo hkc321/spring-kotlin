@@ -1,4 +1,4 @@
-package com.example.spring.config.dto
+package com.example.spring.config.code
 
 enum class ErrorCode {
     UNKNOWN_ERROR,
@@ -13,5 +13,6 @@ enum class ErrorCode {
     NOT_SUPPORT_HTTP_METHOD,
     INVALID_USER,
     EMPTY_INPUT,
-    FORBIDDEN
+    FORBIDDEN,
+    NULL_POINTER
 }

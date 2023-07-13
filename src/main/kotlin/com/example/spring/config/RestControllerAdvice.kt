@@ -1,6 +1,6 @@
 package com.example.spring.config
 
-import com.example.spring.config.dto.ErrorCode
+import com.example.spring.config.code.ErrorCode
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import jakarta.validation.ConstraintViolationException

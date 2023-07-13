@@ -4,6 +4,7 @@ import com.example.spring.application.port.`in`.member.MemberUseCase
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
+import com.example.spring.config.MemberDataNotFoundException
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import io.jsonwebtoken.ExpiredJwtException
@@ -65,7 +66,12 @@ class CustomJwtAuthorizationFilter(
             throw expiredJwtException
         } catch (jwtException: JwtException) {
             throw jwtException
+        } catch (nullPointerException: NullPointerException) {
+            throw nullPointerException
+        } catch (memberDataNotFoundException: MemberDataNotFoundException) {
+            throw memberDataNotFoundException
         } catch (e: Exception) {
+            log.warn("jwt unknown error")
             e.printStackTrace()
             throw e
         }
@@ -90,7 +96,10 @@ class CustomJwtAuthorizationFilter(
             check(jwtService.isTokenExpired(access).not())
             UserDetailsImpl(
                 memberUseCase.readMember(
-                    MemberUseCase.Commend.ReadCommend(jwtService.extractClaims(access).subject.toInt(), jwtService.extractEmail(access))
+                    MemberUseCase.Commend.ReadCommend(
+                        jwtService.extractClaims(access).subject.toInt(),
+                        jwtService.extractEmail(access)
+                    )
                 )
             )
         } else {
