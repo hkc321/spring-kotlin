@@ -3,7 +3,6 @@ package com.example.spring.adapter.rest.board
 import com.example.spring.adapter.rest.board.dto.*
 import com.example.spring.adapter.rest.board.mapper.CommentRestMapper
 import com.example.spring.application.port.`in`.board.CommentUseCase
-import com.example.spring.config.BaseController
 import com.example.spring.domain.board.Comment
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
@@ -18,7 +17,7 @@ import java.security.Principal
 @Validated
 @RestController
 @RequestMapping("boards/{boardId}/posts/{postId}/comments")
-class CommentController(private val commentUseCase: CommentUseCase) : BaseController() {
+class CommentController(private val commentUseCase: CommentUseCase){
     private val commentRestMapper = CommentRestMapper.INSTANCE
 
     @PostMapping("")
