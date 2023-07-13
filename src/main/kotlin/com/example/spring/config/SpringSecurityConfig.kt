@@ -6,6 +6,7 @@ import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -58,6 +59,9 @@ class SpringSecurityConfig(
                 )
             )
             addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))
+            exceptionHandling {
+                accessDeniedHandler = CustomAccessDeniedHandler(ObjectMapper())
+            }
             formLogin { disable() }
             logout { }
         }

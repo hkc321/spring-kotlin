@@ -12,5 +12,6 @@ enum class ErrorCode {
     ALREADY_EXIST,
     NOT_SUPPORT_HTTP_METHOD,
     INVALID_USER,
-    EMPTY_INPUT
+    EMPTY_INPUT,
+    FORBIDDEN
 }
