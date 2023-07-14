@@ -33,7 +33,7 @@ class Post(
         }
     }
 
-    fun updateUp(like: Int) {
+    fun updateLike(like: Int) {
         this.like = like
     }
 }

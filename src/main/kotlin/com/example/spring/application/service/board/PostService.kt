@@ -59,7 +59,7 @@ class PostService(
             boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
             commend.postId
         )
-        post.updateUp(likeCount)
+        post.updateLike(likeCount)
 
         return postJpaPort.updatePost(post)
     }
@@ -71,7 +71,7 @@ class PostService(
             boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
             commend.postId
         )
-        post.updateUp(likeCount)
+        post.updateLike(likeCount)
 
         return postJpaPort.updatePost(post)
     }
