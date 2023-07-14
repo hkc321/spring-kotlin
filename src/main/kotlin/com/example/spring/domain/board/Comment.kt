@@ -18,7 +18,7 @@ class Comment(
     var postId: Int = postId
     var parentComment: Int? = parentComment
     var level: Int = level
-    var up: Int = 0
+    var like: Int = 0
     var content: String = content
     var childCommentCount: Int = 0
     var writer: String = writer

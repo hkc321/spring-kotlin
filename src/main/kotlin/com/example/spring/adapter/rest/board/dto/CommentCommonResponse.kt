@@ -6,7 +6,7 @@ data class CommentCommonResponse(
     val commentId: Int,
     val parentCommentId: Int?,
     val level: Int,
-    val up: Int,
+    val like: Int,
     val content: String,
     val childCommentCount: Int,
     val writer: String,

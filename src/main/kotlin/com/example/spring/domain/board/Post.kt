@@ -15,7 +15,7 @@ class Post(
     var boardId: Int = boardId
     var title: String = title
     var content: String = content
-    var up: Int = 0
+    var like: Int = 0
     var writer: String = writer
 
     fun update(title: String, content: String, modifier: String) {
@@ -33,5 +33,7 @@ class Post(
         }
     }
 
-    fun plusUp() = up++
+    fun updateUp(like: Int) {
+        this.like = like
+    }
 }

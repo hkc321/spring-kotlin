@@ -30,8 +30,8 @@ class PostJpaEntity(
     @Column(nullable = false)
     var content: String = content
 
-    @Column(nullable = false)
-    var up: Int = 0
+    @Column(name = "like_count", nullable = false)
+    var like: Int = 0
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "writer", nullable = false)

@@ -26,6 +26,16 @@ interface PostUseCase {
     fun updatePost(commend: Commend.UpdateCommend): Post
 
     /**
+     * 게시글 좋아요
+     * */
+    fun likePost(commend: Commend.LikeCommend): Post
+
+    /**
+     * 게시글 좋아요 취소
+     * */
+    fun deleteLikePost(commend: Commend.LikeCommend): Post
+
+    /**
      * 게시글 삭제
      * */
     fun deletePost(commend: Commend.DeleteCommend)
@@ -58,6 +68,12 @@ interface PostUseCase {
             val title: String,
             val content: String,
             val modifier: String
+        ) : Commend()
+
+        data class LikeCommend(
+            override val boardId: Int,
+            val postId: Int,
+            val email: String
         ) : Commend()
 
         data class DeleteCommend(

@@ -55,8 +55,8 @@ class CommentController(private val commentUseCase: CommentUseCase){
         @RequestParam("cursor", required = false) cursor: Int?,
         @RequestParam("orderBy", required = true)
         @Pattern(
-            regexp = "\\b(?:up|recent)\\b",
-            message = "[orderBy]: up 혹은 recent만 허용됩니다."
+            regexp = "\\b(?:like|recent)\\b",
+            message = "[orderBy]: like 혹은 recent만 허용됩니다."
         ) orderBy: String
     ): ResponseEntity<CommentTopLevelResponse> =
         ResponseEntity.ok(

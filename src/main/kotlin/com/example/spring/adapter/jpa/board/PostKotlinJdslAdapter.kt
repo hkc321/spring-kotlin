@@ -47,6 +47,7 @@ class PostKotlinJdslAdapter(
                 column(PostJpaEntity::postId),
                 column(PostJpaEntity::title),
                 column(PostJpaEntity::content),
+                column(PostJpaEntity::like),
                 nestedCol(column(PostJpaEntity::writer), MemberJpaEntity::email),
                 column(PostJpaEntity::createdAt),
                 column(PostJpaEntity::updatedAt)
@@ -73,6 +74,7 @@ class PostKotlinJdslAdapter(
         val postId: Int,
         val title: String,
         val content: String,
+        val like: Int,
         val writer: String,
         val createdAt: LocalDateTime,
         val updatedAt: LocalDateTime?,

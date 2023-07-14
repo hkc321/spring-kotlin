@@ -53,13 +53,13 @@ class CommentKotlinJdslAdapter(
             )
             // where
             cursorComment?.let {
-                if (orderBy == "up") {
+                if (orderBy == "like") {
                     whereOr(
                         and(
-                            column(CommentJpaEntity::up).equal(it.up),
+                            column(CommentJpaEntity::like).equal(it.like),
                             column(CommentJpaEntity::commentId).lessThan(it.commentId)
                         ),
-                        column(CommentJpaEntity::up).lessThan(it.up)
+                        column(CommentJpaEntity::like).lessThan(it.like)
                     )
                 } else {
                     whereAnd(
@@ -70,9 +70,9 @@ class CommentKotlinJdslAdapter(
 
 
             //orderby
-            if (orderBy == "up") {
+            if (orderBy == "like") {
                 orderBy(
-                    ExpressionOrderSpec(column(CommentJpaEntity::up), false),
+                    ExpressionOrderSpec(column(CommentJpaEntity::like), false),
                     ExpressionOrderSpec(column(CommentJpaEntity::commentId), false)
                 )
             } else {

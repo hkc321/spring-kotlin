@@ -115,6 +115,42 @@ class PostController(private val postUseCase: PostUseCase) {
             )
         )
 
+    @PatchMapping("{postId}/like")
+    fun updatePostLike(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        principal: Principal
+    ): ResponseEntity<PostCommonResponse> =
+        ResponseEntity.ok(
+            postRestMapper.toPostCommonResponse(
+                postUseCase.likePost(
+                    PostUseCase.Commend.LikeCommend(
+                        boardId = boardId,
+                        postId = postId,
+                        email = principal.name
+                    )
+                )
+            )
+        )
+
+    @DeleteMapping("{postId}/like")
+    fun deletePostLike(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        principal: Principal
+    ): ResponseEntity<PostCommonResponse> =
+        ResponseEntity.ok(
+            postRestMapper.toPostCommonResponse(
+                postUseCase.deleteLikePost(
+                    PostUseCase.Commend.LikeCommend(
+                        boardId = boardId,
+                        postId = postId,
+                        email = principal.name
+                    )
+                )
+            )
+        )
+
     @DeleteMapping("{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deletePost(@PathVariable("boardId") boardId: Int, @PathVariable("postId") postId: Int, principal: Principal) =

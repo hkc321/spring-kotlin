@@ -4,6 +4,7 @@ import com.example.spring.application.port.`in`.board.BoardUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.PostJpaPort
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
+import com.example.spring.application.port.out.board.PostRedisPort
 import com.example.spring.domain.board.Post
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
@@ -14,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional
 class PostService(
     private val postJpaPort: PostJpaPort,
     private val postKotlinJdslPort: PostKotlinJdslPort,
-    private val boardUseCase: BoardUseCase
+    private val boardUseCase: BoardUseCase,
+    private val postRedisPort: PostRedisPort
 ) : PostUseCase {
 
     @Transactional
@@ -46,6 +48,30 @@ class PostService(
             commend.postId
         )
         post.update(commend.title, commend.content, commend.modifier)
+
+        return postJpaPort.updatePost(post)
+    }
+    @Transactional
+    override fun likePost(commend: PostUseCase.Commend.LikeCommend): Post {
+        val likeCount = postRedisPort.createPostLike(commend.boardId, commend.postId, commend.email)
+
+        val post: Post = postKotlinJdslPort.readPost(
+            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
+            commend.postId
+        )
+        post.updateUp(likeCount)
+
+        return postJpaPort.updatePost(post)
+    }
+
+    override fun deleteLikePost(commend: PostUseCase.Commend.LikeCommend): Post {
+        val likeCount = postRedisPort.deletePostLike(commend.boardId, commend.postId, commend.email)
+
+        val post: Post = postKotlinJdslPort.readPost(
+            boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
+            commend.postId
+        )
+        post.updateUp(likeCount)
 
         return postJpaPort.updatePost(post)
     }

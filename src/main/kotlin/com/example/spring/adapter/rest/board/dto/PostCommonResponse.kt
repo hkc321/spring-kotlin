@@ -5,7 +5,7 @@ data class PostCommonResponse(
     val boardId: Int,
     val title: String,
     val content: String,
-    val up: Int,
+    val like: Int,
     val writer: String,
     val createdAt: String,
     val updatedAt: String?

@@ -70,7 +70,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("boardId").value(boardId),
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
-            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("like").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt").value(null),
@@ -98,7 +98,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
-                        field("up", JsonFieldType.NUMBER, "Up(who click like) of post", false),
+                        field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
@@ -179,7 +179,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("content[].boardId", JsonFieldType.NUMBER, "BoardId of post", false),
                         field("content[].title", JsonFieldType.STRING, "Title of post", false),
                         field("content[].content", JsonFieldType.STRING, "Content if post", false),
-                        field("content[].up", JsonFieldType.NUMBER, "Up(who click like) of post", false),
+                        field("content[].like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
                         field("content[].writer", JsonFieldType.STRING, "Writer of post", false),
                         field("content[]createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("content[]updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
@@ -208,7 +208,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("boardId").value(boardId),
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
-            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("like").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt")
@@ -230,7 +230,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
-                        field("up", JsonFieldType.NUMBER, "Up(who click like) of post", false),
+                        field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
@@ -263,7 +263,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("boardId").value(boardId),
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
-            MockMvcResultMatchers.jsonPath("up").exists(),
+            MockMvcResultMatchers.jsonPath("like").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt").exists(),
@@ -289,7 +289,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
-                        field("up", JsonFieldType.NUMBER, "Up(who click like) of post", false),
+                        field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)

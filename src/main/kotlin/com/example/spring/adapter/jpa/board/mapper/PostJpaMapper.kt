@@ -23,6 +23,7 @@ class PostJpaMapper(
                 content = it.content,
                 writer = it.writer.email
             ).apply {
+                like = it.like
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
             }
@@ -38,6 +39,7 @@ class PostJpaMapper(
                 content = it.content,
                 writer = it.writer
             ).apply {
+                like = it.like
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
             }
@@ -53,6 +55,7 @@ class PostJpaMapper(
                 content = it.content,
                 writer = memberJpaRepository.findByEmail(it.writer) ?: throw MemberDataNotFoundException()
             ).apply {
+                like = it.like
                 createdAt = it.createdAt
                 updatedAt = it.updatedAt
             }

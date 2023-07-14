@@ -38,9 +38,9 @@ class CommentJpaEntity(
     @Column(nullable = false)
     var level: Int = level
 
-    @Column(nullable = false)
+    @Column(name = "like_count", nullable = false)
     @ColumnDefault("0")
-    var up: Int = 0
+    var like: Int = 0
 
     @Column(nullable = false)
     var content: String = content
