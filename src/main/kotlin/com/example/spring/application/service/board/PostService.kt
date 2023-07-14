@@ -63,7 +63,7 @@ class PostService(
 
         return postJpaPort.updatePost(post)
     }
-
+    @Transactional
     override fun deleteLikePost(commend: PostUseCase.Commend.LikeCommend): Post {
         val likeCount = postRedisPort.deletePostLike(commend.boardId, commend.postId, commend.email)
 
