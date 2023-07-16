@@ -40,7 +40,7 @@ class PostService(
             boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
             commend.postId
         ).apply {
-            this.updateIsLiked(!postRedisPort.checkPostLikeByEmail(commend.boardId, commend.postId, commend.reader))
+            this.updateIsLiked(!postRedisPort.checkPostLikeByEmail(this.boardId, this.postId, commend.reader))
         }
 
     @Transactional
@@ -54,8 +54,8 @@ class PostService(
         return postJpaPort.updatePost(post).apply {
             this.updateIsLiked(
                 !postRedisPort.checkPostLikeByEmail(
-                    commend.boardId,
-                    commend.postId,
+                    this.boardId,
+                    this.postId,
                     commend.modifier
                 )
             )
