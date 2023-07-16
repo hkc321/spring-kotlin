@@ -100,9 +100,9 @@ class PostController(private val postUseCase: PostUseCase, private val postSingl
         @PathVariable("postId") postId: Int,
         @RequestBody body: PostUpdateRequest,
         principal: Principal
-    ): ResponseEntity<PostCommonResponse> =
+    ): ResponseEntity<PostSingleResponse> =
         ResponseEntity.ok(
-            postRestMapper.toPostCommonResponse(
+            postSingleReponseMapper.toPostSingleResponse(
                 postUseCase.updatePost(
                     PostUseCase.Commend.UpdateCommend(
                         boardId = boardId,

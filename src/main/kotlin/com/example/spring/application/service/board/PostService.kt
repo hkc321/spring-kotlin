@@ -51,7 +51,15 @@ class PostService(
         )
         post.update(commend.title, commend.content, commend.modifier)
 
-        return postJpaPort.updatePost(post)
+        return postJpaPort.updatePost(post).apply {
+            this.updateIsLiked(
+                !postRedisPort.checkPostLikeByEmail(
+                    commend.boardId,
+                    commend.postId,
+                    commend.modifier
+                )
+            )
+        }
     }
 
     @Transactional
