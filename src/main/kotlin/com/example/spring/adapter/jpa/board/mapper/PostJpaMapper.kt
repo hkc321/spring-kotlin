@@ -1,8 +1,8 @@
 package com.example.spring.adapter.jpa.board.mapper
 
-import com.example.spring.adapter.jpa.board.PostKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.example.spring.adapter.jpa.board.repository.BoardJpaRepository
+import com.example.spring.adapter.jpa.board.repository.dto.PostPageResult
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import com.example.spring.application.service.board.exception.BoardDataNotFoundException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
@@ -30,7 +30,7 @@ class PostJpaMapper(
         }
     }
 
-    fun toPost(postPageResult: PostKotlinJdslAdapter.PostPageResult): Post {
+    fun toPost(postPageResult: PostPageResult): Post {
         return postPageResult.let {
             Post(
                 postId = it.postId,

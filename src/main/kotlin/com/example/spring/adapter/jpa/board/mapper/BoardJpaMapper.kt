@@ -1,7 +1,7 @@
 package com.example.spring.adapter.jpa.board.mapper
 
-import com.example.spring.adapter.jpa.board.BoardKotlinJdslAdapter
 import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
+import com.example.spring.adapter.jpa.board.repository.dto.BoardResult
 import com.example.spring.adapter.jpa.member.repository.MemberJpaRepository
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.board.Board
@@ -24,7 +24,7 @@ class BoardJpaMapper(private val memberJpaRepository: MemberJpaRepository) {
         }
     }
 
-    fun toBoard(boardJpaEntity: BoardKotlinJdslAdapter.BoardResult): Board {
+    fun toBoard(boardJpaEntity: BoardResult): Board {
         return boardJpaEntity.let {
             Board(
                 boardId = it.boardId,
