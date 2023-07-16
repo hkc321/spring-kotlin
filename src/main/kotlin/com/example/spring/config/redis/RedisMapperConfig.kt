@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter
 class RedisMapperConfig {
 
 
-    @Bean
+
     fun serializingObjectMapper(): ObjectMapper? {
         val ptv: PolymorphicTypeValidator = BasicPolymorphicTypeValidator
             .builder()

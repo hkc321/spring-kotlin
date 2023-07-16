@@ -67,7 +67,7 @@ class RedisConfig(
 //            .cacheDefaults(redisCacheConfiguration).build()
 //    }
 
-    @Bean
+
     fun redisCacheManager(): RedisCacheManager? {
         val redisCacheConfiguration = RedisCacheConfiguration
             .defaultCacheConfig()
