@@ -168,8 +168,18 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                             "The number of comment lists the user wants to receive. min = 1, max = 50",
                             false
                         ),
-                        parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true),
-                        parameter("orderBy", SimpleType.STRING, "Only like or recent are allowed as sorting criteria", false)
+                        parameter(
+                            "cursor",
+                            SimpleType.INTEGER,
+                            "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning. If the value queried in the db with the cursor does not exist, an empty list is returned.",
+                            true
+                        ),
+                        parameter(
+                            "orderBy",
+                            SimpleType.STRING,
+                            "Only like or recent are allowed as sorting criteria",
+                            false
+                        )
                     )
                     .responseSchema(Schema("commentReadTopLevel.Response"))
                     .responseFields(
@@ -201,7 +211,12 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
         //when
         var result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}/comments/{commentId}", boardId, postId, commentId)
+            RestDocumentationRequestBuilders.get(
+                "/boards/{boardId}/posts/{postId}/comments/{commentId}",
+                boardId,
+                postId,
+                commentId
+            )
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -259,7 +274,12 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
         //when
         var result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}/comments/{commentId}/childComment", boardId, postId, commentId)
+            RestDocumentationRequestBuilders.get(
+                "/boards/{boardId}/posts/{postId}/comments/{commentId}/childComment",
+                boardId,
+                postId,
+                commentId
+            )
                 .header("Authorization", "Bearer $token")
                 .queryParam("size", "20")
                 .queryParam("cursor", null)
@@ -289,7 +309,12 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                             "The number of comment lists the user wants to receive. min = 1, max = 50",
                             false
                         ),
-                        parameter("cursor", SimpleType.INTEGER, "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.", true)
+                        parameter(
+                            "cursor",
+                            SimpleType.INTEGER,
+                            "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.",
+                            true
+                        )
                     )
                     .responseSchema(Schema("commentChild.Response"))
                     .responseFields(
