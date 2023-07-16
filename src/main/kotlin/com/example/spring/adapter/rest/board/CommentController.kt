@@ -1,7 +1,7 @@
 package com.example.spring.adapter.rest.board
 
 import com.example.spring.adapter.rest.board.dto.*
-import com.example.spring.adapter.rest.board.mapper.CommentRestMapper
+import com.example.spring.adapter.rest.board.mapper.CommentSingleResponseMapper
 import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.domain.board.Comment
 import jakarta.validation.Valid
@@ -17,8 +17,10 @@ import java.security.Principal
 @Validated
 @RestController
 @RequestMapping("boards/{boardId}/posts/{postId}/comments")
-class CommentController(private val commentUseCase: CommentUseCase) {
-    private val commentRestMapper = CommentRestMapper.INSTANCE
+class CommentController(
+    private val commentUseCase: CommentUseCase,
+    private val commentSingleResponseMapper: CommentSingleResponseMapper
+) {
 
     @PostMapping("")
     fun createComment(
@@ -26,7 +28,7 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @PathVariable("postId") postId: Int,
         @Valid @RequestBody body: CommentCreateRequest,
         principal: Principal
-    ): ResponseEntity<CommentCommonResponse> {
+    ): ResponseEntity<CommentSingleResponse> {
         val createdComment: Comment = commentUseCase.createComment(
             CommentUseCase.Commend.CreateCommend(
                 boardId = boardId,
@@ -41,7 +43,7 @@ class CommentController(private val commentUseCase: CommentUseCase) {
             "/boards/${createdComment.boardId}/posts/${createdComment.postId}/comments/${createdComment.commentId}"
         return ResponseEntity.status(HttpStatus.CREATED).header("Location", location)
             .body(
-                commentRestMapper.toCommentCommonResponse(createdComment)
+                commentSingleResponseMapper.toCommentSingleResponse(createdComment)
             )
     }
 
@@ -57,7 +59,8 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @Pattern(
             regexp = "\\b(?:like|recent)\\b",
             message = "[orderBy]: like 혹은 recent만 허용됩니다."
-        ) orderBy: String
+        ) orderBy: String,
+        principal: Principal
     ): ResponseEntity<CommentTopLevelResponse> =
         ResponseEntity.ok(
             commentUseCase.readTopLevelComment(
@@ -66,11 +69,12 @@ class CommentController(private val commentUseCase: CommentUseCase) {
                     postId,
                     size,
                     cursor,
-                    orderBy
+                    orderBy,
+                    principal.name
                 )
             ).let {
                 it.first.map { comment ->
-                    commentRestMapper.toCommentCommonResponse(comment)
+                    commentSingleResponseMapper.toCommentSingleResponse(comment)
                 }.let { changed ->
                     CommentTopLevelResponse(changed, it.second)
                 }
@@ -81,15 +85,17 @@ class CommentController(private val commentUseCase: CommentUseCase) {
     fun readComment(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
-        @PathVariable("commentId") commentId: Int
-    ): ResponseEntity<CommentCommonResponse> =
+        @PathVariable("commentId") commentId: Int,
+        principal: Principal
+    ): ResponseEntity<CommentSingleResponse> =
         ResponseEntity.ok(
-            commentRestMapper.toCommentCommonResponse(
+            commentSingleResponseMapper.toCommentSingleResponse(
                 commentUseCase.readComment(
                     CommentUseCase.Commend.ReadCommend(
                         boardId = boardId,
                         postId = postId,
-                        commentId = commentId
+                        commentId = commentId,
+                        principal.name
                     )
                 )
             )
@@ -104,7 +110,8 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @RequestParam("size", required = true)
         @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
         @Min(value = 1, message = "[size]: 1 이상이여야 합니다.") size: Int,
-        @RequestParam("cursor", required = false) cursor: Int?
+        @RequestParam("cursor", required = false) cursor: Int?,
+        principal: Principal
     ): ResponseEntity<CommentChildResponse> =
         ResponseEntity.ok(
             commentUseCase.readChildComment(
@@ -113,11 +120,12 @@ class CommentController(private val commentUseCase: CommentUseCase) {
                     postId,
                     commentId,
                     size,
-                    cursor
+                    cursor,
+                    principal.name
                 )
             ).let {
                 it.first.map { comment ->
-                    commentRestMapper.toCommentCommonResponse(comment)
+                    commentSingleResponseMapper.toCommentSingleResponse(comment)
                 }.let { changed ->
                     CommentChildResponse(changed, it.second)
                 }
@@ -132,9 +140,9 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @PathVariable("commentId") commentId: Int,
         @RequestBody body: CommentUpdateRequest,
         principal: Principal
-    ): ResponseEntity<CommentCommonResponse> =
+    ): ResponseEntity<CommentSingleResponse> =
         ResponseEntity.ok(
-            commentRestMapper.toCommentCommonResponse(
+            commentSingleResponseMapper.toCommentSingleResponse(
                 commentUseCase.updateComment(
                     CommentUseCase.Commend.UpdateCommend(
                         boardId,
@@ -153,9 +161,9 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
         principal: Principal
-    ): ResponseEntity<CommentCommonResponse> =
+    ): ResponseEntity<CommentSingleResponse> =
         ResponseEntity.ok(
-            commentRestMapper.toCommentCommonResponse(
+            commentSingleResponseMapper.toCommentSingleResponse(
                 commentUseCase.likeComment(
                     CommentUseCase.Commend.LikeCommend(
                         boardId, postId, commentId, principal.name
@@ -170,9 +178,9 @@ class CommentController(private val commentUseCase: CommentUseCase) {
         @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
         principal: Principal
-    ): ResponseEntity<CommentCommonResponse> =
+    ): ResponseEntity<CommentSingleResponse> =
         ResponseEntity.ok(
-            commentRestMapper.toCommentCommonResponse(
+            commentSingleResponseMapper.toCommentSingleResponse(
                 commentUseCase.deleteLikeComment(
                     CommentUseCase.Commend.LikeCommend(
                         boardId, postId, commentId, principal.name

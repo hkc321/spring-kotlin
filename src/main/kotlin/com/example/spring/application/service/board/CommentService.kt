@@ -40,14 +40,34 @@ class CommentService(
             commend.size,
             commend.cursor,
             commend.orderBy
-        )
+        ).apply {
+            this.first.map {
+                it.updateIsLiked(
+                    !commentRedisPort.checkCommentLikeByEmail(
+                        it.boardId,
+                        it.postId,
+                        it.commentId,
+                        commend.reader
+                    )
+                )
+            }
+        }
     }
 
     @Transactional(readOnly = true)
     override fun readComment(commend: CommentUseCase.Commend.ReadCommend): Comment {
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
-        return commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
+        return commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId).apply {
+            this.updateIsLiked(
+                !commentRedisPort.checkCommentLikeByEmail(
+                    this.boardId,
+                    this.postId,
+                    this.commentId,
+                    commend.reader
+                )
+            )
+        }
     }
 
     @Transactional(readOnly = true)
@@ -61,7 +81,18 @@ class CommentService(
             commend.parentCommentId,
             commend.size,
             commend.cursor
-        )
+        ).apply {
+            this.first.map {
+                it.updateIsLiked(
+                    !commentRedisPort.checkCommentLikeByEmail(
+                        it.boardId,
+                        it.postId,
+                        it.commentId,
+                        commend.reader
+                    )
+                )
+            }
+        }
     }
 
     @Transactional
@@ -75,13 +106,24 @@ class CommentService(
             )
         comment.update(commend.content, commend.modifier)
 
-        return commentJpaPort.updateComment(comment)
+        return commentJpaPort.updateComment(comment).apply {
+            this.updateIsLiked(
+                !commentRedisPort.checkCommentLikeByEmail(
+                    this.boardId,
+                    this.postId,
+                    this.commentId,
+                    commend.modifier
+                )
+            )
+        }
     }
+
     @Transactional
     override fun likeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
-        val likeCount = commentRedisPort.createCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
+        val likeCount =
+            commentRedisPort.createCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
         val comment: Comment =
             commentJpaPort.readComment(
                 boardId = commend.boardId,
@@ -90,13 +132,15 @@ class CommentService(
             )
         comment.updateLike(likeCount)
 
-        return commentJpaPort.updateComment(comment)
+        return commentJpaPort.updateComment(comment).apply { this.updateIsLiked(false) }
     }
+
     @Transactional
     override fun deleteLikeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
-        val likeCount = commentRedisPort.deleteCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
+        val likeCount =
+            commentRedisPort.deleteCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
         val comment: Comment =
             commentJpaPort.readComment(
                 boardId = commend.boardId,
@@ -105,13 +149,13 @@ class CommentService(
             )
         comment.updateLike(likeCount)
 
-        return commentJpaPort.updateComment(comment)
+        return commentJpaPort.updateComment(comment).apply { this.updateIsLiked(true) }
     }
 
     @Transactional
     override fun deleteComment(commend: CommentUseCase.Commend.DeleteCommend) {
         val comment =
-            readComment(CommentUseCase.Commend.ReadCommend(commend.boardId, commend.postId, commend.commentId))
+            readComment(CommentUseCase.Commend.ReadCommend(commend.boardId, commend.postId, commend.commentId, commend.modifier))
         comment.checkWriter(commend.modifier)
 
         commentJpaPort.deleteComment(comment.boardId, comment.postId, comment.commentId)

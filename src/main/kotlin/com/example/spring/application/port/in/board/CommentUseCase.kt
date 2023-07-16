@@ -61,7 +61,8 @@ interface CommentUseCase {
             override val postId: Int,
             val size: Int,
             val cursor: Int?,
-            val orderBy: String
+            val orderBy: String,
+            val reader: String
         ) : Commend()
 
         data class ReadChildCommend(
@@ -70,12 +71,14 @@ interface CommentUseCase {
             val parentCommentId: Int,
             val size: Int,
             val cursor: Int?,
+            val reader: String
         ) : Commend()
 
         data class ReadCommend(
             override val boardId: Int,
             override val postId: Int,
-            val commentId: Int
+            val commentId: Int,
+            val reader: String
         ) : Commend()
 
         data class UpdateCommend(

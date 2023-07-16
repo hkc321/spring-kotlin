@@ -19,6 +19,7 @@ class Comment(
     var parentComment: Int? = parentComment
     var level: Int = level
     var like: Int = 0
+    var isLiked: Boolean = true
     var content: String = content
     var childCommentCount: Int = 0
     var writer: String = writer
@@ -39,5 +40,9 @@ class Comment(
 
     fun updateLike(like: Int) {
         this.like = like
+    }
+
+    fun updateIsLiked(boolean: Boolean) {
+        this.isLiked = boolean
     }
 }
