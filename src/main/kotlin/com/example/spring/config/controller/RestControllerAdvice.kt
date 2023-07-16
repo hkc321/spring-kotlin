@@ -18,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindingResult
 import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
+import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
@@ -26,6 +27,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(MissingServletRequestParameterException::class)
+    fun missingServletRequestParameterException(ex: MissingServletRequestParameterException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ErrorCode.INVALID_PARAMETER,
+                    "Parameter is missing: [${ex.parameterName}(${ex.parameterType})]"
+                )
+            )
+    }
 
     @ExceptionHandler(CommentLikeException::class)
     fun commentLikeException(ex: CommentLikeException): ResponseEntity<BaseResponseException> {
