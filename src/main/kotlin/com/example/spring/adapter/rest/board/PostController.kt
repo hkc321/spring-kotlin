@@ -1,10 +1,8 @@
 package com.example.spring.adapter.rest.board
 
-import com.example.spring.adapter.rest.board.dto.PostCommonResponse
-import com.example.spring.adapter.rest.board.dto.PostCreateRequest
-import com.example.spring.adapter.rest.board.dto.PostReadPageListResponse
-import com.example.spring.adapter.rest.board.dto.PostUpdateRequest
+import com.example.spring.adapter.rest.board.dto.*
 import com.example.spring.adapter.rest.board.mapper.PostRestMapper
+import com.example.spring.adapter.rest.board.mapper.PostSingleReponseMapper
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.domain.board.Post
 import jakarta.validation.constraints.Pattern
@@ -22,7 +20,7 @@ import java.security.Principal
 @Validated
 @RestController
 @RequestMapping("boards/{boardId}/posts")
-class PostController(private val postUseCase: PostUseCase) {
+class PostController(private val postUseCase: PostUseCase, private val postSingleReponseMapper: PostSingleReponseMapper) {
     private val postRestMapper = PostRestMapper.INSTANCE
 
     @PostMapping("")
@@ -30,7 +28,7 @@ class PostController(private val postUseCase: PostUseCase) {
         @PathVariable("boardId") boardId: Int,
         @RequestBody body: PostCreateRequest,
         principal: Principal
-    ): ResponseEntity<PostCommonResponse> {
+    ): ResponseEntity<PostSingleResponse> {
         val createdPost: Post = postUseCase.createPost(
             PostUseCase.Commend.CreateCommend(
                 boardId = boardId,
@@ -41,7 +39,7 @@ class PostController(private val postUseCase: PostUseCase) {
         )
         val location = "/board/${createdPost.boardId}/posts/${createdPost.postId}"
         return ResponseEntity.created(URI.create(location)).body(
-            postRestMapper.toPostCommonResponse(createdPost)
+            postSingleReponseMapper.toPostSingleResponse(createdPost)
         )
     }
 
@@ -82,13 +80,15 @@ class PostController(private val postUseCase: PostUseCase) {
     fun readPost(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
-    ): ResponseEntity<PostCommonResponse> =
+        principal: Principal
+    ): ResponseEntity<PostSingleResponse> =
         ResponseEntity.ok(
-            postRestMapper.toPostCommonResponse(
+            postSingleReponseMapper.toPostSingleResponse(
                 postUseCase.readPost(
                     PostUseCase.Commend.ReadCommend(
                         boardId = boardId,
-                        postId = postId
+                        postId = postId,
+                        reader = principal.name
                     )
                 )
             )
@@ -120,9 +120,9 @@ class PostController(private val postUseCase: PostUseCase) {
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
         principal: Principal
-    ): ResponseEntity<PostCommonResponse> =
+    ): ResponseEntity<PostSingleResponse> =
         ResponseEntity.ok(
-            postRestMapper.toPostCommonResponse(
+            postSingleReponseMapper.toPostSingleResponse(
                 postUseCase.likePost(
                     PostUseCase.Commend.LikeCommend(
                         boardId = boardId,
@@ -138,9 +138,9 @@ class PostController(private val postUseCase: PostUseCase) {
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
         principal: Principal
-    ): ResponseEntity<PostCommonResponse> =
+    ): ResponseEntity<PostSingleResponse> =
         ResponseEntity.ok(
-            postRestMapper.toPostCommonResponse(
+            postSingleReponseMapper.toPostSingleResponse(
                 postUseCase.deleteLikePost(
                     PostUseCase.Commend.LikeCommend(
                         boardId = boardId,

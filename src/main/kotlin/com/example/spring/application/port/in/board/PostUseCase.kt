@@ -59,7 +59,8 @@ interface PostUseCase {
 
         data class ReadCommend(
             override val boardId: Int,
-            val postId: Int
+            val postId: Int,
+            val reader: String = ""
         ) : Commend()
 
         data class UpdateCommend(

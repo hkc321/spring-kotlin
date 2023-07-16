@@ -39,7 +39,9 @@ class PostService(
         postKotlinJdslPort.readPost(
             boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId)),
             commend.postId
-        )
+        ).apply {
+            this.updateIsLiked(!postRedisPort.checkPostLikeByEmail(commend.boardId, commend.postId, commend.reader))
+        }
 
     @Transactional
     override fun updatePost(commend: PostUseCase.Commend.UpdateCommend): Post {
@@ -51,6 +53,7 @@ class PostService(
 
         return postJpaPort.updatePost(post)
     }
+
     @Transactional
     override fun likePost(commend: PostUseCase.Commend.LikeCommend): Post {
         val likeCount = postRedisPort.createPostLike(commend.boardId, commend.postId, commend.email)
@@ -61,8 +64,9 @@ class PostService(
         )
         post.updateLike(likeCount)
 
-        return postJpaPort.updatePost(post)
+        return postJpaPort.updatePost(post).apply { this.updateIsLiked(false) }
     }
+
     @Transactional
     override fun deleteLikePost(commend: PostUseCase.Commend.LikeCommend): Post {
         val likeCount = postRedisPort.deletePostLike(commend.boardId, commend.postId, commend.email)
@@ -73,7 +77,7 @@ class PostService(
         )
         post.updateLike(likeCount)
 
-        return postJpaPort.updatePost(post)
+        return postJpaPort.updatePost(post).apply { this.updateIsLiked(true) }
     }
 
     @Transactional

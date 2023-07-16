@@ -17,6 +17,7 @@ class Post(
     var content: String = content
     var like: Int = 0
     var writer: String = writer
+    var isLiked: Boolean = true
 
     fun update(title: String, content: String, modifier: String) {
         this.checkWriter(modifier)
@@ -35,5 +36,9 @@ class Post(
 
     fun updateLike(like: Int) {
         this.like = like
+    }
+
+    fun updateIsLiked(boolean: Boolean) {
+        this.isLiked = boolean
     }
 }
