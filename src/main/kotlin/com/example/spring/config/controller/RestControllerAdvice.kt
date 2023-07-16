@@ -1,9 +1,6 @@
 package com.example.spring.config.controller
 
-import com.example.spring.application.service.board.exception.BoardDataNotFoundException
-import com.example.spring.application.service.board.exception.CommentDataNotFoundException
-import com.example.spring.application.service.board.exception.PostDataNotFoundException
-import com.example.spring.application.service.board.exception.PostLikeException
+import com.example.spring.application.service.board.exception.*
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
@@ -29,6 +26,17 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(CommentLikeException::class)
+    fun commentLikeException(ex: CommentLikeException): ResponseEntity<BaseResponseException> {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseResponseException(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
 
     @ExceptionHandler(PostLikeException::class)
     fun postLikeException(ex: PostLikeException): ResponseEntity<BaseResponseException> {

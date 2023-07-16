@@ -17,7 +17,7 @@ import java.security.Principal
 @Validated
 @RestController
 @RequestMapping("boards/{boardId}/posts/{postId}/comments")
-class CommentController(private val commentUseCase: CommentUseCase){
+class CommentController(private val commentUseCase: CommentUseCase) {
     private val commentRestMapper = CommentRestMapper.INSTANCE
 
     @PostMapping("")
@@ -103,7 +103,7 @@ class CommentController(private val commentUseCase: CommentUseCase){
         @PathVariable("commentId") commentId: Int,
         @RequestParam("size", required = true)
         @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
-        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.")size: Int,
+        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.") size: Int,
         @RequestParam("cursor", required = false) cursor: Int?
     ): ResponseEntity<CommentChildResponse> =
         ResponseEntity.ok(
@@ -147,6 +147,40 @@ class CommentController(private val commentUseCase: CommentUseCase){
             )
         )
 
+    @PatchMapping("{commentId}/like")
+    fun updateCommentLike(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @PathVariable("commentId") commentId: Int,
+        principal: Principal
+    ): ResponseEntity<CommentCommonResponse> =
+        ResponseEntity.ok(
+            commentRestMapper.toCommentCommonResponse(
+                commentUseCase.likeComment(
+                    CommentUseCase.Commend.LikeCommend(
+                        boardId, postId, commentId, principal.name
+                    )
+                )
+            )
+        )
+
+    @DeleteMapping("{commentId}/like")
+    fun deleteCommentLike(
+        @PathVariable("boardId") boardId: Int,
+        @PathVariable("postId") postId: Int,
+        @PathVariable("commentId") commentId: Int,
+        principal: Principal
+    ): ResponseEntity<CommentCommonResponse> =
+        ResponseEntity.ok(
+            commentRestMapper.toCommentCommonResponse(
+                commentUseCase.deleteLikeComment(
+                    CommentUseCase.Commend.LikeCommend(
+                        boardId, postId, commentId, principal.name
+                    )
+                )
+            )
+        )
+
     @DeleteMapping("{commentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteComment(
@@ -154,5 +188,12 @@ class CommentController(private val commentUseCase: CommentUseCase){
         @PathVariable("postId") postId: Int,
         @PathVariable("commentId") commentId: Int,
         principal: Principal
-    ) = commentUseCase.deleteComment(CommentUseCase.Commend.DeleteCommend(boardId, postId, commentId, principal.name))
+    ) = commentUseCase.deleteComment(
+        CommentUseCase.Commend.DeleteCommend(
+            boardId,
+            postId,
+            commentId,
+            principal.name
+        )
+    )
 }

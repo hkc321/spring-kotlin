@@ -29,6 +29,16 @@ interface CommentUseCase {
     fun updateComment(commend: Commend.UpdateCommend): Comment
 
     /**
+     * 댓글 좋아요
+     * */
+    fun likeComment(commend: Commend.LikeCommend): Comment
+
+    /**
+     * 댓글 좋아요 취소
+     * */
+    fun deleteLikeComment(commend: Commend.LikeCommend): Comment
+
+    /**
      * 댓글 삭제
      * */
     fun deleteComment(commend: Commend.DeleteCommend)
@@ -74,6 +84,13 @@ interface CommentUseCase {
             val commentId: Int,
             val content: String,
             val modifier: String
+        ) : Commend()
+
+        data class LikeCommend(
+            override val boardId: Int,
+            override val postId: Int,
+            val commentId: Int,
+            val email: String
         ) : Commend()
 
         data class DeleteCommend(

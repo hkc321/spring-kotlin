@@ -36,4 +36,8 @@ class Comment(
             throw WriterNotMatchException()
         }
     }
+
+    fun updateLike(like: Int) {
+        this.like = like
+    }
 }
