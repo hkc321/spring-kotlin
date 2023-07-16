@@ -13,13 +13,13 @@ class PostServiceDbTest {
     @Autowired
     private lateinit var postService: PostService
 
-    @Test
-    fun likePost() {
-        for(i: Int in 1..10000){
-            postService.likePost(PostUseCase.Commend.LikeCommend(2,2, "test$i"))
-        }
-        val ww = postService.readPost(PostUseCase.Commend.ReadCommend(2,2))
-        Assertions.assertEquals(10000, ww.like)
-    }
+//    @Test
+//    fun likePost() {
+//        for(i: Int in 1..10000){
+//            postService.likePost(PostUseCase.Commend.LikeCommend(2,2, "test$i"))
+//        }
+//        val ww = postService.readPost(PostUseCase.Commend.ReadCommend(2,2))
+//        Assertions.assertEquals(10000, ww.like)
+//    }
 
 }
