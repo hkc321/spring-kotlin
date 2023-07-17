@@ -71,6 +71,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("like").exists(),
+            MockMvcResultMatchers.jsonPath("isLiked").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt").value(null),
@@ -99,6 +100,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
                         field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
+                        field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
@@ -125,9 +127,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
         var result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards/{boardId}/posts", boardId)
                 .header("Authorization", "Bearer $token")
-                .queryParam("page", "0")
+                .queryParam("page", "1")
                 .queryParam("size", "20")
-                .queryParam("sort", "postId,DESC")
+                .queryParam("sort", "postId")
                 .queryParam("keyword", null)
                 .queryParam("searchType", null)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -157,16 +159,16 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         parameter(
                             "page",
                             SimpleType.INTEGER,
-                            "Requested page number(start is 0 not 1). And default is 0",
-                            true
+                            "Requested page number(page > 0)",
+                            false
                         ),
                         parameter(
                             "size",
                             SimpleType.INTEGER,
-                            "The number of posts displayed on one page. Default is 20",
-                            true
+                            "The number of posts displayed on one page(size > 0)",
+                            false
                         ),
-                        parameter("sort", SimpleType.STRING, "Sort by request. Default is [postId,DESC]", true)
+                        parameter("sort", SimpleType.STRING, "Sort by request(only postId or like)", false)
                     )
                     .responseSchema(Schema("postReadPageList.Response"))
                     .responseFields(
@@ -209,6 +211,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("like").exists(),
+            MockMvcResultMatchers.jsonPath("isLiked").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt")
@@ -231,6 +234,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
                         field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
+                        field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
@@ -264,6 +268,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("title").exists(),
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("like").exists(),
+            MockMvcResultMatchers.jsonPath("isLiked").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
             MockMvcResultMatchers.jsonPath("updatedAt").exists(),
@@ -290,6 +295,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false),
                         field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
+                        field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
                         field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
