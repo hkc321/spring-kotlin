@@ -6,7 +6,10 @@ import com.example.spring.adapter.rest.board.dto.BoardReadPageListResponse
 import com.example.spring.adapter.rest.board.dto.BoardUpdateRequest
 import com.example.spring.adapter.rest.board.mapper.BoardRestMapper
 import com.example.spring.application.port.`in`.board.BoardUseCase
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
 import org.springframework.data.domain.Sort
 import org.springframework.data.web.PageableDefault
@@ -47,21 +50,18 @@ class BoardController(private val boardUseCase: BoardUseCase) {
             regexp = "\\b(?:title|content|writer)\\b",
             message = "[searchType]: content, description 혹은 writer만 허용됩니다."
         ) searchType: String? = null,
-        @PageableDefault(
-            page = 0,
-            size = 20
-        )
-        @SortDefault.SortDefaults(
-            SortDefault(sort = ["boardId"], direction = Sort.Direction.DESC)
-        )
-        pageable: Pageable
+        @RequestParam("page")
+        @Min(value = 1, message = "[page]: 1 이상이여야 합니다.") page: Int,
+        @RequestParam("size")
+        @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
+        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.") size: Int
     ): ResponseEntity<BoardReadPageListResponse> =
         ResponseEntity.ok(
             boardUseCase.readBoardPageList(
                 BoardUseCase.Commend.ReadListCommend(
                     keyword = keyword,
                     searchType = searchType,
-                    pageable = pageable
+                    pageable = PageRequest.of(page - 1, size, Sort.by("boardId").descending())
                 )
             ).map {
                 boardRestMapper.toBoardCommonResponse(it)
