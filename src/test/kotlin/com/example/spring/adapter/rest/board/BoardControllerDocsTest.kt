@@ -45,9 +45,8 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     fun createBoard() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
-        input["name"] = "testqqq"
+        input["name"] = "testBoardCreate"
         input["description"] = "test"
-        input["writer"] = "test"
 
         val responseFields = arrayOf(
             PayloadDocumentation.fieldWithPath("boardId").type(JsonFieldType.NUMBER)
@@ -71,9 +70,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
             PayloadDocumentation.fieldWithPath("name").type(JsonFieldType.STRING)
                 .description("Name of board"),
             PayloadDocumentation.fieldWithPath("description").type(JsonFieldType.STRING)
-                .description("Description of board"),
-            PayloadDocumentation.fieldWithPath("writer").type(JsonFieldType.STRING)
-                .description("Writer of board"),
+                .description("Description of board")
         ).toList()
 
 //        val responseHeaders = arrayOf(
@@ -149,19 +146,16 @@ class BoardControllerDocsTest : RestdocsTestDsl {
         var result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards")
                 .header("Authorization", "Bearer $token")
-                .param("page", "0")
+                .param("page", "1")
                 .param("size", "20")
-                .param("sort", "boardId,DESC")
                 .contentType(MediaType.APPLICATION_JSON)
         )
 
         val queryParameters = arrayOf(
             ResourceDocumentation.parameterWithName("page").type(SimpleType.INTEGER)
-                .description("Requested page number(start is 0)"),
+                .description("Requested page number(page > 0)"),
             ResourceDocumentation.parameterWithName("size").type(SimpleType.INTEGER)
-                .description("The number of posts displayed on one page"),
-            ResourceDocumentation.parameterWithName("sort").type(SimpleType.INTEGER)
-                .description("Sort by request")
+                .description("The number of posts displayed on one page(size > 0)")
         ).toList()
 
         val responseFields = arrayOf(
@@ -224,7 +218,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .summary("Read paging board list")
                             .description(
                                 """
-                                    Read paging board list
+                                    Read paging board list. Only sort by boardId desc
                                 """.trimIndent()
                             )
                             .queryParameters(
@@ -320,9 +314,8 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     fun `PATCH boards-{boardId}`() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
-        input["name"] = "testasd"
+        input["name"] = "testBoardUpdate"
         input["description"] = "test"
-        input["modifier"] = "test"
         val boardId = 2
 
         val responseFields = arrayOf(
@@ -348,9 +341,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 .description("Name of board"),
             PayloadDocumentation.fieldWithPath("description")
                 .type(JsonFieldType.STRING)
-                .description("Description of board"),
-            PayloadDocumentation.fieldWithPath("modifier").type(JsonFieldType.STRING)
-                .optional().description("Modifier of board")
+                .description("Description of board")
         ).toList()
 
         //when
