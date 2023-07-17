@@ -5,11 +5,11 @@ import com.example.spring.adapter.rest.board.mapper.PostRestMapper
 import com.example.spring.adapter.rest.board.mapper.PostSingleReponseMapper
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.domain.board.Post
+import jakarta.validation.constraints.Max
+import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.Pattern
-import org.springframework.data.domain.Pageable
+import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
-import org.springframework.data.web.PageableDefault
-import org.springframework.data.web.SortDefault
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
@@ -20,7 +20,10 @@ import java.security.Principal
 @Validated
 @RestController
 @RequestMapping("boards/{boardId}/posts")
-class PostController(private val postUseCase: PostUseCase, private val postSingleReponseMapper: PostSingleReponseMapper) {
+class PostController(
+    private val postUseCase: PostUseCase,
+    private val postSingleReponseMapper: PostSingleReponseMapper
+) {
     private val postRestMapper = PostRestMapper.INSTANCE
 
     @PostMapping("")
@@ -52,14 +55,16 @@ class PostController(private val postUseCase: PostUseCase, private val postSingl
             regexp = "\\b(?:title|content|writer)\\b",
             message = "[searchType]: title, content 혹은 writer만 허용됩니다."
         ) searchType: String? = null,
-        @PageableDefault(
-            page = 0,
-            size = 20
-        )
-        @SortDefault.SortDefaults(
-            SortDefault(sort = ["postId"], direction = Sort.Direction.DESC)
-        )
-        pageable: Pageable
+        @RequestParam("page")
+        @Min(value = 1, message = "[page]: 1 이상이여야 합니다.") page: Int,
+        @RequestParam("size")
+        @Max(value = 50, message = "[size]: 50 이하여야 합니다.")
+        @Min(value = 1, message = "[size]: 1 이상이여야 합니다.") size: Int,
+        @RequestParam("sort")
+        @Pattern(
+            regexp = "\\b(?:postId|like)\\b",
+            message = "[sort]: postId 혹은 like만 허용됩니다."
+        ) sort: String,
     ): ResponseEntity<PostReadPageListResponse> =
         ResponseEntity.ok(
             postUseCase.readPostPageList(
@@ -67,7 +72,7 @@ class PostController(private val postUseCase: PostUseCase, private val postSingl
                     boardId = boardId,
                     keyword = keyword,
                     searchType = searchType,
-                    pageable = pageable
+                    pageable = PageRequest.of(page - 1, size, Sort.by(sort).descending())
                 )
             ).map {
                 postRestMapper.toPostCommonResponse(it)

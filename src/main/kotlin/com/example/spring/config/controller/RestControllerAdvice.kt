@@ -4,8 +4,8 @@ import com.example.spring.application.service.board.exception.*
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
-import com.example.spring.config.dto.BaseResponseException
 import com.example.spring.config.code.ErrorCode
+import com.example.spring.config.dto.BaseResponseException
 import com.example.spring.config.exception.WriterNotMatchException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
@@ -96,11 +96,16 @@ class ControllerAdvice {
 
     @ExceptionHandler(ConstraintViolationException::class)
     fun constraintViolationException(ex: ConstraintViolationException): ResponseEntity<BaseResponseException> {
+        var errorMessage = ""
+        ex.constraintViolations.iterator().forEach {
+            errorMessage += it.message + " "
+        }
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
                 BaseResponseException(
                     ErrorCode.INVALID_PARAMETER,
-                    ex.message.toString()
+                    errorMessage.trim()
                 )
             )
     }
