@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.Schema
 import com.epages.restdocs.apispec.SimpleType
 import com.example.spring.application.port.out.board.BoardJpaPort
 import com.example.spring.application.port.out.board.PostJpaPort
+import com.example.spring.application.port.out.board.PostRedisPort
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.board.exception.PostDataNotFoundException
 import com.example.spring.application.service.member.JwtService
@@ -46,14 +47,17 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Autowired
     private lateinit var memberJpaPort: MemberJpaPort
 
+    @Autowired lateinit var postRedisPort: PostRedisPort
+
 
     @Test
     @Transactional
     fun createPost() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
-        input["content"] = "test"
+        input["content"] = email
         val boardId = 2
 
         //when
@@ -120,7 +124,8 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readPostPageList() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
         val boardId = 2
 
         //when
@@ -193,7 +198,8 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readPost() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
         val boardId = 2
         val postId = 2
 
@@ -246,10 +252,11 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun updatePost() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
-        input["content"] = "test"
+        input["content"] = email
         val boardId = 2
         val postId = 2
 
@@ -288,7 +295,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("title", JsonFieldType.STRING, "Title of post", false),
                         field("content", JsonFieldType.STRING, "Content of post", false)
                     )
-                    .responseSchema(Schema("postCreate.Response"))
+                    .responseSchema(Schema("postUpdate.Response"))
                     .responseFields(
                         field("postId", JsonFieldType.NUMBER, "Unique post ID", false),
                         field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
@@ -306,15 +313,128 @@ class PostControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    fun updatePostLike() {
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val boardId = 2
+        val postId = 2
+
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/like", boardId, postId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("postId").exists(),
+            MockMvcResultMatchers.jsonPath("boardId").value(boardId),
+            MockMvcResultMatchers.jsonPath("title").exists(),
+            MockMvcResultMatchers.jsonPath("content").exists(),
+            MockMvcResultMatchers.jsonPath("like").exists(),
+            MockMvcResultMatchers.jsonPath("isLiked").exists(),
+            MockMvcResultMatchers.jsonPath("writer").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").exists(),
+        ).andDocument(
+            "PATCH-boards-{boardId}-posts-{postId}-like",
+            snippets = makeSnippets(
+                ResourceSnippetParameters.builder()
+                    .tag("posts")
+                    .summary("Update post like")
+                    .description("Update post's like with send info")
+                    .pathParameters(
+                        parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
+                        parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
+                    )
+                    .responseSchema(Schema("postUpdateLike.Response"))
+                    .responseFields(
+                        field("postId", JsonFieldType.NUMBER, "Unique post ID", false),
+                        field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
+                        field("title", JsonFieldType.STRING, "Title of post", false),
+                        field("content", JsonFieldType.STRING, "Content of post", false),
+                        field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
+                        field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
+                        field("writer", JsonFieldType.STRING, "Writer of post", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
+                    )
+                    .build()
+            )
+        )
+
+        postRedisPort.deletePostLike(boardId, postId, email)
+        Assertions.assertFalse { postRedisPort.checkPostLikeByEmail(boardId, postId, email) }
+    }
+
+    @Test
+    fun deletePostLike() {
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val boardId = 2
+        val postId = 2
+
+        postRedisPort.createPostLike(boardId, postId, email)
+
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/unlike", boardId, postId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("postId").exists(),
+            MockMvcResultMatchers.jsonPath("boardId").value(boardId),
+            MockMvcResultMatchers.jsonPath("title").exists(),
+            MockMvcResultMatchers.jsonPath("content").exists(),
+            MockMvcResultMatchers.jsonPath("like").exists(),
+            MockMvcResultMatchers.jsonPath("isLiked").exists(),
+            MockMvcResultMatchers.jsonPath("writer").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").exists(),
+        ).andDocument(
+            "PATCH-boards-{boardId}-posts-{postId}-unlike",
+            snippets = makeSnippets(
+                ResourceSnippetParameters.builder()
+                    .tag("posts")
+                    .summary("Update post unlike")
+                    .description("Update post unlike with send info")
+                    .pathParameters(
+                        parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
+                        parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
+                    )
+                    .responseSchema(Schema("postUpdateUnLike.Response"))
+                    .responseFields(
+                        field("postId", JsonFieldType.NUMBER, "Unique post ID", false),
+                        field("boardId", JsonFieldType.NUMBER, "BoardId of post", false),
+                        field("title", JsonFieldType.STRING, "Title of post", false),
+                        field("content", JsonFieldType.STRING, "Content of post", false),
+                        field("like", JsonFieldType.NUMBER, "Like(who click like) of post", false),
+                        field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
+                        field("writer", JsonFieldType.STRING, "Writer of post", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
+                    )
+                    .build()
+            )
+        )
+        Assertions.assertFalse { postRedisPort.checkPostLikeByEmail(boardId, postId, email) }
+    }
+
+    @Test
     @Transactional
     fun deletePost() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
         val boardId = 2
         val post = Post(
             boardId = boardId,
             title = "testTitle",
             content = "testContent",
-            writer = "test"
+            writer = email
         )
         val postId = postJpaPort.createPost(post).postId
 
