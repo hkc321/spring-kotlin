@@ -1,7 +1,7 @@
 package com.example.spring.application.service.member
 
 import com.example.spring.application.port.out.member.JwtRedisPort
-import com.example.spring.config.filter.JwtExceptionResponse
+import com.example.spring.config.dto.JwtExceptionResponse
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import com.fasterxml.jackson.databind.ObjectMapper
