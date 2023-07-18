@@ -10,7 +10,7 @@ class JwtRedisRepository(private val redisTemplate: RedisTemplate<String, String
 
     fun saveLogout(token: String, expiration: Long) {
         val key = "jwt:access:$token"
-        return valueOperation.set(key, "logout", expiration, TimeUnit.MILLISECONDS)
+        valueOperation.set(key, "logout", expiration, TimeUnit.MILLISECONDS)
     }
 
     fun saveRefreshToken(email: String, token: String, expiration: Long) {

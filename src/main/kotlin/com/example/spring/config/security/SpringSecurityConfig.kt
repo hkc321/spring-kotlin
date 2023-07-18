@@ -84,9 +84,7 @@ class SpringSecurityConfig(
     fun usernamePasswordAuthenticationFilter(): UsernamePasswordAuthenticationFilter? {
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
-            jwtService,
-            memberUseCase,
-            jwtRedisPort
+            jwtService
         ).apply { setFilterProcessesUrl("/members/login") }
     }
 

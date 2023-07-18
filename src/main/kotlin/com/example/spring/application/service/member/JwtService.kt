@@ -226,4 +226,26 @@ class JwtService(
         return expiration.before(sevenDaysFromNow)
     }
 
+    override fun hasLogout(accessToken: String): Boolean =
+        jwtRedisPort.hasLogout(accessToken)
+
+    override fun saveLogoutToken(accessToken: String, expiration: Long) {
+        val remainExpirationTime: Long = getRemainExpirationTime(expiration)
+        jwtRedisPort.saveLogoutToken(accessToken, remainExpirationTime)
+    }
+
+    override fun saveRefreshToken(email: String, refreshToken: String, expiration: Long) {
+        val remainExpirationTime: Long = getRemainExpirationTime(expiration)
+        jwtRedisPort.saveRefreshToken(email, refreshToken, remainExpirationTime)
+    }
+
+    override fun findRefreshTokenByEmail(email: String): String? =
+        jwtRedisPort.findRefreshTokenByEmail(email)
+
+    override fun deleteRefreshTokenByEmail(email: String) =
+        jwtRedisPort.deleteRefreshTokenByEmail(email)
+
+    override fun getRemainExpirationTime(expiration: Long): Long =
+        expiration - Date().time
+
 }

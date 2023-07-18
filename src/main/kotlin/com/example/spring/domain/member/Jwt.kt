@@ -112,6 +112,37 @@ interface Jwt {
      * */
     fun checkRefreshTokenExpireDate(date: Int, expiration: Date): Boolean
 
+    /**
+     * 로그아웃된 토큰인지 확인
+     * */
+    fun hasLogout(accessToken: String): Boolean
+
+    /**
+     * 로그아웃 토큰 리스트에 등록
+     * accessToken 만료 전 로그아웃 시 해당 토큰으로 인증 불가능하게 하기 위함
+     * */
+    fun saveLogoutToken(accessToken: String, expiration: Long)
+
+    /**
+     * RefreshToken 저장
+     * */
+    fun saveRefreshToken(email: String, refreshToken: String, expiration: Long)
+
+    /**
+     * RefreshToken 찾기
+     * */
+    fun findRefreshTokenByEmail(email: String): String?
+
+    /**
+     * RefreshToken 제거
+     * */
+    fun deleteRefreshTokenByEmail(email: String)
+
+    /**
+     * 토큰의 남은 만료시간 구하기
+     * */
+    fun getRemainExpirationTime(expiration: Long): Long
+
     companion object {
         const val ACCESS = "AccessToken"
         const val REFRESH = "RefreshToken"

@@ -1,8 +1,6 @@
 package com.example.spring.config.filter
 
 import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
-import com.example.spring.application.port.`in`.member.MemberUseCase
-import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.config.code.ErrorCode
@@ -29,9 +27,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * */
 class CustomUsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
-    private val jwtService: JwtService,
-    private val memberUseCase: MemberUseCase,
-    private val jwtRedisPort: JwtRedisPort
+    private val jwtService: JwtService
 ) : UsernamePasswordAuthenticationFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
@@ -76,7 +72,7 @@ class CustomUsernamePasswordAuthenticationFilter(
         val refreshToken: String = jwtService.createRefreshToken(principal.getMember())
         val refreshTokenExpirationTime: Long = jwtService.extractClaims(refreshToken).expiration.time
 
-        jwtRedisPort.saveRefreshToken(principal.username, refreshToken, refreshTokenExpirationTime)
+        jwtService.saveRefreshToken(principal.username, refreshToken, refreshTokenExpirationTime)
 
         jwtService.setHeaderOfAccessToken(response, accessToken)
         jwtService.setHeaderOfRefreshToken(response, refreshToken)
