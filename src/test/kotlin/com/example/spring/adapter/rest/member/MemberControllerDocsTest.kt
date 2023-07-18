@@ -95,8 +95,9 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun login() {
+        val email = "test"
         val input = mutableMapOf<String, String>()
-        input["email"] = "test"
+        input["email"] = email
         input["password"] = "test"
 
         // When
@@ -131,6 +132,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .build()
             )
         )
+        jwtService.deleteRefreshTokenByEmail(email)
     }
 
     @Test
