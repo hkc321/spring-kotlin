@@ -138,7 +138,7 @@ class PostController(
             )
         )
 
-    @DeleteMapping("{postId}/like")
+    @PatchMapping("{postId}/unlike")
     fun deletePostLike(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
