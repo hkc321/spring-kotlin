@@ -3,6 +3,7 @@ package com.example.spring.config.filter
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.config.code.ErrorCode
+import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
 import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
@@ -29,6 +30,8 @@ class JwtAuthorizationExceptionFilter(
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.EXPIRED_EXCEPTION, ex)
         } catch (ex: JwtException) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.JWT_EXCEPTION, ex)
+        } catch (ex: CustomJwtAuthorizationFilterException) {
+            setErrorResponse(response, HttpStatus.UNAUTHORIZED, ex.code, ex)
         } catch (ex: NullPointerException) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.NULL_POINTER.name, ex)
         } catch (ex: MemberDataNotFoundException) {
@@ -44,7 +47,6 @@ class JwtAuthorizationExceptionFilter(
     fun setErrorResponse(res: HttpServletResponse, status: HttpStatus, errorType: String, ex: Throwable) {
         when (errorType) {
             ErrorCode.NULL_POINTER.name -> jwtService.setErrorResponseMessage(res, status, errorType, "토큰값이 비어있습니다.")
-            Jwt.EXPIRED_EXCEPTION -> jwtService.setErrorResponseMessage(res, status, errorType, "토큰이 만료되었습니다.")
             else -> jwtService.setErrorResponseMessage(res, status, errorType, ex.message ?: "")
         }
     }

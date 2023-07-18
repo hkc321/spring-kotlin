@@ -60,7 +60,8 @@ class JwtService(
         val tokenValidTime = getAccessTime() * 60 * 1000L
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.memberId.toString())
+        val claims: Claims = Jwts.claims().setSubject(Jwt.ACCESS)
+        claims["id"] = member.memberId
         claims["email"] = member.email
 
         val token = Jwts.builder()
@@ -80,6 +81,7 @@ class JwtService(
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
         val claims: Claims = Jwts.claims().setSubject(member.memberId.toString())
+        claims["id"] = member.memberId
         claims["email"] = member.email
 
         val token = Jwts.builder()

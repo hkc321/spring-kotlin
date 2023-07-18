@@ -6,6 +6,7 @@ import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import io.jsonwebtoken.ExpiredJwtException
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
+import java.lang.IllegalStateException
 
 /**
  * 인가필터
@@ -64,18 +66,50 @@ class CustomJwtAuthorizationFilter(
                     }
                 }
                 .apply { SecurityContextHolder.getContext().authentication = getAuthentication(response) }
-        } catch (expiredJwtException: ExpiredJwtException) {
-            throw expiredJwtException
-        } catch (jwtException: JwtException) {
-            throw jwtException
-        } catch (nullPointerException: NullPointerException) {
-            throw nullPointerException
-        } catch (memberDataNotFoundException: MemberDataNotFoundException) {
-            throw memberDataNotFoundException
-        } catch (e: Exception) {
+        } catch (ex: ExpiredJwtException) {
+            val message = when (ex.claims.subject) {
+                Jwt.ACCESS -> "만료된 accessToken 입니다."
+                else -> "만료된 refreshToken 입니다."
+            }
+            throw ExpiredJwtException(null, null, message)
+        } catch (ex: JwtException) {
+            throw ex
+        } catch (ex: NullPointerException) {
+            throw ex
+        } catch (ex: MemberDataNotFoundException) {
+            throw ex
+        } catch (ex: IllegalStateException) {
+            var code = ""
+            var message = ""
+
+            when (ex.message) {
+                Jwt.JWT_EXCEPTION + Jwt.ACCESS -> {
+                    code = Jwt.JWT_EXCEPTION
+                    message = "잘못된 accessToken 입니다."
+                }
+
+                Jwt.JWT_EXCEPTION + Jwt.REFRESH -> {
+                    code = Jwt.JWT_EXCEPTION
+                    message = "잘못된 refreshToken 입니다."
+                }
+
+                Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS -> {
+                    code = Jwt.EXPIRED_EXCEPTION
+                    message = "만료된 accessToken 입니다."
+                }
+
+                Jwt.EXPIRED_EXCEPTION + Jwt.REFRESH -> {
+                    code = Jwt.EXPIRED_EXCEPTION
+                    message = "만료된 refreshToken 입니다."
+                }
+
+                else -> throw ex
+            }
+            throw CustomJwtAuthorizationFilterException(code, message)
+        } catch (ex: Exception) {
             log.warn("jwt unknown error")
-            e.printStackTrace()
-            throw e
+            ex.printStackTrace()
+            throw ex
         }
         filterChain.doFilter(request, response)
     }
@@ -94,34 +128,35 @@ class CustomJwtAuthorizationFilter(
      * */
     private fun TokenPair.getAuthentication(response: HttpServletResponse): UsernamePasswordAuthenticationToken {
         val principal = if (refresh == null) {
-            check(jwtService.checkValidToken(access))
-            check(jwtService.isTokenExpired(access).not())
-            check(jwtRedisPort.hasLogout(access).not())
+            check(jwtService.checkValidToken(access)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
+            check(jwtService.isTokenExpired(access).not()) { Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS }
+            check(jwtRedisPort.hasLogout(access).not()) { Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS }
 
-            UserDetailsImpl(
-                memberUseCase.readMember(
-                    MemberUseCase.Commend.ReadCommend(
-                        jwtService.extractClaims(access).subject.toInt(),
-                        jwtService.extractEmail(access)
-                    )
-                )
-            )
+            val claim = jwtService.extractClaims(access)
+            val memberId = claim.toMap()["id"] as Int
+            val email = claim.toMap()["email"].toString()
+
+            UserDetailsImpl(memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(memberId, email)))
         } else {
-            check(jwtService.checkValidToken(access))
-            check(jwtService.checkValidToken(refresh))
+            check(jwtService.checkValidToken(access)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
+            check(jwtService.checkValidToken(refresh)) { Jwt.JWT_EXCEPTION + Jwt.REFRESH }
 
             val claim = jwtService.extractClaims(refresh)
+            val memberId = claim.toMap()["id"] as Int
             val email = claim.toMap()["email"].toString()
-            val existRefreshToken = jwtRedisPort.findRefreshTokenByEmail(email) ?: throw ExpiredJwtException(null, null, "토큰이 만료되었습니다.") // DB에서 토큰 존재 여부 검사
 
-            check(jwtService.compareRefreshToken(existRefreshToken, refresh, email)) // DB의 토큰과 Header의 토큰 검사
+            val existRefreshToken: String? = jwtRedisPort.findRefreshTokenByEmail(email)
+            check(existRefreshToken != null) { Jwt.EXPIRED_EXCEPTION + Jwt.REFRESH } // DB에서 토큰 존재 여부 검사
 
-            val member: Member = memberUseCase.readMember(
-                MemberUseCase.Commend.ReadCommend(
-                    claim.subject.toInt(),
+            check(
+                jwtService.compareRefreshToken(
+                    existRefreshToken,
+                    refresh,
                     email
                 )
-            )
+            ) { Jwt.EXPIRED_EXCEPTION + Jwt.REFRESH } // DB의 토큰과 Header의 토큰 검사
+
+            val member: Member = memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(memberId, email))
 
             val expireIn7Day = jwtService.checkRefreshTokenExpireDate(7, claim.expiration)
             if (expireIn7Day) reissueRefreshToken(member, response)
