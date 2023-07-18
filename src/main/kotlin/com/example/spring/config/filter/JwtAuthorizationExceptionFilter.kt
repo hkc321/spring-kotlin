@@ -44,6 +44,7 @@ class JwtAuthorizationExceptionFilter(
     fun setErrorResponse(res: HttpServletResponse, status: HttpStatus, errorType: String, ex: Throwable) {
         when (errorType) {
             ErrorCode.NULL_POINTER.name -> jwtService.setErrorResponseMessage(res, status, errorType, "토큰값이 비어있습니다.")
+            Jwt.EXPIRED_EXCEPTION -> jwtService.setErrorResponseMessage(res, status, errorType, "토큰이 만료되었습니다.")
             else -> jwtService.setErrorResponseMessage(res, status, errorType, ex.message ?: "")
         }
     }

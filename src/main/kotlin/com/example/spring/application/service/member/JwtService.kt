@@ -1,5 +1,6 @@
 package com.example.spring.application.service.member
 
+import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.config.filter.JwtExceptionResponse
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
@@ -19,10 +20,12 @@ import java.nio.charset.StandardCharsets
 import java.util.*
 import javax.crypto.SecretKey
 
+
 @Service
 class JwtService(
     private val userDetailsServiceImpl: UserDetailsServiceImpl,
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
+    private val jwtRedisPort: JwtRedisPort
 ) : Jwt {
 
     @Value("\${jwt.secret-key}")
@@ -72,14 +75,17 @@ class JwtService(
         return token
     }
 
-    override fun createRefreshToken(): String {
+    override fun createRefreshToken(member: Member): String {
         val tokenValidTime = getRefreshTime() * 60 * 1000L
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
+        val claims: Claims = Jwts.claims().setSubject(member.memberId.toString())
+        claims["email"] = member.email
 
         val token = Jwts.builder()
             .setHeaderParam("type", "JWT")
             .setSubject(Jwt.REFRESH)
+            .setClaims(claims)
             .setIssuedAt(now)  // 토큰 발행 시간 정보
             .setExpiration(refreshValidTime) // 만료시간
             .signWith(getSingingKey(), SignatureAlgorithm.HS256) // signature에 들어갈 secret, 암호화 알고리즘
@@ -200,6 +206,22 @@ class JwtService(
         request
             .apply { getHeader(Jwt.REFRESH_TOKEN_HEADER)?.startsWith(Jwt.TOKEN_PREFIX) ?: return false }
         return true
+    }
+
+    override fun compareRefreshToken(refreshTokenFromDB: String, refreshTokenFromHeader: String, email: String): Boolean =
+        if (refreshTokenFromDB == refreshTokenFromHeader) {
+            true
+        } else {
+            jwtRedisPort.deleteRefreshTokenByEmail(email)
+            throw ExpiredJwtException(null, null, "토큰이 만료되었습니다.")
+        }
+
+    override fun checkRefreshTokenExpireDate(date: Int, expiration: Date): Boolean {
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_MONTH, date)
+        val sevenDaysFromNow = calendar.time
+
+        return expiration.before(sevenDaysFromNow)
     }
 
 }

@@ -1,6 +1,7 @@
 package com.example.spring.config.filter
 
 import com.example.spring.application.port.`in`.member.MemberUseCase
+import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.application.service.member.UserDetailsServiceImpl
@@ -25,7 +26,8 @@ import org.springframework.web.filter.OncePerRequestFilter
 class CustomJwtAuthorizationFilter(
     private val jwtService: JwtService,
     private val memberUseCase: MemberUseCase,
-    private val userDetailsServiceImpl: UserDetailsServiceImpl
+    private val userDetailsServiceImpl: UserDetailsServiceImpl,
+    private val jwtRedisPort: JwtRedisPort
 ) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
@@ -94,6 +96,8 @@ class CustomJwtAuthorizationFilter(
         val principal = if (refresh == null) {
             check(jwtService.checkValidToken(access))
             check(jwtService.isTokenExpired(access).not())
+            check(jwtRedisPort.hasLogout(access).not())
+
             UserDetailsImpl(
                 memberUseCase.readMember(
                     MemberUseCase.Commend.ReadCommend(
@@ -105,13 +109,24 @@ class CustomJwtAuthorizationFilter(
         } else {
             check(jwtService.checkValidToken(access))
             check(jwtService.checkValidToken(refresh))
-            check(jwtService.isTokenExpired(refresh).not())
-            val member: Member = memberUseCase.findMemberByRefreshToken(
-                MemberUseCase.Commend.FindMemberByRefreshTokenCommend(refresh)
+
+            val claim = jwtService.extractClaims(refresh)
+            val email = claim.toMap()["email"].toString()
+            val existRefreshToken = jwtRedisPort.findRefreshTokenByEmail(email) ?: throw ExpiredJwtException(null, null, "토큰이 만료되었습니다.") // DB에서 토큰 존재 여부 검사
+
+            check(jwtService.compareRefreshToken(existRefreshToken, refresh, email)) // DB의 토큰과 Header의 토큰 검사
+
+            val member: Member = memberUseCase.readMember(
+                MemberUseCase.Commend.ReadCommend(
+                    claim.subject.toInt(),
+                    email
+                )
             )
-//            val expireIn7Day = jwtService.checkExpireInSevenDayToken(refresh)
-//            if (expireIn7Day) reissueRefreshToken(member.username, response)
+
+            val expireIn7Day = jwtService.checkRefreshTokenExpireDate(7, claim.expiration)
+            if (expireIn7Day) reissueRefreshToken(member, response)
             reissueAccessToken(member, response)
+
             UserDetailsImpl(member)
         }
 
@@ -125,6 +140,18 @@ class CustomJwtAuthorizationFilter(
         log.info("reissue AccessToken")
         val reissuedAccessToken = jwtService.createAccessToken(member)
         jwtService.setHeaderOfAccessToken(response, reissuedAccessToken)
+    }
+
+    private fun reissueRefreshToken(
+        member: Member,
+        response: HttpServletResponse
+    ) {
+        log.info("reissue RefreshToken")
+        val reissuedRefreshToken = jwtService.createRefreshToken(member)
+        val expirationTime: Long = jwtService.extractClaims(reissuedRefreshToken).expiration.time
+
+        jwtRedisPort.saveRefreshToken(member.email, reissuedRefreshToken, expirationTime)
+        jwtService.setHeaderOfRefreshToken(response, reissuedRefreshToken)
     }
 }
 

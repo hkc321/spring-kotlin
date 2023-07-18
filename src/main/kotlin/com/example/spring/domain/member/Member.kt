@@ -19,7 +19,6 @@ class Member(
     @JsonIgnore
     var password: String = password
     var role: String = role
-    var refreshToken: String? = null
 
     fun update(password: String, accessor: String) {
         this.checkAccessor(accessor)
@@ -29,11 +28,6 @@ class Member(
 
     fun updateRole(role: MemberRole) {
         this.role = role.name
-        this.updatedAt = LocalDateTime.now()
-    }
-
-    fun saveRefreshToken(token: String) {
-        this.refreshToken = token
         this.updatedAt = LocalDateTime.now()
     }
 

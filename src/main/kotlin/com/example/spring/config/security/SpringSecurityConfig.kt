@@ -1,6 +1,7 @@
 package com.example.spring.config.security
 
 import com.example.spring.application.port.`in`.member.MemberUseCase
+import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
@@ -27,7 +28,8 @@ class SpringSecurityConfig(
     private val memberUseCase: MemberUseCase,
     private val userDetailsServiceImpl: UserDetailsServiceImpl,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
-    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
+    private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
+    private val jwtRedisPort: JwtRedisPort
 ) {
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer =
@@ -55,7 +57,8 @@ class SpringSecurityConfig(
                 CustomJwtAuthorizationFilter(
                     jwtService,
                     memberUseCase,
-                    userDetailsServiceImpl
+                    userDetailsServiceImpl,
+                    jwtRedisPort
                 )
             )
             addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))
@@ -78,7 +81,8 @@ class SpringSecurityConfig(
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
             jwtService,
-            memberUseCase
+            memberUseCase,
+            jwtRedisPort
         ).apply { setFilterProcessesUrl("/members/login") }
     }
 

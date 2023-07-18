@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import java.util.*
 
 interface Jwt {
     /**
@@ -15,7 +16,7 @@ interface Jwt {
     /**
      * JWT Refresh Token 생성
      * */
-    fun createRefreshToken(): String
+    fun createRefreshToken(member: Member): String
 
     /**
      * Request Header에서 jwt token 가져오기
@@ -99,6 +100,17 @@ interface Jwt {
      * 지정한 이름으로 왔는지 확인
      * */
     fun checkValidRefreshHeader(request: HttpServletRequest): Boolean
+
+    /**
+     * RefreshToken 탈취 검사
+     * 해커가 먼저 토큰을 탈취하여 RefreshToken을 재발급 했을 시를 대비하여 DB의 RefreshToken과 Header의 RefreshToken을 비교
+     * */
+    fun compareRefreshToken(refreshTokenFromDB: String, refreshTokenFromHeader: String, email: String): Boolean
+
+    /**
+     * RefreshToken 만료일이 며칠 이내인지 검사
+     * */
+    fun checkRefreshTokenExpireDate(date: Int, expiration: Date): Boolean
 
     companion object {
         const val ACCESS = "AccessToken"

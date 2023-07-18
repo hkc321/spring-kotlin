@@ -35,11 +35,6 @@ interface MemberUseCase {
     fun logout()
 
     /**
-     * Refresh 토큰 저장
-     * */
-    fun saveRefreshToken(commend: Commend.SaveRefreshTokenCommend): Member
-
-    /**
      * Member 찾기
      * */
     fun findMemberByRefreshToken(commend: Commend.FindMemberByRefreshTokenCommend): Member

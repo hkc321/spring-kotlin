@@ -57,14 +57,6 @@ class MemberService(
         TODO("Not yet implemented")
     }
 
-    @Transactional
-    override fun saveRefreshToken(commend: MemberUseCase.Commend.SaveRefreshTokenCommend): Member {
-        val member: Member = memberJpaPort.findMemberByEmail(commend.email)
-        member.saveRefreshToken(commend.token)
-
-        return memberJpaPort.saveRefreshToken(member)
-    }
-
     @Transactional(readOnly = true)
     override fun findMemberByRefreshToken(commend: MemberUseCase.Commend.FindMemberByRefreshTokenCommend): Member =
         memberJpaPort.findMemberByRefreshToken(commend.token)
