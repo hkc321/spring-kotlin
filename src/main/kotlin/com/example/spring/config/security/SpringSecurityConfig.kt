@@ -29,7 +29,8 @@ class SpringSecurityConfig(
     private val userDetailsServiceImpl: UserDetailsServiceImpl,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val jwtRedisPort: JwtRedisPort
+    private val jwtRedisPort: JwtRedisPort,
+    private val customLogoutSuccessHandler: CustomLogoutSuccessHandler
 ) {
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer =
@@ -67,7 +68,10 @@ class SpringSecurityConfig(
                 authenticationEntryPoint = customAuthenticationEntryPoint
             }
             formLogin { disable() }
-            logout { }
+            logout {
+                logoutUrl = "/members/logout"
+                logoutSuccessHandler = customLogoutSuccessHandler
+            }
         }
         return http.build()
     }

@@ -82,4 +82,13 @@ class MemberController(private val memberUseCase: MemberUseCase) {
             .body("성공")
     }
 
+    /**
+     * Spring Security 에서 실행
+     * */
+    @PostMapping("logout")
+    fun logout(): ResponseEntity<Any> {
+        return ResponseEntity
+            .status(HttpStatus.OK)
+            .body("성공")
+    }
 }
