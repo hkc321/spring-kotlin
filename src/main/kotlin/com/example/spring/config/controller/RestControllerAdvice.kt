@@ -5,7 +5,7 @@ import com.example.spring.application.service.member.exception.MemberAccessorNot
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.config.code.ErrorCode
-import com.example.spring.config.dto.BaseResponseException
+import com.example.spring.config.dto.BaseExceptionResponse
 import com.example.spring.config.exception.WriterNotMatchException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
@@ -29,10 +29,10 @@ class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
-    fun missingServletRequestParameterException(ex: MissingServletRequestParameterException): ResponseEntity<BaseResponseException> {
+    fun missingServletRequestParameterException(ex: MissingServletRequestParameterException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_PARAMETER,
                     "Parameter is missing: [${ex.parameterName}(${ex.parameterType})]"
                 )
@@ -40,10 +40,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(CommentLikeException::class)
-    fun commentLikeException(ex: CommentLikeException): ResponseEntity<BaseResponseException> {
+    fun commentLikeException(ex: CommentLikeException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -51,10 +51,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(PostLikeException::class)
-    fun postLikeException(ex: PostLikeException): ResponseEntity<BaseResponseException> {
+    fun postLikeException(ex: PostLikeException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -62,10 +62,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MemberAccessorNotMatchException::class)
-    fun memberAccessorNotMatchException(ex: MemberAccessorNotMatchException): ResponseEntity<BaseResponseException> {
+    fun memberAccessorNotMatchException(ex: MemberAccessorNotMatchException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_USER,
                     ex.message
                 )
@@ -73,10 +73,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(WriterNotMatchException::class)
-    fun writerNotMatchException(ex: WriterNotMatchException): ResponseEntity<BaseResponseException> {
+    fun writerNotMatchException(ex: WriterNotMatchException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_USER,
                     ex.message
                 )
@@ -84,10 +84,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
-    fun httpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<BaseResponseException> {
+    fun httpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.NOT_SUPPORT_HTTP_METHOD,
                     ex.message.toString()
                 )
@@ -95,7 +95,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(ConstraintViolationException::class)
-    fun constraintViolationException(ex: ConstraintViolationException): ResponseEntity<BaseResponseException> {
+    fun constraintViolationException(ex: ConstraintViolationException): ResponseEntity<BaseExceptionResponse> {
         var errorMessage = ""
         ex.constraintViolations.iterator().forEach {
             errorMessage += it.message + " "
@@ -103,7 +103,7 @@ class ControllerAdvice {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_PARAMETER,
                     errorMessage.trim()
                 )
@@ -111,7 +111,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<BaseResponseException> {
+    fun httpMessageNotReadableException(ex: HttpMessageNotReadableException): ResponseEntity<BaseExceptionResponse> {
         var msg: String = when (val causeException = ex.cause) {
             is InvalidFormatException -> "입력 받은 [${causeException.value}] 를 변환중 에러가 발생했습니다."
             is MissingKotlinParameterException -> "Parameter is missing: [${causeException.parameter.name}]"
@@ -128,7 +128,7 @@ class ControllerAdvice {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_PARAMETER,
                     msg
                 )
@@ -136,7 +136,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException::class)
-    fun methodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<BaseResponseException> {
+    fun methodArgumentTypeMismatchException(ex: MethodArgumentTypeMismatchException): ResponseEntity<BaseExceptionResponse> {
         val builder = StringBuilder()
         builder.append("[")
         builder.append(ex.errorCode)
@@ -149,7 +149,7 @@ class ControllerAdvice {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_PARAMETER,
                     builder.toString()
                 )
@@ -157,7 +157,7 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<BaseResponseException> {
+    fun methodArgumentNotValidException(ex: MethodArgumentNotValidException): ResponseEntity<BaseExceptionResponse> {
         val bindingResult: BindingResult = ex.bindingResult
         val builder = StringBuilder()
         for (fieldError in bindingResult.fieldErrors) {
@@ -172,7 +172,7 @@ class ControllerAdvice {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INVALID_PARAMETER,
                     builder.toString()
                 )
@@ -180,10 +180,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(CommentDataNotFoundException::class)
-    fun commentDataNotFoundException(ex: CommentDataNotFoundException): ResponseEntity<BaseResponseException> {
+    fun commentDataNotFoundException(ex: CommentDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -191,10 +191,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(PostDataNotFoundException::class)
-    fun postDataNotFoundException(ex: PostDataNotFoundException): ResponseEntity<BaseResponseException> {
+    fun postDataNotFoundException(ex: PostDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -202,10 +202,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(BoardDataNotFoundException::class)
-    fun boardDataNotFoundException(ex: BoardDataNotFoundException): ResponseEntity<BaseResponseException> {
+    fun boardDataNotFoundException(ex: BoardDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -213,10 +213,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MemberDataNotFoundException::class)
-    fun memberDataNotFoundException(ex: MemberDataNotFoundException): ResponseEntity<BaseResponseException> {
+    fun memberDataNotFoundException(ex: MemberDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -224,10 +224,10 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(MemberAlreadyExistException::class)
-    fun memberAlreadyExistException(ex: MemberAlreadyExistException): ResponseEntity<BaseResponseException> {
+    fun memberAlreadyExistException(ex: MemberAlreadyExistException): ResponseEntity<BaseExceptionResponse> {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ex.code,
                     ex.message
                 )
@@ -240,7 +240,7 @@ class ControllerAdvice {
         log.warn(ex.stackTraceToString())
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(
-                BaseResponseException(
+                BaseExceptionResponse(
                     ErrorCode.INTERNAL_SERVER_ERROR,
                     "INTERNAL_SERVER_ERROR"
                 )
