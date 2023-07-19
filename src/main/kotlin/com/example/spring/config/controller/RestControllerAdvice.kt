@@ -7,6 +7,7 @@ import com.example.spring.application.service.member.exception.MemberDataNotFoun
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.dto.BaseExceptionResponse
 import com.example.spring.config.exception.WriterNotMatchException
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import jakarta.validation.ConstraintViolationException
@@ -27,6 +28,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(JsonParseException::class)
+    fun constraintViolationException(ex: JsonParseException): ResponseEntity<BaseExceptionResponse> {
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .body(
+                BaseExceptionResponse(
+                    ErrorCode.INVALID_FORMAT,
+                    "JSON 형식이 잘못되었습니다."
+                )
+            )
+    }
 
     @ExceptionHandler(MissingServletRequestParameterException::class)
     fun missingServletRequestParameterException(ex: MissingServletRequestParameterException): ResponseEntity<BaseExceptionResponse> {

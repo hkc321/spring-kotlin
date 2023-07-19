@@ -1,7 +1,9 @@
 package com.example.spring.application.service.member
 
+import com.example.spring.adapter.rest.member.mapper.MemberRestMapper
 import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.config.dto.JwtExceptionResponse
+import com.example.spring.config.dto.LoginSuccessResponse
 import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import com.fasterxml.jackson.databind.ObjectMapper
@@ -9,7 +11,6 @@ import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -36,6 +37,8 @@ class JwtService(
 
     @Value("\${jwt.refresh-time}")
     private val refreshTime: Int = 0
+
+    private val memberRestMapper = MemberRestMapper.INSTANCE
 
     private fun getSingingKey(): SecretKey {
         val secretKey = getSecretKey()
@@ -149,14 +152,16 @@ class JwtService(
         response.addHeader(Jwt.REFRESH_TOKEN_HEADER, Jwt.TOKEN_PREFIX + token)
     }
 
-    override fun setResponseMessage(result: Boolean, response: HttpServletResponse, message: String) {
+    override fun setResponseMessage(result: Boolean, response: HttpServletResponse, member: Member) {
         response.contentType = "application/json;charset=UTF-8"
-        val content = JSONObject()
-            .apply { put("success", result) }
-            .apply { put("message", message) }
-        response
-            .writer
-            .print(content)
+        response.writer.write(
+            objectMapper.writeValueAsString(
+                LoginSuccessResponse(
+                    result,
+                    memberRestMapper.toMemberCommonResponse(member)
+                )
+            )
+        )
     }
 
     override fun setErrorResponseMessage(
@@ -189,7 +194,7 @@ class JwtService(
 
     override fun checkValidToken(token: String, type: String): Boolean {
         return try {
-            val claims =  extractClaims(token)
+            val claims = extractClaims(token)
             claims.subject == type
         } catch (e: ExpiredJwtException) {
             true
@@ -210,7 +215,11 @@ class JwtService(
         return true
     }
 
-    override fun compareRefreshToken(refreshTokenFromDB: String, refreshTokenFromHeader: String, email: String): Boolean =
+    override fun compareRefreshToken(
+        refreshTokenFromDB: String,
+        refreshTokenFromHeader: String,
+        email: String
+    ): Boolean =
         if (refreshTokenFromDB == refreshTokenFromHeader) {
             true
         } else {

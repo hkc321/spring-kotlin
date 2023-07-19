@@ -1,11 +1,13 @@
 package com.example.spring.config.security
 
 import com.example.spring.application.service.member.JwtService
+import com.example.spring.config.code.ErrorCode
 import com.example.spring.domain.member.Jwt
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.stereotype.Component
@@ -22,6 +24,6 @@ class CustomAuthenticationEntryPoint(private val jwtService: JwtService): Authen
         log.warn("[authentication error] ${authException.message}")
 
         val exceptionMessage = request.getAttribute(Jwt.EXCEPTION).toString()
-        jwtService.setResponseMessage(false, response, exceptionMessage)
+        jwtService.setErrorResponseMessage(response, HttpStatus.UNAUTHORIZED, ErrorCode.UNAUTHORIZED.name, exceptionMessage)
     }
 }

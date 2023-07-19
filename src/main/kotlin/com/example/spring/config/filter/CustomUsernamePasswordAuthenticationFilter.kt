@@ -4,6 +4,7 @@ import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
 import com.example.spring.config.code.ErrorCode
+import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
@@ -49,6 +50,8 @@ class CustomUsernamePasswordAuthenticationFilter(
             throw UsernameNotFoundException(ErrorCode.WRONG_PASSWORD.name)
         } catch (ex: MismatchedInputException) {
             throw UsernameNotFoundException(ErrorCode.EMPTY_INPUT.name)
+        } catch (ex: JsonParseException) {
+            throw UsernameNotFoundException(ErrorCode.INVALID_FORMAT.name)
         } catch (ex: Exception) {
             log.warn("login unknown error")
             ex.printStackTrace()
@@ -77,7 +80,11 @@ class CustomUsernamePasswordAuthenticationFilter(
         jwtService.setHeaderOfAccessToken(response, accessToken)
         jwtService.setHeaderOfRefreshToken(response, refreshToken)
 
-        jwtService.setResponseMessage(true, response, "login success")
+        val member = principal.getMember()
+        member.setDateFormat()
+        println(member.createdAt)
+
+        jwtService.setResponseMessage(true, response, member)
     }
 
     /**
@@ -94,12 +101,18 @@ class CustomUsernamePasswordAuthenticationFilter(
             ErrorCode.WRONG_PASSWORD.name -> "비밀번호가 올바르지 않습니다."
             ErrorCode.INVALID_PARAMETER.name -> "프로퍼티 이름이 올바르지 않습니다. required:[email, password]"
             ErrorCode.EMPTY_INPUT.name -> "빈 값이 전달되었습니다. request body를 확인해 주세요"
+            ErrorCode.INVALID_FORMAT.name -> "JSON 형식이 잘못되었습니다."
             else -> ErrorCode.UNKNOWN_ERROR.name
         }
-        response.status = when (failed!!.message) {
-            ErrorCode.INTERNAL_SERVER_ERROR.name -> HttpStatus.INTERNAL_SERVER_ERROR.value()
-            else -> HttpStatus.BAD_REQUEST.value()
+        val status = when (failed!!.message) {
+            ErrorCode.INTERNAL_SERVER_ERROR.name -> HttpStatus.INTERNAL_SERVER_ERROR
+            else -> HttpStatus.BAD_REQUEST
         }
-        jwtService.setResponseMessage(false, response, "$failMessage")
+        jwtService.setErrorResponseMessage(
+            response,
+            status,
+            failed!!.message?.let { it } ?: let { ErrorCode.UNKNOWN_ERROR.name },
+            failMessage
+        )
     }
 }

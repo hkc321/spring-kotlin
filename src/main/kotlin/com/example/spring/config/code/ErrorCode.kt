@@ -14,5 +14,7 @@ enum class ErrorCode {
     INVALID_USER,
     EMPTY_INPUT,
     FORBIDDEN,
-    NULL_POINTER
+    NULL_POINTER,
+    UNAUTHORIZED,
+    INVALID_FORMAT
 }
