@@ -172,7 +172,7 @@ class CommentController(
             )
         )
 
-    @DeleteMapping("{commentId}/like")
+    @PatchMapping("{commentId}/unlike")
     fun deleteCommentLike(
         @PathVariable("boardId") boardId: Int,
         @PathVariable("postId") postId: Int,
