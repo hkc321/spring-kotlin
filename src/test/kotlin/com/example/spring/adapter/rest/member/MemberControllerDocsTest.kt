@@ -108,7 +108,11 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         )
 
         // Then
-        result.andDocument(
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("success").exists(),
+            MockMvcResultMatchers.jsonPath("member").isMap,
+        ).andDocument(
             "POST-members-login",
             snippets = makeSnippets(
                 snippetsBuilder()
@@ -127,7 +131,11 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .responseSchema(Schema("memberLogin.Response"))
                     .responseFields(
                         field("success", JsonFieldType.BOOLEAN, "Success or not", false),
-                        field("message", JsonFieldType.STRING, "Message from server", false)
+                        field("member.memberId", JsonFieldType.NUMBER, "Unique member ID", false),
+                        field("member.email", JsonFieldType.STRING, "Email of member", false),
+                        field("member.role", JsonFieldType.STRING, "Role of member", false),
+                        field("member.createdAt", JsonFieldType.STRING, "Created datetime of member", false),
+                        field("member.updatedAt", JsonFieldType.STRING, "Updated datetime of member", true)
                     )
                     .build()
             )
