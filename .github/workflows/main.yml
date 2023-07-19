@@ -1,4 +1,4 @@
-name: Code Coverage sample
+name: Code Coverage sample Test
 
 on:
   push:
