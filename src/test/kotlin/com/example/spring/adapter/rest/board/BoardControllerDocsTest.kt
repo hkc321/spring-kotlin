@@ -42,6 +42,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     private lateinit var memberJpaPort: MemberJpaPort
 
     @Test
+    @Transactional
     fun createBoard() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, String>()
@@ -412,6 +413,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun `DELETE board-{boardId}`() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val board = Board(

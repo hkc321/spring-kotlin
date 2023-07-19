@@ -23,6 +23,7 @@ import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -44,6 +45,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     private lateinit var commentRedisPort: CommentRedisPort
 
     @Test
+    @Transactional
     fun createComment() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, Any?>()
@@ -349,6 +351,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updateComment() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val input = mutableMapOf<String, Any?>()
@@ -421,6 +424,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updateCommentLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
@@ -493,6 +497,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updateCommentUnLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
@@ -565,6 +570,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun deleteComment() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2

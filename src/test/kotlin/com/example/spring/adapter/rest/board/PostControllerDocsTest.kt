@@ -251,6 +251,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updatePost() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
@@ -313,6 +314,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updatePostLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
@@ -369,6 +371,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun deletePostLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))

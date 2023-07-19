@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -36,6 +37,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
 
     @Test
+    @Transactional
     fun register() {
         val input = mutableMapOf<String, String>()
         input["email"] = "testtest"
@@ -94,6 +96,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun login() {
         val email = "test"
         val input = mutableMapOf<String, String>()
@@ -186,6 +189,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun updateMember() {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val memberId = 1
@@ -235,6 +239,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     }
 
     @Test
+    @Transactional
     fun deleteMember() {
         val createdMember = memberJpaPort.createMember(
             Member(
