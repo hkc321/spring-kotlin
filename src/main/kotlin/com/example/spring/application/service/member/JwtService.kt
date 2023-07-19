@@ -80,7 +80,7 @@ class JwtService(
         val tokenValidTime = getRefreshTime() * 60 * 1000L
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
-        val claims: Claims = Jwts.claims().setSubject(member.memberId.toString())
+        val claims: Claims = Jwts.claims().setSubject(Jwt.REFRESH)
         claims["id"] = member.memberId
         claims["email"] = member.email
 
@@ -187,10 +187,10 @@ class JwtService(
                 StringUtils.hasText(request.getHeader(Jwt.REFRESH_TOKEN_HEADER)).not()
     }
 
-    override fun checkValidToken(token: String): Boolean {
+    override fun checkValidToken(token: String, type: String): Boolean {
         return try {
-            extractClaims(token)
-            true
+            val claims =  extractClaims(token)
+            claims.subject == type
         } catch (e: ExpiredJwtException) {
             true
         } catch (e: JwtException) {

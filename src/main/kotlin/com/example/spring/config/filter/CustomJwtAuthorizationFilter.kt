@@ -128,7 +128,7 @@ class CustomJwtAuthorizationFilter(
      * */
     private fun TokenPair.getAuthentication(response: HttpServletResponse): UsernamePasswordAuthenticationToken {
         val principal = if (refresh == null) {
-            check(jwtService.checkValidToken(access)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
+            check(jwtService.checkValidToken(access, Jwt.ACCESS)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
             check(jwtService.isTokenExpired(access).not()) { Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS }
             check(jwtRedisPort.hasLogout(access).not()) { Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS }
 
@@ -138,8 +138,8 @@ class CustomJwtAuthorizationFilter(
 
             UserDetailsImpl(memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(memberId, email)))
         } else {
-            check(jwtService.checkValidToken(access)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
-            check(jwtService.checkValidToken(refresh)) { Jwt.JWT_EXCEPTION + Jwt.REFRESH }
+            check(jwtService.checkValidToken(access, Jwt.ACCESS)) { Jwt.JWT_EXCEPTION + Jwt.ACCESS }
+            check(jwtService.checkValidToken(refresh, Jwt.REFRESH)) { Jwt.JWT_EXCEPTION + Jwt.REFRESH }
 
             val claim = jwtService.extractClaims(refresh)
             val memberId = claim.toMap()["id"] as Int

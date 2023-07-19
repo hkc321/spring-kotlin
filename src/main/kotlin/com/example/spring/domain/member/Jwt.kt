@@ -87,7 +87,7 @@ interface Jwt {
     /**
      * 토큰 클래임 추출하여 유효한지 판단
      * */
-    fun checkValidToken(token: String): Boolean
+    fun checkValidToken(token: String, type: String): Boolean
 
     /**
      * AccessToken Header 유효성 검사
