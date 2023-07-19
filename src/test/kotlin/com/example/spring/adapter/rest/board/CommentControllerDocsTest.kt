@@ -217,7 +217,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
-        val commentId = 5
+        val commentId = 1
 
         //when
         var result = mockMvc.perform(
@@ -282,7 +282,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
         val boardId = 2
         val postId = 2
-        val commentId = 5
+        val commentId = 1
 
         //when
         var result = mockMvc.perform(
@@ -358,7 +358,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         input["content"] = "testContent"
         val boardId = 2
         val postId = 2
-        val commentId = 5
+        val commentId = 1
 
         //when
         var result = mockMvc.perform(
@@ -432,7 +432,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         input["content"] = "testContent"
         val boardId = 2
         val postId = 2
-        val commentId = 5
+        val commentId = 1
 
         //when
         var result = mockMvc.perform(
@@ -505,7 +505,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         input["content"] = "testContent"
         val boardId = 2
         val postId = 2
-        val commentId = 5
+        val commentId = 1
 
         commentRedisPort.createCommentLike(boardId, postId, commentId, email)
 
