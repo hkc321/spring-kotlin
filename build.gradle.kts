@@ -5,10 +5,10 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("com.epages.restdocs-api-spec") version "0.18.2"
-    kotlin("jvm") version "1.8.21"
-    kotlin("plugin.spring") version "1.8.21"
-    kotlin("plugin.jpa") version "1.8.21"
-    kotlin("kapt") version "1.7.10"
+    kotlin("jvm") version "1.9.0"
+    kotlin("plugin.spring") version "1.9.0"
+    kotlin("plugin.jpa") version "1.9.0"
+    kotlin("kapt") version "1.9.0"
 }
 
 group = "com.example"
@@ -50,7 +50,7 @@ dependencies {
     testImplementation("com.epages:restdocs-api-spec-mockmvc:0.18.2")
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
     //kotlin-jdsl
-    val jdslVersion = "2.2.0.RELEASE"
+    val jdslVersion = "2.2.1.RELEASE"
     implementation("com.linecorp.kotlin-jdsl:hibernate-kotlin-jdsl-jakarta:$jdslVersion")
     implementation("com.linecorp.kotlin-jdsl:spring-data-kotlin-jdsl-starter-jakarta:$jdslVersion")
     implementation("org.hibernate:hibernate-core:6.2.4.Final")
