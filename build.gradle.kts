@@ -119,9 +119,10 @@ tasks.test {
 tasks.jacocoTestReport {
     dependsOn(tasks.test)
     reports {
-        xml.required.set(false)
+        xml.required.set(true)
         csv.required.set(false)
-        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+        html.required.set(false)
+//        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
 }
 
