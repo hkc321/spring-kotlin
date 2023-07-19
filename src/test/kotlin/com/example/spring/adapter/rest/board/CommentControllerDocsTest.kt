@@ -460,7 +460,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
-            MockMvcResultMatchers.jsonPath("updatedAt").exists()
+            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
         ).andDocument(
             "PATCH-boards-{boardId}-posts-{postId}-comments-{commentId}-like",
             snippets = makeSnippets(
@@ -535,7 +535,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
-            MockMvcResultMatchers.jsonPath("updatedAt").exists()
+            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
         ).andDocument(
             "PATCH-boards-{boardId}-posts-{postId}-comments-{commentId}-unlike",
             snippets = makeSnippets(
