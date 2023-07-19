@@ -5,6 +5,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.0"
     id("org.asciidoctor.jvm.convert") version "3.3.2"
     id("com.epages.restdocs-api-spec") version "0.18.2"
+    jacoco
     kotlin("jvm") version "1.9.0"
     kotlin("plugin.spring") version "1.9.0"
     kotlin("plugin.jpa") version "1.9.0"
@@ -81,6 +82,24 @@ openapi3 {
 //    outputFileNamePrefix = "swagger"
 }
 
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+subprojects{
+//    jacocoTestReport {
+//        reports {
+//            xml.enabled true
+//            csv.enabled true
+//            html.enabled true
+//
+//            xml.destination file("${buildDir}/jacoco/index.xml")
+//            csv.destination file("${buildDir}/jacoco/index.csv")
+//            html.destination file("${buildDir}/jacoco/index.html")
+//        }
+//    }
+}
+
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -93,7 +112,17 @@ tasks.withType<Test> {
 }
 
 tasks.test {
+    finalizedBy(tasks.jacocoTestReport)
     outputs.dir(snippetsDir)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
 }
 
 tasks.asciidoctor {
