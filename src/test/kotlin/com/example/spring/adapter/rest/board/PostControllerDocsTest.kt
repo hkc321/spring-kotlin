@@ -305,7 +305,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
-                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", false)
                     )
                     .build()
             )
