@@ -3,6 +3,7 @@
 - Practice hexagonal architecture
 
 ## Environment
+[![codecov](https://codecov.io/gh/hunkicho/spring-kotlin/branch/master/graph/badge.svg?token=JOH259X9H2)](https://codecov.io/gh/hunkicho/spring-kotlin)
 
 [![](https://img.shields.io/badge/spring%20boot-3.1.0-green?logo=springboot) ](https://spring.io/blog/2023/05/18/spring-boot-3-1-0-available-now)
 [![](https://img.shields.io/badge/koltin-1.9.0-green?logo=kotlin)](https://kotlinlang.org/docs/whatsnew19.html)
