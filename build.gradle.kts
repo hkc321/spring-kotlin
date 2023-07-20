@@ -86,20 +86,6 @@ jacoco {
     toolVersion = "0.8.10"
 }
 
-subprojects{
-//    jacocoTestReport {
-//        reports {
-//            xml.enabled true
-//            csv.enabled true
-//            html.enabled true
-//
-//            xml.destination file("${buildDir}/jacoco/index.xml")
-//            csv.destination file("${buildDir}/jacoco/index.csv")
-//            html.destination file("${buildDir}/jacoco/index.html")
-//        }
-//    }
-}
-
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
@@ -122,26 +108,7 @@ tasks.jacocoTestReport {
         xml.required.set(true)
         csv.required.set(false)
         html.required.set(false)
-//        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
     }
-}
-
-tasks.asciidoctor {
-    inputs.dir(snippetsDir)
-    //dependsOn(test)
-    dependsOn(tasks.test)
-
-    doFirst { // 2
-        delete {
-            file("src/main/resources/static/docs")
-        }
-    }
-}
-
-tasks.register("copyHTML", Copy::class) { // 3
-    dependsOn(tasks.asciidoctor)
-    from(file("build/docs/asciidoc"))
-    into(file("src/main/resources/static/docs"))
 }
 
 // 생성된 OAS파일을 Swagger 디렉터리로 복사
@@ -153,10 +120,8 @@ tasks.register("copyOasToSwagger", Copy::class) {
 }
 
 tasks.build { // 4
-    dependsOn(tasks.getByName("copyHTML"))
+    dependsOn(tasks.getByName("copyOasToSwagger"))
 }
 
 tasks.bootJar { // 5
-    dependsOn(tasks.asciidoctor)
-    dependsOn(tasks.getByName("copyHTML"))
 }
