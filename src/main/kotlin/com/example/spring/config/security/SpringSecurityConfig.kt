@@ -7,6 +7,7 @@ import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
+import com.example.spring.config.filter.corsFilter
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.AuthenticationManager
@@ -18,6 +19,7 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter
+import org.springframework.web.filter.CorsFilter
 
 
 @Configuration
@@ -54,6 +56,7 @@ class SpringSecurityConfig(
                 authorize(anyRequest, permitAll)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
+            addFilterAt<CorsFilter>(corsFilter())
             addFilterBefore<BasicAuthenticationFilter>(
                 CustomJwtAuthorizationFilter(
                     jwtService,
