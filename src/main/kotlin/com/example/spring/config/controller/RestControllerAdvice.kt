@@ -30,7 +30,7 @@ class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     @ExceptionHandler(JsonParseException::class)
-    fun constraintViolationException(ex: JsonParseException): ResponseEntity<BaseExceptionResponse> {
+    fun jsonParseException(ex: JsonParseException): ResponseEntity<BaseExceptionResponse> {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .body(
