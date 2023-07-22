@@ -64,7 +64,7 @@ class JwtService(
         val now = Date()
         val accessValidTime = Date(now.time + tokenValidTime)
         val claims: Claims = Jwts.claims().setSubject(Jwt.ACCESS)
-        claims["id"] = member.memberId
+        claims["id"] = member.memberId.toString()
         claims["email"] = member.email
 
         val token = Jwts.builder()
@@ -84,7 +84,7 @@ class JwtService(
         val now = Date()
         val refreshValidTime = Date(now.time + tokenValidTime)
         val claims: Claims = Jwts.claims().setSubject(Jwt.REFRESH)
-        claims["id"] = member.memberId
+        claims["id"] = member.memberId.toString()
         claims["email"] = member.email
 
         val token = Jwts.builder()
@@ -133,7 +133,7 @@ class JwtService(
         extractClaims(token).expiration.before(Date())
 
     override fun extractEmail(token: String): String =
-        extractClaims(token).toMap()["email"].toString()
+        extractClaims(token).get("email", String::class.java)
 
     /**
      * 인증정보 만들기

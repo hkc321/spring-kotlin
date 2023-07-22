@@ -24,6 +24,10 @@ class JwtAuthorizationExceptionFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        filter(request, response, filterChain)
+    }
+
+    fun filter(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         try {
             filterChain.doFilter(request, response) // -> CustomJwtAuthorizationFilter 진행
         } catch (ex: ExpiredJwtException) {
@@ -35,7 +39,7 @@ class JwtAuthorizationExceptionFilter(
         } catch (ex: NullPointerException) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.NULL_POINTER.name, ex)
         } catch (ex: MemberDataNotFoundException) {
-            setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.INVALID_USER.name, ex)
+            setErrorResponse(response, HttpStatus.BAD_REQUEST, ex.code.name, ex)
         } catch (ex: Exception) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, Jwt.EXCEPTION, ex)
         }
