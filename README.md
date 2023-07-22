@@ -10,6 +10,9 @@
 
 [![](https://img.shields.io/badge/hibernate-6.2.2.Final-blue?logo=hibernate)](https://hibernate.org/orm/releases/6.2/)
 [![](https://img.shields.io/badge/jpa-3.1-blue) ](https://jakarta.ee/specifications/persistence/3.1/)
-[![](https://img.shields.io/badge/kotlin_jdsl-2.2.1.RELEASE-blue?link=https://github.com/line/kotlin-jdsl&style=flat-square)](https://github.com/line/kotlin-jdsl/releases/tag/2.2.1.RELEASE)
+[![](https://img.shields.io/badge/kotlin_jdsl-2.2.1.RELEASE-blue?link=https://github.com/line/kotlin-jdsl)](https://github.com/line/kotlin-jdsl/releases/tag/2.2.1.RELEASE)
 [![](https://img.shields.io/badge/mysql-8.0.32-blue?logo=mysql)](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-23.html)
 [![](https://img.shields.io/badge/redis-7.0.12-blue?logo=redis)](https://github.com/redis/redis/releases/tag/7.0.12)
+
+[![](https://img.shields.io/badge/junit5-5.8.1-none?logo=junit5) ](https://junit.org/junit5/)
+[![](https://img.shields.io/badge/kotest-5.6.2-none?logo=kotest) ](https://kotest.io/)
