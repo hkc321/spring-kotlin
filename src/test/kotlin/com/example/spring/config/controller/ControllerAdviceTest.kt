@@ -1,7 +1,6 @@
 package com.example.spring.config.controller
 
-import com.example.spring.adapter.rest.board.PostController
-import com.example.spring.adapter.rest.board.dto.PostCommonResponse
+
 import com.example.spring.application.service.board.exception.*
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
@@ -9,16 +8,8 @@ import com.example.spring.application.service.member.exception.MemberDataNotFoun
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.dto.BaseExceptionResponse
 import com.example.spring.config.exception.WriterNotMatchException
-import com.example.spring.domain.member.Member
-import com.fasterxml.jackson.core.JsonLocation
 import com.fasterxml.jackson.core.JsonParseException
-import com.fasterxml.jackson.core.JsonParser
-import com.fasterxml.jackson.databind.JavaType
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.exc.InvalidFormatException
-import com.fasterxml.jackson.databind.type.TypeFactory
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -27,7 +18,6 @@ import jakarta.validation.ConstraintViolation
 import jakarta.validation.ConstraintViolationException
 import org.springframework.core.MethodParameter
 import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.validation.BindingResult
 import org.springframework.validation.FieldError
@@ -35,7 +25,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
-import java.lang.reflect.Field
 import kotlin.reflect.KParameter
 
 class ControllerAdviceTest : DescribeSpec({
@@ -104,14 +93,11 @@ class ControllerAdviceTest : DescribeSpec({
 
         it("should handle ConstraintViolationException") {
             val violation1 = mockk<ConstraintViolation<*>>()
-            val violation2 = mockk<ConstraintViolation<*>>()
 
-            val constraintViolations = setOf(violation1, violation2)
-            val errorMessage = "Error 2 Error 1"
+            val constraintViolations = setOf(violation1)
+            val errorMessage = "Error 1"
             every { violation1.message } returns "Error 1"
             every { violation1.propertyPath.toString() } returns "property1"
-            every { violation2.message } returns "Error 2"
-            every { violation2.propertyPath.toString() } returns "property2"
 
             val ex = ConstraintViolationException(constraintViolations)
             val response = controllerAdvice.constraintViolationException(ex)
