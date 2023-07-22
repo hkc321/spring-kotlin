@@ -53,7 +53,6 @@ class CustomJwtAuthorizationFilterTest : BehaviorSpec({
         }
 
         When("accessToken is invalid") {
-            // Test scenario for invalid accessToken
             every { jwtService.checkValidAccessHeader(request) } returns true
             every { jwtService.checkValidRefreshHeader(request) } returns false
             every { jwtService.onlyAccessToken(request) } returns true
@@ -160,7 +159,6 @@ class CustomJwtAuthorizationFilterTest : BehaviorSpec({
         }
 
         When("refreshToken is invalid") {
-
             every { jwtService.checkValidAccessHeader(request) } returns true
             every { jwtService.checkValidRefreshHeader(request) } returns true
             every { jwtService.onlyAccessToken(request) } returns false
