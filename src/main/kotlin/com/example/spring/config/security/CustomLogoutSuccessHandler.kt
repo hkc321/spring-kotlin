@@ -16,7 +16,7 @@ class CustomLogoutSuccessHandler(private val jwtService: JwtService): LogoutSucc
     ) {
         val accessToken =  jwtService.extractAccessToken(request)
         val claim = jwtService.extractClaims(accessToken)
-        val email = claim.toMap()["email"].toString()
+        val email = claim.get("email", String::class.java)
         val expiration = claim.expiration.time
 
         jwtService.deleteRefreshTokenByEmail(email)
