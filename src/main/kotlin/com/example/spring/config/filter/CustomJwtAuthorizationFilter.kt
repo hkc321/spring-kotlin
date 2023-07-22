@@ -38,6 +38,10 @@ class CustomJwtAuthorizationFilter(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        filter(request, response, filterChain)
+    }
+
+    fun filter(request: HttpServletRequest, response: HttpServletResponse, filterChain: FilterChain) {
         log.info("Authorization filter")
         try {
             request
@@ -133,8 +137,8 @@ class CustomJwtAuthorizationFilter(
             check(jwtRedisPort.hasLogout(access).not()) { Jwt.EXPIRED_EXCEPTION + Jwt.ACCESS }
 
             val claim = jwtService.extractClaims(access)
-            val memberId = claim.toMap()["id"] as Int
-            val email = claim.toMap()["email"].toString()
+            val memberId = claim.get("id", String::class.java).toInt()
+            val email = claim.get("email", String::class.java)
 
             UserDetailsImpl(memberUseCase.readMember(MemberUseCase.Commend.ReadCommend(memberId, email)))
         } else {
@@ -142,8 +146,8 @@ class CustomJwtAuthorizationFilter(
             check(jwtService.checkValidToken(refresh, Jwt.REFRESH)) { Jwt.JWT_EXCEPTION + Jwt.REFRESH }
 
             val claim = jwtService.extractClaims(refresh)
-            val memberId = claim.toMap()["id"] as Int
-            val email = claim.toMap()["email"].toString()
+            val memberId = claim.get("id", String::class.java).toInt()
+            val email = claim.get("email", String::class.java)
 
             val existRefreshToken: String? = jwtRedisPort.findRefreshTokenByEmail(email)
             check(existRefreshToken != null) { Jwt.EXPIRED_EXCEPTION + Jwt.REFRESH } // DB에서 토큰 존재 여부 검사
