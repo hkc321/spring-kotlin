@@ -6,5 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository
 interface MemberJpaRepository : JpaRepository<MemberJpaEntity, Int> {
     fun findByEmail(email: String): MemberJpaEntity?
     fun findByMemberId(memberId: Int): MemberJpaEntity?
-    fun findByRefreshToken(token: String): MemberJpaEntity?
 }

@@ -52,12 +52,4 @@ class MemberService(
 
         memberJpaPort.deleteMember(member.memberId)
     }
-
-    override fun logout() {
-        TODO("Not yet implemented")
-    }
-
-    @Transactional(readOnly = true)
-    override fun findMemberByRefreshToken(commend: MemberUseCase.Commend.FindMemberByRefreshTokenCommend): Member =
-        memberJpaPort.findMemberByRefreshToken(commend.token)
 }

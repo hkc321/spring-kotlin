@@ -54,11 +54,4 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
 
     override fun saveRefreshToken(member: Member): Member =
         memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
-
-    override fun findMemberByRefreshToken(token: String): Member =
-        memberJpaRepository.findByRefreshToken(token)
-            ?.let {
-                memberJpaMapper.toMember(it)
-            } ?: throw MemberDataNotFoundException()
-
 }

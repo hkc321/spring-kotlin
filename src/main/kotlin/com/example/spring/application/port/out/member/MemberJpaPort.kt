@@ -37,9 +37,4 @@ interface MemberJpaPort {
      * Refresh 토큰 저장
      * */
     fun saveRefreshToken(member: Member): Member
-
-    /**
-     * Member 찾기
-     * */
-    fun findMemberByRefreshToken(token: String): Member
 }

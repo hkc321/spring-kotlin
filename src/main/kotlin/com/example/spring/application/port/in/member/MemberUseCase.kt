@@ -29,16 +29,6 @@ interface MemberUseCase {
      * */
     fun deleteMember(commend: Commend.DeleteCommend)
 
-    /**
-     * 로그아웃
-     * */
-    fun logout()
-
-    /**
-     * Member 찾기
-     * */
-    fun findMemberByRefreshToken(commend: Commend.FindMemberByRefreshTokenCommend): Member
-
     sealed class Commend {
         data class CreateCommend(
             val email: String,
@@ -66,13 +56,5 @@ interface MemberUseCase {
             val accessor: String
         ) : Commend()
 
-        data class SaveRefreshTokenCommend(
-            val email: String,
-            val token: String
-        ) : Commend()
-
-        data class FindMemberByRefreshTokenCommend(
-            val token: String
-        ) : Commend()
     }
 }
