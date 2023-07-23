@@ -34,4 +34,9 @@ class JwtRedisRepository(private val redisTemplate: RedisTemplate<String, String
         valueOperation.getAndDelete(key)
     }
 
+    fun deleteLogoutToken(token: String) {
+        val key = "jwt:access:$token"
+        valueOperation.getAndDelete(key)
+    }
+
 }

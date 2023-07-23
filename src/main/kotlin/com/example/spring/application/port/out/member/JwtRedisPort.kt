@@ -25,4 +25,9 @@ interface JwtRedisPort {
      * 리프레시 토큰 제거
      * */
     fun deleteRefreshTokenByEmail(email: String)
+
+    /**
+     * 로그아웃 토큰 제거
+     * */
+    fun deleteLogoutToken(accessToken: String)
 }

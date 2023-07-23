@@ -143,6 +143,11 @@ interface Jwt {
      * */
     fun getRemainExpirationTime(expiration: Long): Long
 
+    /**
+     * logout token 제거
+     * */
+    fun deleteLogoutToken(accessToken: String)
+
     companion object {
         const val ACCESS = "AccessToken"
         const val REFRESH = "RefreshToken"

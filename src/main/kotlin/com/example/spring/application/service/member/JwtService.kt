@@ -257,4 +257,7 @@ class JwtService(
     override fun getRemainExpirationTime(expiration: Long): Long =
         expiration - Date().time
 
+    override fun deleteLogoutToken(accessToken: String) =
+        jwtRedisPort.deleteLogoutToken(accessToken)
+
 }

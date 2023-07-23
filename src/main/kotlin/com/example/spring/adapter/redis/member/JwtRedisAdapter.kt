@@ -23,4 +23,7 @@ class JwtRedisAdapter(private val jwtRedisRepository: JwtRedisRepository) : JwtR
     override fun deleteRefreshTokenByEmail(email: String) =
         jwtRedisRepository.deleteRefreshToken(email)
 
+    override fun deleteLogoutToken(accessToken: String) =
+        jwtRedisRepository.deleteLogoutToken(accessToken)
+
 }
