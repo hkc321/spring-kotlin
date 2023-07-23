@@ -280,4 +280,33 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         }
     }
 
+    @Test
+    @Transactional
+    fun logout() {
+        val email = "test"
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+
+        // When
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/members/logout")
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        // Then
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk
+        ).andDocument(
+            "POST-members-logout",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Logout member")
+                    .description("Logout")
+                    .build()
+            )
+        )
+        jwtService.deleteLogoutToken(token)
+    }
+
 }
