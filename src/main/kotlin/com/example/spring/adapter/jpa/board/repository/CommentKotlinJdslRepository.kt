@@ -3,9 +3,7 @@ package com.example.spring.adapter.jpa.board.repository
 import com.example.spring.adapter.jpa.board.entity.BoardJpaEntity
 import com.example.spring.adapter.jpa.board.entity.CommentJpaEntity
 import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
-import com.linecorp.kotlinjdsl.query.spec.ExpressionOrderSpec
 import com.linecorp.kotlinjdsl.querydsl.expression.column
-import com.linecorp.kotlinjdsl.querydsl.from.associate
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
 import com.linecorp.kotlinjdsl.spring.data.listQuery
@@ -38,40 +36,37 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
             select(entity(CommentJpaEntity::class))
             from(entity(CommentJpaEntity::class))
             fetch(CommentJpaEntity::writer)
-            associate(CommentJpaEntity::board)
-            associate(CommentJpaEntity::post)
             whereAnd(
-                column(BoardJpaEntity::boardId).equal(boardId),
-                column(PostJpaEntity::postId).equal(postId),
+                nestedCol(column(CommentJpaEntity::board),BoardJpaEntity::boardId).equal(boardId),
+                nestedCol(column(CommentJpaEntity::post),PostJpaEntity::postId).equal(postId),
                 column(CommentJpaEntity::parentComment).isNull(),
             )
             // where
-            cursorComment?.let {
+            cursorComment?.run {
                 if (orderBy == "like") {
                     whereOr(
                         and(
-                            column(CommentJpaEntity::like).equal(it.like),
-                            column(CommentJpaEntity::commentId).lessThan(it.commentId)
+                            column(CommentJpaEntity::like).equal(this.like),
+                            column(CommentJpaEntity::commentId).lessThan(this.commentId)
                         ),
-                        column(CommentJpaEntity::like).lessThan(it.like)
+                        column(CommentJpaEntity::like).lessThan(this.like)
                     )
                 } else {
                     whereAnd(
-                        column(CommentJpaEntity::commentId).lessThan(it.commentId)
+                        column(CommentJpaEntity::commentId).lessThan(this.commentId)
                     )
                 }
-            }
-                ?: cursor?.let { whereAnd(column(CommentJpaEntity::commentId).lessThan(0)) } // 존재하지 않는 최상위 게시글을 커서로 넘긴 경우 빈 리스트 반환되도록 설정}
+            } ?: cursor?.run { whereAnd(column(CommentJpaEntity::commentId).lessThan(0)) } // 존재하지 않는 최상위 게시글을 커서로 넘긴 경우 빈 리스트 반환되도록 설정}
 
 
             //orderby
             if (orderBy == "like") {
                 orderBy(
-                    ExpressionOrderSpec(column(CommentJpaEntity::like), false),
-                    ExpressionOrderSpec(column(CommentJpaEntity::commentId), false)
+                    column(CommentJpaEntity::like).desc(),
+                    column(CommentJpaEntity::commentId).desc()
                 )
             } else {
-                orderBy(ExpressionOrderSpec(column(CommentJpaEntity::commentId), false))
+                orderBy(column(CommentJpaEntity::commentId).desc())
             }
             limit(size + 1)
         }
@@ -96,17 +91,15 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
             select(entity(CommentJpaEntity::class))
             from(entity(CommentJpaEntity::class))
             fetch(CommentJpaEntity::writer)
-            associate(CommentJpaEntity::board)
-            associate(CommentJpaEntity::post)
             whereAnd(
-                column(BoardJpaEntity::boardId).equal(boardId),
-                column(PostJpaEntity::postId).equal(postId),
+                nestedCol(column(CommentJpaEntity::board),BoardJpaEntity::boardId).equal(boardId),
+                nestedCol(column(CommentJpaEntity::post),PostJpaEntity::postId).equal(postId),
                 column(CommentJpaEntity::parentComment).equal(parentComment),
                 cursor?.let {
                     column(CommentJpaEntity::commentId).greaterThan(cursor)
                 }
             )
-            orderBy(ExpressionOrderSpec(column(CommentJpaEntity::commentId), true))
+            orderBy(column(CommentJpaEntity::commentId).asc())
             limit(size + 1)
         }
     }
