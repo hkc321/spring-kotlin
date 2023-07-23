@@ -32,8 +32,4 @@ class MemberJpaEntity(
 
     @Column(name = "role")
     var role: String = role
-
-    @Column(name = "refresh_token")
-    var refreshToken: String? = null
-
 }
