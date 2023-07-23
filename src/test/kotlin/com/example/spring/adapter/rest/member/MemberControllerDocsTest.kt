@@ -240,6 +240,56 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
     @Test
     @Transactional
+    fun updateMemberRole() {
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test_admin"))
+        val memberId = 2
+        val input = mutableMapOf<String, String>()
+        input["role"] = "ROLE_ADMIN"
+
+        //when
+        var result = mockMvc.perform(
+            RestDocumentationRequestBuilders.patch("/members/{memberId}/role", memberId)
+                .header("Authorization", "Bearer $token")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(ObjectMapper().writeValueAsString(input))
+        )
+
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk,
+            MockMvcResultMatchers.jsonPath("memberId").exists(),
+            MockMvcResultMatchers.jsonPath("email").exists(),
+            MockMvcResultMatchers.jsonPath("role").exists(),
+            MockMvcResultMatchers.jsonPath("createdAt").exists(),
+            MockMvcResultMatchers.jsonPath("updatedAt").exists()
+        ).andDocument(
+            "PATCH-members-{memberId}-role",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Update member role")
+                    .description("Update member'role with send info. Only member who has ROLE_ADMIN can update")
+                    .pathParameters(
+                        parameter("memberId", SimpleType.NUMBER, "Unique member ID")
+                    )
+                    .requestSchema(Schema("memberUpdateRole.Request"))
+                    .requestFields(
+                        field("role", JsonFieldType.STRING, "Password of member", false)
+                    )
+                    .responseSchema(Schema("memberUpdateRole.Response"))
+                    .responseFields(
+                        field("memberId", JsonFieldType.NUMBER, "Unique member ID", false),
+                        field("email", JsonFieldType.STRING, "Email of member", false),
+                        field("role", JsonFieldType.STRING, "Role of member", false),
+                        field("createdAt", JsonFieldType.STRING, "Created datetime of member", false),
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of member", false)
+                    )
+                    .build()
+            )
+        )
+    }
+
+    @Test
+    @Transactional
     fun deleteMember() {
         val createdMember = memberJpaPort.createMember(
             Member(
