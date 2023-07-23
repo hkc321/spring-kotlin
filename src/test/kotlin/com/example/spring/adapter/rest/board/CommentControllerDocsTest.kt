@@ -428,8 +428,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     fun updateCommentLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
-        val input = mutableMapOf<String, Any?>()
-        input["content"] = "testContent"
         val boardId = 2
         val postId = 2
         val commentId = 1
@@ -444,7 +442,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             )
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(input))
         )
 
         result.andExpectAll(
@@ -501,8 +498,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     fun updateCommentUnLike() {
         val email = "test"
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
-        val input = mutableMapOf<String, Any?>()
-        input["content"] = "testContent"
         val boardId = 2
         val postId = 2
         val commentId = 1
@@ -519,7 +514,6 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             )
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(ObjectMapper().writeValueAsString(input))
         )
 
         result.andExpectAll(
