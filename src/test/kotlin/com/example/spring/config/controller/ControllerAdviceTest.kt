@@ -33,6 +33,14 @@ class ControllerAdviceTest : DescribeSpec({
     describe("ControllerAdvice") {
         val controllerAdvice = ControllerAdvice()
 
+        it("should handle BoardExistException") {
+            val ex = BoardExistException(ErrorCode.ALREADY_EXIST, "같은 이름의 게시판이 존재합니다.")
+            val response = controllerAdvice.boardExistException(ex)
+
+            response.statusCode shouldBe HttpStatus.CONFLICT
+            response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
+        }
+
         it("should handle JwtRenewException") {
             val ex = JwtRenewException(HttpStatus.BAD_REQUEST, ErrorCode.JWT_EXCEPTION, "JWT ERROR")
             val response = controllerAdvice.jwtRenewException(ex)
@@ -62,7 +70,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = CommentLikeException(boardId = 1, postId = 1, commentId = 1, code = ErrorCode.DATA_NOT_FOUND, "이미 좋아요를 클릭한 댓글입니다. [boardId: 1, postId: 1, commentId: 1]")
             val response = controllerAdvice.commentLikeException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.CONFLICT
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -70,7 +78,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = PostLikeException(boardId = 1, postId = 1, code = ErrorCode.DATA_NOT_FOUND, "좋아요를 클릭한 이력이 없습니다. [boardId: 1, postId: 1]")
             val response = controllerAdvice.postLikeException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.CONFLICT
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -96,7 +104,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = HttpRequestMethodNotSupportedException(method)
             val response = controllerAdvice.httpRequestMethodNotSupportedException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.METHOD_NOT_ALLOWED
             response.body shouldBe BaseExceptionResponse(ErrorCode.NOT_SUPPORT_HTTP_METHOD, message)
         }
 
@@ -178,7 +186,6 @@ class ControllerAdviceTest : DescribeSpec({
             every { ex.name } returns argumentName
             every { ex.requiredType } returns requiredType
 
-            val controllerAdvice = ControllerAdvice()
             val response = controllerAdvice.methodArgumentTypeMismatchException(ex)
 
             val expectedMessage =
@@ -209,7 +216,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = CommentDataNotFoundException(boardId = 1, postId = 1, commentId = 1)
             val response = controllerAdvice.commentDataNotFoundException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.NOT_FOUND
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -217,7 +224,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = PostDataNotFoundException(boardId = 1, postId = 1)
             val response = controllerAdvice.postDataNotFoundException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.NOT_FOUND
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -225,7 +232,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = BoardDataNotFoundException(boardId = 1)
             val response = controllerAdvice.boardDataNotFoundException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.NOT_FOUND
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -233,7 +240,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = MemberDataNotFoundException()
             val response = controllerAdvice.memberDataNotFoundException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.NOT_FOUND
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 
@@ -241,7 +248,7 @@ class ControllerAdviceTest : DescribeSpec({
             val ex = MemberAlreadyExistException()
             val response = controllerAdvice.memberAlreadyExistException(ex)
 
-            response.statusCode shouldBe HttpStatus.BAD_REQUEST
+            response.statusCode shouldBe HttpStatus.CONFLICT
             response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
         }
 

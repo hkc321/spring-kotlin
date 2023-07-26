@@ -35,4 +35,9 @@ class BoardJpaAdapter(
             }
             ?: throw BoardDataNotFoundException(boardId = boardId)
     }
+
+    override fun readBoardByName(name: String): Board? =
+        boardJpaRepository.findByName(name)
+            ?.let { boardJpaMapper.toBoard(it) }
+
 }

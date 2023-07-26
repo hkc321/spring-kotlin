@@ -353,6 +353,10 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .tag("members")
                     .summary("Logout member")
                     .description("Logout")
+                    .responseSchema(Schema("memberLogout.Response"))
+                    .responseFields(
+                        field("success", JsonFieldType.BOOLEAN, "success or not", true)
+                    )
                     .build()
             )
         )
@@ -388,11 +392,10 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                     .summary("Renew token.")
                     .description("Renew token")
                     .requestHeaders(
-                        header("Authorization", "Access token"),
-                        header("Authorization-refresh", "Refresh token", true)
+                        header("Authorization-refresh", "Refresh token", false)
                     )
                     .responseHeaders(
-                        header("Authorization", "Renewed access token"),
+                        header("Authorization", "Renewed access token", false),
                         header("Authorization-refresh", "Renewed refresh token. It is renewed and delivered only when the expiration date is less than 7 days.", true)
                     )
                     .build()

@@ -22,4 +22,9 @@ interface BoardJpaPort {
      * 게시판 삭제
      * */
     fun deleteBoard(boardId: Int)
+
+    /**
+     * 게시판 제목으로 검색
+     * */
+    fun readBoardByName(name: String): Board?
 }

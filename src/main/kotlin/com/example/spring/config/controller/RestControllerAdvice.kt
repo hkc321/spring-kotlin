@@ -30,6 +30,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
+    @ExceptionHandler(BoardExistException::class)
+    fun boardExistException(ex: BoardExistException): ResponseEntity<BaseExceptionResponse> {
+
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+            .body(
+                BaseExceptionResponse(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
+
     @ExceptionHandler(JwtRenewException::class)
     fun jwtRenewException(ex: JwtRenewException): ResponseEntity<BaseExceptionResponse> {
 
@@ -67,7 +79,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(CommentLikeException::class)
     fun commentLikeException(ex: CommentLikeException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -78,7 +90,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(PostLikeException::class)
     fun postLikeException(ex: PostLikeException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -111,7 +123,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun httpRequestMethodNotSupportedException(ex: HttpRequestMethodNotSupportedException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
             .body(
                 BaseExceptionResponse(
                     ErrorCode.NOT_SUPPORT_HTTP_METHOD,
@@ -207,7 +219,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(CommentDataNotFoundException::class)
     fun commentDataNotFoundException(ex: CommentDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -218,7 +230,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(PostDataNotFoundException::class)
     fun postDataNotFoundException(ex: PostDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -229,7 +241,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(BoardDataNotFoundException::class)
     fun boardDataNotFoundException(ex: BoardDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -240,7 +252,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(MemberDataNotFoundException::class)
     fun memberDataNotFoundException(ex: MemberDataNotFoundException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
             .body(
                 BaseExceptionResponse(
                     ex.code,
@@ -251,7 +263,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(MemberAlreadyExistException::class)
     fun memberAlreadyExistException(ex: MemberAlreadyExistException): ResponseEntity<BaseExceptionResponse> {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.CONFLICT)
             .body(
                 BaseExceptionResponse(
                     ex.code,

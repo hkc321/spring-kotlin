@@ -8,7 +8,7 @@ interface BoardKotlinJdslPort {
     /**
      * 게시판 조회
      * */
-    fun readBoard(boardId: Int): Board
+    fun readBoard(boardId: Int): Board?
 
     /**
      * 게시판 리스트 조회
