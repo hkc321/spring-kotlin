@@ -71,12 +71,20 @@ interface RestdocsTestDsl {
         if (optional) {
             parameter.optional()
         }
+
         return parameter
     }
 
 
-    fun header(name: String, description: String): HeaderDescriptor =
-        HeaderDocumentation.headerWithName(name).description(description)
+    fun header(name: String, description: String, optional: Boolean = false): HeaderDescriptor {
+        val header = HeaderDocumentation.headerWithName(name).description(description)
+        if (optional) {
+            header.optional()
+        }
+
+        return header
+    }
+
 
     fun exist(): Matcher<Any> =
         Matchers.notNullValue()

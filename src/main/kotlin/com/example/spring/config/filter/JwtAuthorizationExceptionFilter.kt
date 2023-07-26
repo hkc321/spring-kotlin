@@ -4,7 +4,6 @@ import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
-import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
 import jakarta.servlet.FilterChain
@@ -31,9 +30,9 @@ class JwtAuthorizationExceptionFilter(
         try {
             filterChain.doFilter(request, response) // -> CustomJwtAuthorizationFilter 진행
         } catch (ex: ExpiredJwtException) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.EXPIRED_EXCEPTION, ex)
+            setErrorResponse(response, HttpStatus.UNAUTHORIZED, ErrorCode.ACCESS_TOKEN_EXPIRED.name, ex)
         } catch (ex: JwtException) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, Jwt.JWT_EXCEPTION, ex)
+            setErrorResponse(response, HttpStatus.UNAUTHORIZED, ErrorCode.JWT_EXCEPTION.name, ex)
         } catch (ex: CustomJwtAuthorizationFilterException) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, ex.code, ex)
         } catch (ex: NullPointerException) {
@@ -41,7 +40,7 @@ class JwtAuthorizationExceptionFilter(
         } catch (ex: MemberDataNotFoundException) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, ex.code.name, ex)
         } catch (ex: Exception) {
-            setErrorResponse(response, HttpStatus.BAD_REQUEST, Jwt.EXCEPTION, ex)
+            setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.JWT_EXCEPTION.name, ex)
         }
     }
 

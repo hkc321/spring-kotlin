@@ -1,9 +1,6 @@
 package com.example.spring.config.security
 
-import com.example.spring.application.port.`in`.member.MemberUseCase
-import com.example.spring.application.port.out.member.JwtRedisPort
 import com.example.spring.application.service.member.JwtService
-import com.example.spring.application.service.member.UserDetailsServiceImpl
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
@@ -28,11 +25,8 @@ import org.springframework.web.filter.CorsFilter
 class SpringSecurityConfig(
     private val jwtService: JwtService,
     private val authenticationConfiguration: AuthenticationConfiguration,
-    private val memberUseCase: MemberUseCase,
-    private val userDetailsServiceImpl: UserDetailsServiceImpl,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val jwtRedisPort: JwtRedisPort,
     private val customLogoutSuccessHandler: CustomLogoutSuccessHandler
 ) {
     @Bean
@@ -43,6 +37,7 @@ class SpringSecurityConfig(
                 .requestMatchers("/static/**")
             it.ignoring()
                 .requestMatchers("/members/register")
+                .requestMatchers("/members/token")
         }
 
     @Bean
@@ -63,10 +58,7 @@ class SpringSecurityConfig(
             addFilterAt<CorsFilter>(corsFilter())
             addFilterBefore<BasicAuthenticationFilter>(
                 CustomJwtAuthorizationFilter(
-                    jwtService,
-                    memberUseCase,
-                    userDetailsServiceImpl,
-                    jwtRedisPort
+                    jwtService
                 )
             )
             addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))

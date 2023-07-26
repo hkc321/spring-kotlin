@@ -46,7 +46,7 @@ interface Jwt {
     /**
      * 인증정보 만들기
      * */
-    fun getAuthentication(id: String): UsernamePasswordAuthenticationToken
+    fun getAuthentication(email: String): UsernamePasswordAuthenticationToken
 
     /**
      * JWT Access Token Header 설정
@@ -148,6 +148,21 @@ interface Jwt {
      * */
     fun deleteLogoutToken(accessToken: String)
 
+    /**
+     * access token 갱신
+     * */
+    fun renewToken(request: HttpServletRequest, response: HttpServletResponse)
+
+    /**
+     * 로그아웃 응답 메시지 설정
+     * */
+    fun setLogoutMessage(result: Boolean, response: HttpServletResponse)
+
+    /**
+     * accessToken 검증
+     * */
+    fun checkAccessToken(accessToken: String)
+
     companion object {
         const val ACCESS = "AccessToken"
         const val REFRESH = "RefreshToken"
@@ -155,6 +170,7 @@ interface Jwt {
         const val JWT_EXCEPTION = "JWT_EXCEPTION"
         const val HEADER_EXCEPTION = "HEADER_EXCEPTION"
         const val EXPIRED_EXCEPTION = "EXPIRED_EXCEPTION"
+        const val HAS_LOGOUT = "HAS_LOGOUT"
         const val ACCESS_TOKEN_HEADER = "Authorization"
         const val REFRESH_TOKEN_HEADER = "Authorization-refresh"
         const val TOKEN_PREFIX = "Bearer "

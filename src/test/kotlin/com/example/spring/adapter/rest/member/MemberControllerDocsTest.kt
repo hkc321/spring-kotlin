@@ -359,4 +359,46 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         jwtService.deleteLogoutToken(token)
     }
 
+    @Test
+    @Transactional
+    fun renewToken() {
+        val email = "test"
+        val member = memberJpaPort.findMemberByEmail(email)
+        val accessToken = jwtService.createAccessToken(member)
+        val refreshToken = jwtService.createRefreshToken(member)
+        val time = jwtService.extractClaims(refreshToken).expiration.time
+        jwtService.saveRefreshToken(email, refreshToken, time)
+
+        // When
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post("/members/token")
+                .header("Authorization", "Bearer $accessToken")
+                .header("Authorization-refresh", "Bearer $refreshToken")
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        // Then
+        result.andExpectAll(
+            MockMvcResultMatchers.status().isOk
+        ).andDocument(
+            "POST-members-token",
+            snippets = makeSnippets(
+                snippetsBuilder()
+                    .tag("members")
+                    .summary("Renew token.")
+                    .description("Renew token")
+                    .requestHeaders(
+                        header("Authorization", "Access token"),
+                        header("Authorization-refresh", "Refresh token", true)
+                    )
+                    .responseHeaders(
+                        header("Authorization", "Renewed access token"),
+                        header("Authorization-refresh", "Renewed refresh token. It is renewed and delivered only when the expiration date is less than 7 days.", true)
+                    )
+                    .build()
+            )
+        )
+        jwtService.deleteRefreshTokenByEmail(email)
+    }
+
 }

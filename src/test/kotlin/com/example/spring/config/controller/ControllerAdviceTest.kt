@@ -2,6 +2,7 @@ package com.example.spring.config.controller
 
 
 import com.example.spring.application.service.board.exception.*
+import com.example.spring.application.service.member.exception.JwtRenewException
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
@@ -31,6 +32,14 @@ class ControllerAdviceTest : DescribeSpec({
 
     describe("ControllerAdvice") {
         val controllerAdvice = ControllerAdvice()
+
+        it("should handle JwtRenewException") {
+            val ex = JwtRenewException(HttpStatus.BAD_REQUEST, ErrorCode.JWT_EXCEPTION, "JWT ERROR")
+            val response = controllerAdvice.jwtRenewException(ex)
+
+            response.statusCode shouldBe ex.status
+            response.body shouldBe BaseExceptionResponse(ex.code, ex.message)
+        }
 
         it("should handle JsonParseException") {
             val ex = JsonParseException("JSON 형식이 잘못되었습니다.")

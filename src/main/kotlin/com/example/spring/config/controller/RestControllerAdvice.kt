@@ -1,6 +1,7 @@
 package com.example.spring.config.controller
 
 import com.example.spring.application.service.board.exception.*
+import com.example.spring.application.service.member.exception.JwtRenewException
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
@@ -28,6 +29,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 @RestControllerAdvice
 class ControllerAdvice {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
+    @ExceptionHandler(JwtRenewException::class)
+    fun jwtRenewException(ex: JwtRenewException): ResponseEntity<BaseExceptionResponse> {
+
+        return ResponseEntity.status(ex.status)
+            .body(
+                BaseExceptionResponse(
+                    ex.code,
+                    ex.message
+                )
+            )
+    }
 
     @ExceptionHandler(JsonParseException::class)
     fun jsonParseException(ex: JsonParseException): ResponseEntity<BaseExceptionResponse> {

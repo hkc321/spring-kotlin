@@ -3,7 +3,10 @@ package com.example.spring.adapter.rest.member
 import com.example.spring.adapter.rest.member.dto.*
 import com.example.spring.adapter.rest.member.mapper.MemberRestMapper
 import com.example.spring.application.port.`in`.member.MemberUseCase
+import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -13,7 +16,7 @@ import java.util.*
 
 @RestController
 @RequestMapping("members")
-class MemberController(private val memberUseCase: MemberUseCase) {
+class MemberController(private val memberUseCase: MemberUseCase, private val jwt: Jwt) {
     private val memberRestMapper = MemberRestMapper.INSTANCE
 
     @PostMapping("register")
@@ -71,6 +74,10 @@ class MemberController(private val memberUseCase: MemberUseCase) {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteMember(@PathVariable("memberId") memberId: Int, principal: Principal) =
         memberUseCase.deleteMember(MemberUseCase.Commend.DeleteCommend(memberId, principal.name))
+
+    @PostMapping("token")
+    fun renewToken(request: HttpServletRequest, response: HttpServletResponse) =
+        jwt.renewToken(request, response)
 
     /**
      * Spring Security 에서 실행

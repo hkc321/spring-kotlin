@@ -82,7 +82,6 @@ class CustomUsernamePasswordAuthenticationFilter(
 
         val member = principal.getMember()
         member.setDateFormat()
-        println(member.createdAt)
 
         jwtService.setResponseMessage(true, response, member)
     }
@@ -93,10 +92,10 @@ class CustomUsernamePasswordAuthenticationFilter(
     override fun unsuccessfulAuthentication(
         request: HttpServletRequest?,
         response: HttpServletResponse,
-        failed: AuthenticationException?
+        failed: AuthenticationException
     ) {
         log.info("fail authentication")
-        val failMessage = when (failed!!.message) {
+        val failMessage = when (failed.message) {
             ErrorCode.DATA_NOT_FOUND.name -> "사용자가 존재하지 않습니다."
             ErrorCode.WRONG_PASSWORD.name -> "비밀번호가 올바르지 않습니다."
             ErrorCode.INVALID_PARAMETER.name -> "프로퍼티 이름이 올바르지 않습니다. required:[email, password]"
@@ -104,14 +103,14 @@ class CustomUsernamePasswordAuthenticationFilter(
             ErrorCode.INVALID_FORMAT.name -> "JSON 형식이 잘못되었습니다."
             else -> ErrorCode.UNKNOWN_ERROR.name
         }
-        val status = when (failed!!.message) {
+        val status = when (failed.message) {
             ErrorCode.INTERNAL_SERVER_ERROR.name -> HttpStatus.INTERNAL_SERVER_ERROR
             else -> HttpStatus.BAD_REQUEST
         }
         jwtService.setErrorResponseMessage(
             response,
             status,
-            failed!!.message?.let { it } ?: let { ErrorCode.UNKNOWN_ERROR.name },
+            failed.message ?: let { ErrorCode.UNKNOWN_ERROR.name },
             failMessage
         )
     }
