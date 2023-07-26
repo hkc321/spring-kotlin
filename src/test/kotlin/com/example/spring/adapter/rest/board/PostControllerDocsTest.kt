@@ -159,7 +159,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false)
                     )
                     .queryParameters(
-                        parameter("searchType", SimpleType.STRING, "Search requirement.", true),
+                        parameter("searchType", SimpleType.STRING, "Search requirement. (Only title, content or write)", true),
                         parameter("keyword", SimpleType.STRING, "Search keyword", true),
                         parameter(
                             "page",

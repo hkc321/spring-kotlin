@@ -9,7 +9,7 @@ interface PostKotlinJdslPort {
     /**
      * 게시글 조회
      * */
-    fun readPost(board: Board, postId: Int): Post
+    fun readPost(board: Board, postId: Int): Post?
 
     /**
      * 게시글 리스트 조회

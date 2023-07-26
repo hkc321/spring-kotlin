@@ -4,7 +4,7 @@ interface PostRedisPort {
     /**
      * 게시글 좋아요 추가
      * */
-    fun createPostLike(boardId: Int, postId: Int, email: String): Int
+    fun createPostLike(boardId: Int, postId: Int, email: String): Int?
 
     /**
      * 게시글 좋아요 수
@@ -19,5 +19,5 @@ interface PostRedisPort {
     /**
      * 게시글 좋아요 제거
      * */
-    fun deletePostLike(boardId: Int, postId: Int, email: String): Int
+    fun deletePostLike(boardId: Int, postId: Int, email: String): Int?
 }
