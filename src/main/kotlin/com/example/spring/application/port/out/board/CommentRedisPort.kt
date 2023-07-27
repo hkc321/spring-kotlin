@@ -20,4 +20,9 @@ interface CommentRedisPort {
      * 댓글 좋아요 제거
      * */
     fun deleteCommentLike(boardId: Int, postId: Int, commentId: Int, email: String): Int
+
+    /**
+     * 댓글 좋아요 모두 제거
+     * */
+    fun deleteCommentLikeAll(boardId: Int, postId: Int, commentId: Int)
 }

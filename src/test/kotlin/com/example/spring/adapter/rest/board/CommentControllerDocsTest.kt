@@ -138,6 +138,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
 
         commentJpaPort.deleteComment(commentBoardId, commentPostId, commentId)
+        commentRedisPort.deleteCommentLikeAll(commentBoardId, commentPostId, commentId)
         assertThrows(CommentDataNotFoundException::class.java) {
             commentService.readComment(CommentUseCase.Commend.ReadCommend(commentBoardId, commentPostId, commentId, "test"))
         }

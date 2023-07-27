@@ -32,4 +32,11 @@ class CommentRedisRepository(private val redisTemplate: RedisTemplate<String, An
 
         return valueOperations.size(key)
     }
+
+    fun deleteLikeCommentAll(boardId: Int, postId: Int, commentId: Int): Any? {
+        val valueOperations = redisTemplate.opsForSet()
+        val key = "like:comment:$boardId:$postId:$commentId"
+
+        return valueOperations.pop(key)
+    }
 }

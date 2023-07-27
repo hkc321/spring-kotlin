@@ -43,4 +43,8 @@ class CommentRedisAdapter(private val commentRedisRepository: CommentRedisReposi
                 message = "좋아요를 클릭한 이력이 없습니다. [boardId: $boardId, postId: $postId, commentId: $commentId]"
             )
         }
+
+    override fun deleteCommentLikeAll(boardId: Int, postId: Int, commentId: Int) {
+        commentRedisRepository.deleteLikeCommentAll(boardId, postId, commentId)
+    }
 }

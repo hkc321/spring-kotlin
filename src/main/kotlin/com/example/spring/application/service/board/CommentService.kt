@@ -157,5 +157,6 @@ class CommentService(
         comment.checkWriter(commend.modifier)
 
         commentJpaPort.deleteComment(comment.boardId, comment.postId, comment.commentId)
+        commentRedisPort.deleteCommentLikeAll(comment.boardId, comment.postId, comment.commentId)
     }
 }
