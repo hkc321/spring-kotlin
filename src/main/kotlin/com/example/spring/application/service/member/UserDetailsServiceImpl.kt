@@ -1,6 +1,7 @@
 package com.example.spring.application.service.member
 
 import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -20,6 +21,11 @@ class UserDetailsServiceImpl(private val memberJpaPort: MemberJpaPort) : UserDet
      * @throws UsernameNotFoundException if the user could not be found or the user has no
      * GrantedAuthority
      */
-    override fun loadUserByUsername(username: String): UserDetails =
-        UserDetailsImpl(memberJpaPort.findMemberByEmail(username))
+    override fun loadUserByUsername(username: String): UserDetails {
+        val member = memberJpaPort.findMemberByEmail(username)
+            ?: throw MemberDataNotFoundException()
+
+        return UserDetailsImpl(member)
+    }
+
 }

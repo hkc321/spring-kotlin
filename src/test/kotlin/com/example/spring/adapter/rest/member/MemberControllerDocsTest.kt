@@ -3,12 +3,10 @@ package com.example.spring.adapter.rest.member
 import com.epages.restdocs.apispec.*
 import com.example.spring.application.port.out.member.MemberJpaPort
 import com.example.spring.application.service.member.JwtService
-import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.member.Member
 import com.example.spring.domain.member.MemberRole
 import com.fasterxml.jackson.databind.ObjectMapper
 import config.RestdocsTestDsl
-import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs
@@ -89,10 +87,8 @@ class MemberControllerDocsTest : RestdocsTestDsl {
         val createdMemberId = jsonNode["memberId"].asInt()
 
         memberJpaPort.deleteMember(createdMemberId)
-        Assertions.assertThrows(MemberDataNotFoundException::class.java) {
-            memberJpaPort.findMemberByMemberId(createdMemberId)
-        }
 
+        assert(memberJpaPort.findMemberByMemberId(createdMemberId) == null)
     }
 
     @Test
@@ -148,11 +144,11 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readMember() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val memberId = 1
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -191,13 +187,13 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun updateMember() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val memberId = 1
         val input = mutableMapOf<String, String>()
         input["password"] = "test"
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -241,13 +237,13 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun updateMemberRole() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test_admin"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test_admin")!!)
         val memberId = 2
         val input = mutableMapOf<String, String>()
         input["role"] = "ROLE_ADMIN"
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/members/{memberId}/role", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -299,11 +295,11 @@ class MemberControllerDocsTest : RestdocsTestDsl {
             )
         )
 
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(createdMember.email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(createdMember.email)!!)
         val memberId = createdMember.memberId
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -325,16 +321,14 @@ class MemberControllerDocsTest : RestdocsTestDsl {
             )
         )
 
-        Assertions.assertThrows(MemberDataNotFoundException::class.java) {
-            memberJpaPort.findMemberByMemberId(memberId)
-        }
+        assert(memberJpaPort.findMemberByMemberId(memberId) == null)
     }
 
     @Test
     @Transactional
     fun logout() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
 
         // When
         val result = mockMvc.perform(
@@ -367,7 +361,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun renewToken() {
         val email = "test"
-        val member = memberJpaPort.findMemberByEmail(email)
+        val member = memberJpaPort.findMemberByEmail(email)!!
         val accessToken = jwtService.createAccessToken(member)
         val refreshToken = jwtService.createRefreshToken(member)
         val time = jwtService.extractClaims(refreshToken).expiration.time
@@ -390,7 +384,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Renew token.")
-                    .description("Renew token")
+                    .description("Renew token. When access token is expired, Renew the access token by sending the refresh token in the header. If the validity period of the refresh token is less than 7 days, the refresh token is also renewed.")
                     .requestHeaders(
                         header("Authorization-refresh", "Refresh token", false)
                     )

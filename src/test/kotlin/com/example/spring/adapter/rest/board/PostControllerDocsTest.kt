@@ -47,21 +47,22 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Autowired
     private lateinit var memberJpaPort: MemberJpaPort
 
-    @Autowired lateinit var postRedisPort: PostRedisPort
+    @Autowired
+    private lateinit var postRedisPort: PostRedisPort
 
 
     @Test
     @Transactional
     fun createPost() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
         input["content"] = email
         val boardId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.post("/boards/{boardId}/posts", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -125,11 +126,11 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Test
     fun readPostPageList() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards/{boardId}/posts", boardId)
                 .header("Authorization", "Bearer $token")
                 .queryParam("page", "1")
@@ -152,7 +153,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
             snippets = makeSnippets(
                 ResourceSnippetParameters.builder()
                     .tag("posts")
-                    .summary("Read board paging list")
+                    .summary("Read post paging list")
                     .description("Read post paging list with send info.")
                     .tag("posts")
                     .pathParameters(
@@ -199,12 +200,12 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Test
     fun readPost() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val postId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -254,7 +255,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun updatePost() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val input = mutableMapOf<String, String>()
         input["title"] = "testqqq"
         input["content"] = email
@@ -262,7 +263,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
         val postId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -317,12 +318,12 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun updatePostLike() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val postId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/like", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -374,14 +375,14 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun deletePostLike() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val postId = 2
 
         postRedisPort.createPostLike(boardId, postId, email)
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/unlike", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -431,7 +432,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun deletePost() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val post = Post(
             boardId = boardId,
@@ -442,7 +443,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
         val postId = postJpaPort.createPost(post).postId
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)

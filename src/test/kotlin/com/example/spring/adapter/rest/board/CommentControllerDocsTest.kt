@@ -52,7 +52,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun createComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val input = mutableMapOf<String, Any?>()
         input["parentCommentId"] = null
         input["level"] = 0
@@ -61,7 +61,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val postId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.post("/boards/{boardId}/posts/{postId}/comments", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -145,12 +145,12 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readTopLevelComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val boardId = 2
         val postId = 2
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}/comments", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .queryParam("size", "20")
@@ -219,13 +219,13 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val boardId = 2
         val postId = 2
         val commentId = 1
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,
@@ -284,13 +284,13 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun readChildComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val boardId = 2
         val postId = 2
         val commentId = 1
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}/childComment",
                 boardId,
@@ -358,7 +358,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun updateComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val input = mutableMapOf<String, Any?>()
         input["content"] = "testContent"
         val boardId = 2
@@ -366,7 +366,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val commentId = 1
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,
@@ -432,13 +432,13 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun updateCommentLike() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val postId = 2
         val commentId = 1
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}/like",
                 boardId,
@@ -502,7 +502,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun updateCommentUnLike() {
         val email = "test"
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail(email)!!)
         val boardId = 2
         val postId = 2
         val commentId = 1
@@ -510,7 +510,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         commentRedisPort.createCommentLike(boardId, postId, commentId, email)
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}/unlike",
                 boardId,
@@ -571,7 +571,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun deleteComment() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val boardId = 2
         val postId = 2
         val comment = commentJpaPort.createComment(
@@ -587,7 +587,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val commentId = comment.commentId
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.delete(
                 "/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,

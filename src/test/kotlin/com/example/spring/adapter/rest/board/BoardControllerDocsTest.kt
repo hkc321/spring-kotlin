@@ -44,7 +44,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun createBoard() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val input = mutableMapOf<String, String>()
         input["name"] = "testBoardCreate"
         input["description"] = "test"
@@ -74,12 +74,8 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 .description("Description of board")
         ).toList()
 
-//        val responseHeaders = arrayOf(
-//            HeaderDocumentation.headerWithName(HttpHeaders.LOCATION).description("Location header")
-//        ).toList()
-
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.post("/boards")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -96,20 +92,6 @@ class BoardControllerDocsTest : RestdocsTestDsl {
             .andExpect(MockMvcResultMatchers.jsonPath("createdAt").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("modifier").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("updatedAt").value(null))
-//            .andDo( // Rest Doc
-//                MockMvcRestDocumentation.document(
-//                    "POST-boards",
-//                    HeaderDocumentation.responseHeaders(
-//                        responseHeaders
-//                    ),
-//                    PayloadDocumentation.requestFields(
-//                        requestFields
-//                    ),
-//                    PayloadDocumentation.responseFields(
-//                        responseFields
-//                    )
-//                )
-//            )
             .andDocument(
                 "POST-boards",
                 snippets = makeSnippets(
@@ -141,10 +123,10 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun `GET boards`() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get("/boards")
                 .header("Authorization", "Bearer $token")
                 .param("page", "1")
@@ -196,30 +178,15 @@ class BoardControllerDocsTest : RestdocsTestDsl {
             .andExpect(MockMvcResultMatchers.jsonPath("totalPages").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("totalElements").exists())
             .andExpect(MockMvcResultMatchers.jsonPath("size").exists())
-//            .andDo( // Rest Doc
-//                MockMvcRestDocumentation.document(
-//                    "POST-boards",
-//                    RequestDocumentation.queryParameters(
-//                        RequestDocumentation.parameterWithName("page").description("Requested page number(start is 0)"),
-//                        RequestDocumentation.parameterWithName("page").description("Requested page number(start is 0)"),
-//                        RequestDocumentation.parameterWithName("size")
-//                            .description("The number of posts displayed on one page"),
-//                        RequestDocumentation.parameterWithName("sort").description("Sort by request")
-//                    ),
-//                    PayloadDocumentation.responseFields(
-//                        responseFields
-//                    )
-//                )
-//            )
             .andDocument(
                 "GET-boards",
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .summary("Read paging board list")
+                            .summary("Read board paging list")
                             .description(
                                 """
-                                    Read paging board list. Only sort by boardId desc
+                                    Read board paging list. Only sort by createdAt desc
                                 """.trimIndent()
                             )
                             .queryParameters(
@@ -237,7 +204,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
     @Test
     fun `GET board-{boardId}`() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val boardId = 2
 
         val responseFields = arrayOf(
@@ -281,20 +248,12 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 MockMvcResultMatchers.jsonPath("updatedAt")
                     .value(Matchers.anyOf(Matchers.instanceOf(String::class.java), Matchers.nullValue()))
             )
-//            .andDo( // Rest Doc
-//                MockMvcRestDocumentation.document(
-//                    "GET-boards-{boardId}",
-//                    PayloadDocumentation.responseFields(
-//                        responseFields
-//                    )
-//                )
-//            )
             .andDocument(
                 "GET-boards-{boardId}",
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .summary("Read board detail")
+                            .summary("Read board")
                             .description("Read board just one record detail")
                             .responseSchema(Schema("boardRead.Response"))
                             .pathParameters(
@@ -313,7 +272,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun `PATCH boards-{boardId}`() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val input = mutableMapOf<String, String>()
         input["name"] = "testBoardUpdate"
         input["description"] = "test"
@@ -346,7 +305,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
         ).toList()
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch("/boards/{boardId}", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -369,26 +328,12 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 MockMvcResultMatchers.jsonPath("updatedAt")
                     .value(Matchers.anyOf(Matchers.instanceOf(String::class.java), Matchers.nullValue()))
             )
-//            .andDo( // Rest Doc
-//                MockMvcRestDocumentation.document(
-//                    "PATCH-boards-{boardId}",
-//                    RequestDocumentation.pathParameters(
-//                        RequestDocumentation.parameterWithName("boardId").description("Unique board ID")
-//                    ),
-//                    PayloadDocumentation.requestFields(
-//                        requestFields
-//                    ),
-//                    PayloadDocumentation.responseFields(
-//                        responseFields
-//                    )
-//                )
-//            )
             .andDocument(
                 "PATCH-boards-{boardId}",
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .summary("Update board detail")
+                            .summary("Update board")
                             .description("Update board detail")
                             .requestSchema(Schema("boardUpdate.Request"))
                             .requestFields(
@@ -415,7 +360,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
     @Test
     @Transactional
     fun `DELETE board-{boardId}`() {
-        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test"))
+        val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val board = Board(
             name = "testtest",
             description = "testtest",
@@ -425,7 +370,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
         val boardId = boardJpaPort.createBoard(board).boardId
 
         //when
-        var result = mockMvc.perform(
+        val result = mockMvc.perform(
             RestDocumentationRequestBuilders.delete("/boards/{boardId}", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -434,20 +379,12 @@ class BoardControllerDocsTest : RestdocsTestDsl {
         //then
         result
             .andExpect(MockMvcResultMatchers.status().isNoContent)
-//            .andDo( // Rest Doc
-//                MockMvcRestDocumentation.document(
-//                    "PATCH-boards-{boardId}",
-//                    RequestDocumentation.pathParameters(
-//                        RequestDocumentation.parameterWithName("boardId").description("Unique board ID")
-//                    )
-//                )
-//            )
             .andDocument(
                 "DELETE-boards-{boardId}",
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
-                            .summary("Delete board success")
+                            .summary("Delete board")
                             .description("Delete Board with BoardId")
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)

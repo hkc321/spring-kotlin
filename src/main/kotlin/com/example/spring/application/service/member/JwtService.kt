@@ -23,7 +23,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties.Lettuce.Cluster.Refresh
 import org.springframework.http.HttpStatus
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
@@ -151,6 +150,8 @@ class JwtService(
      * */
     override fun getAuthentication(email: String): UsernamePasswordAuthenticationToken {
         val member = memberJpaPort.findMemberByEmail(email)
+            ?: throw MemberDataNotFoundException()
+
         val userDetails = UserDetailsImpl(member)
 
         return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
@@ -304,6 +305,7 @@ class JwtService(
                 throw JwtRenewException(HttpStatus.UNAUTHORIZED, ErrorCode.REFRESH_TOKEN_EXPIRED, "만료된 refreshToken 입니다.")
 
             val member: Member = memberJpaPort.findMemberByEmail(email)
+                ?: throw MemberDataNotFoundException()
 
             val expireIn7Day = checkRefreshTokenExpireDate(7, claim.expiration)
             if (expireIn7Day) reissueRefreshToken(member, response)

@@ -6,12 +6,12 @@ interface MemberJpaPort {
     /**
      * Member 찾기
      * */
-    fun findMemberByEmail(email: String): Member
+    fun findMemberByEmail(email: String): Member?
 
     /**
      * Member 찾기
      * */
-    fun findMemberByMemberId(memberId: Int): Member
+    fun findMemberByMemberId(memberId: Int): Member?
 
     /**
      * Member 등록
@@ -33,8 +33,4 @@ interface MemberJpaPort {
      * */
     fun deleteMember(memberId: Int)
 
-    /**
-     * Refresh 토큰 저장
-     * */
-    fun saveRefreshToken(member: Member): Member
 }
