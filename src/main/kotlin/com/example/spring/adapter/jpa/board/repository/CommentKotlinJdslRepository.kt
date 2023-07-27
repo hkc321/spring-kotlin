@@ -79,13 +79,18 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
         size: Int,
         cursor: Int?
     ): List<CommentJpaEntity> {
-        val parentComment = queryFactory.singleQuery<CommentJpaEntity> {
-            select(entity(CommentJpaEntity::class))
-            from(entity(CommentJpaEntity::class))
-            where(
-                column(CommentJpaEntity::commentId).equal(parentCommentId)
-            )
-        }
+        val parentComment: CommentJpaEntity? =
+            try {
+                queryFactory.singleQuery<CommentJpaEntity?> {
+                    select(entity(CommentJpaEntity::class))
+                    from(entity(CommentJpaEntity::class))
+                    where(
+                        column(CommentJpaEntity::commentId).equal(parentCommentId)
+                    )
+                }
+            } catch (ex: NoResultException) {
+                null
+            }
 
         return queryFactory.listQuery<CommentJpaEntity> {
             select(entity(CommentJpaEntity::class))

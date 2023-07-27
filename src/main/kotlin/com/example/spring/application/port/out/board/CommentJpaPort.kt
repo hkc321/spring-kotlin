@@ -11,7 +11,7 @@ interface CommentJpaPort {
     /**
      * 댓글 조회
      * */
-    fun readComment(boardId: Int, postId: Int, commentId: Int): Comment
+    fun readComment(boardId: Int, postId: Int, commentId: Int): Comment?
 
     /**
      * 댓글 수정

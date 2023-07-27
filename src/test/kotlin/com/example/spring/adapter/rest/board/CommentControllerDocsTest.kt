@@ -2,9 +2,11 @@ package com.example.spring.adapter.rest.board
 
 import com.epages.restdocs.apispec.Schema
 import com.epages.restdocs.apispec.SimpleType
+import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.application.port.out.board.CommentJpaPort
 import com.example.spring.application.port.out.board.CommentRedisPort
 import com.example.spring.application.port.out.member.MemberJpaPort
+import com.example.spring.application.service.board.CommentService
 import com.example.spring.application.service.board.exception.CommentDataNotFoundException
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.domain.board.Comment
@@ -43,6 +45,9 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
     @Autowired
     private lateinit var commentRedisPort: CommentRedisPort
+
+    @Autowired
+    private lateinit var commentService: CommentService
 
     @Test
     @Transactional
@@ -134,7 +139,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
         commentJpaPort.deleteComment(commentBoardId, commentPostId, commentId)
         assertThrows(CommentDataNotFoundException::class.java) {
-            commentJpaPort.readComment(commentBoardId, commentPostId, commentId)
+            commentService.readComment(CommentUseCase.Commend.ReadCommend(commentBoardId, commentPostId, commentId, "test"))
         }
     }
 
@@ -613,7 +618,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         )
 
         assertThrows(CommentDataNotFoundException::class.java) {
-            commentJpaPort.readComment(boardId, postId, commentId)
+            commentService.readComment(CommentUseCase.Commend.ReadCommend(boardId, postId, commentId, "test"))
         }
     }
 }

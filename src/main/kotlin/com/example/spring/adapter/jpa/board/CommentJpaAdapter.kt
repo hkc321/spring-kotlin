@@ -3,7 +3,6 @@ package com.example.spring.adapter.jpa.board
 import com.example.spring.adapter.jpa.board.mapper.CommentJpaMapper
 import com.example.spring.adapter.jpa.board.repository.CommentJpaRepository
 import com.example.spring.application.port.out.board.CommentJpaPort
-import com.example.spring.application.service.board.exception.CommentDataNotFoundException
 import com.example.spring.domain.board.Comment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Repository
@@ -17,11 +16,11 @@ class CommentJpaAdapter(
     override fun createComment(comment: Comment): Comment =
         commentJpaMapper.toComment(commentJpaRepository.save(commentJpaMapper.toJpaEntity(comment)))
 
-    override fun readComment(boardId: Int, postId: Int, commentId: Int): Comment =
+    override fun readComment(boardId: Int, postId: Int, commentId: Int): Comment? =
         commentJpaRepository.findByIdOrNull(commentId)
             ?.let {
-                return commentJpaMapper.toComment(it)
-            } ?: throw CommentDataNotFoundException(boardId = boardId, postId = postId, commentId = commentId)
+                commentJpaMapper.toComment(it)
+            }
 
 
     override fun updateComment(comment: Comment): Comment =
