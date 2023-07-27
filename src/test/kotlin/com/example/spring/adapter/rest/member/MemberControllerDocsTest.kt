@@ -38,7 +38,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
     @Transactional
     fun register() {
         val input = mutableMapOf<String, String>()
-        input["email"] = "testtest"
+        input["email"] = "testtest@gmail.com"
         input["password"] = "testtest"
 
         // when

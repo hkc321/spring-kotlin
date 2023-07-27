@@ -7,6 +7,7 @@ import com.example.spring.domain.member.Jwt
 import com.example.spring.domain.member.Member
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -20,7 +21,7 @@ class MemberController(private val memberUseCase: MemberUseCase, private val jwt
     private val memberRestMapper = MemberRestMapper.INSTANCE
 
     @PostMapping("register")
-    fun createMember(@RequestBody body: MemberCreateRequest): ResponseEntity<MemberCommonResponse> {
+    fun createMember(@Valid @RequestBody body: MemberCreateRequest): ResponseEntity<MemberCommonResponse> {
         val createdMember: Member =
             memberUseCase.createMember(
                 MemberUseCase.Commend.CreateCommend(
