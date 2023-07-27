@@ -55,7 +55,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         val token = jwtService.createAccessToken(memberJpaPort.findMemberByEmail("test")!!)
         val input = mutableMapOf<String, Any?>()
         input["parentCommentId"] = null
-        input["level"] = 0
+        input["level"] = 1
         input["content"] = "testContent"
         val boardId = 2
         val postId = 2
