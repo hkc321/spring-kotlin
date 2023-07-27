@@ -30,4 +30,8 @@ class PostRedisAdapter(private val postRedisRepository: PostRedisRepository) : P
             else -> null
         }
 
+    override fun deletePostLikeAll(boardId: Int, postId: Int) {
+        postRedisRepository.deleteLikePostAll(boardId, postId)
+    }
+
 }

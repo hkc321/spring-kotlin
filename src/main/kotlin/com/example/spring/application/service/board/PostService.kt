@@ -119,5 +119,6 @@ class PostService(
         post.checkWriter(commend.modifier)
 
         postJpaPort.deletePost(board, post.postId)
+        postRedisPort.deletePostLikeAll(commend.boardId, commend.postId)
     }
 }

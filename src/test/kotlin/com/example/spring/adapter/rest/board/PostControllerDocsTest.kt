@@ -118,6 +118,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
         val fromBoard: Board = boardJpaPort.readBoard(jsonNode["boardId"].asInt())
 
         postJpaPort.deletePost(fromBoard, createdPostId)
+        postRedisPort.deletePostLikeAll(fromBoard.boardId, createdPostId)
         Assertions.assertThrows(PostDataNotFoundException::class.java) {
             postJpaPort.readPost(fromBoard, createdPostId)
         }

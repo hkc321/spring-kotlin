@@ -32,4 +32,11 @@ class PostRedisRepository(private val redisTemplate: RedisTemplate<String, Any>)
 
         return valueOperations.size(key)
     }
+
+    fun deleteLikePostAll(boardId: Int, postId: Int): Any? {
+        val valueOperations = redisTemplate.opsForSet()
+        val key = "like:post:$boardId:$postId"
+
+        return valueOperations.pop(key)
+    }
 }

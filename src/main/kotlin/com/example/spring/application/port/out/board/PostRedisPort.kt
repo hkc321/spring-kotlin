@@ -20,4 +20,9 @@ interface PostRedisPort {
      * 게시글 좋아요 제거
      * */
     fun deletePostLike(boardId: Int, postId: Int, email: String): Int?
+
+    /**
+     * 게시글 좋아요 모두 제거
+     * */
+    fun deletePostLikeAll(boardId: Int, postId: Int)
 }
