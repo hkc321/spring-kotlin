@@ -6,6 +6,7 @@ import com.example.spring.application.port.out.board.BoardKotlinJdslPort
 import com.example.spring.application.service.board.exception.BoardDataNotFoundException
 import com.example.spring.application.service.board.exception.BoardExistException
 import com.example.spring.domain.board.Board
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Page
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,19 +19,18 @@ class BoardService(
 
     @Transactional
     override fun createBoard(commend: BoardUseCase.Commend.CreateCommend): Board {
-        val board = boardJpaPort.readBoardByName(commend.name)
-        if (board != null) {
+        try {
+            return boardJpaPort.createBoard(
+                Board(
+                    name = commend.name,
+                    description = commend.description,
+                    writer = commend.writer,
+                    modifier = commend.writer
+                )
+            )
+        } catch (ex: DataIntegrityViolationException) {
             throw BoardExistException(message = "같은 이름의 게시판이 존재합니다.")
         }
-
-        return boardJpaPort.createBoard(
-            Board(
-                name = commend.name,
-                description = commend.description,
-                writer = commend.writer,
-                modifier = commend.writer
-            )
-        )
     }
 
     @Transactional(readOnly = true)
@@ -52,7 +52,11 @@ class BoardService(
             modifier = commend.modifier
         )
 
-        return boardJpaPort.updateBoard(board)
+        try {
+            return boardJpaPort.updateBoard(board)
+        } catch (ex: DataIntegrityViolationException) {
+            throw BoardExistException(message = "같은 이름의 게시판이 존재합니다.")
+        }
     }
 
     @Transactional

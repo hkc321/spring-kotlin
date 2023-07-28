@@ -16,7 +16,7 @@ class BoardJpaAdapter(
 ) : BoardJpaPort {
 
     override fun createBoard(board: Board): Board =
-        boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toJpaEntity(board)))
+        boardJpaMapper.toBoard(boardJpaRepository.saveAndFlush(boardJpaMapper.toJpaEntity(board)))
 
     override fun readBoard(boardId: Int): Board =
         boardJpaRepository.findByIdOrNull(boardId)
@@ -26,7 +26,7 @@ class BoardJpaAdapter(
             ?: throw BoardDataNotFoundException(boardId = boardId)
 
     override fun updateBoard(board: Board): Board =
-        boardJpaMapper.toBoard(boardJpaRepository.save(boardJpaMapper.toJpaEntity(board)))
+        boardJpaMapper.toBoard(boardJpaRepository.saveAndFlush(boardJpaMapper.toJpaEntity(board)))
 
     override fun deleteBoard(boardId: Int) {
         boardJpaRepository.findByIdOrNull(boardId)
