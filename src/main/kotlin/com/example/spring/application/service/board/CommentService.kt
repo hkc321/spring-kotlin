@@ -123,11 +123,11 @@ class CommentService(
     override fun likeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
-        val likeCount =
-            commentRedisPort.createCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
-
         val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
             ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
+
+        val likeCount =
+            commentRedisPort.createCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
 
         comment.updateLike(likeCount)
 
@@ -138,11 +138,11 @@ class CommentService(
     override fun deleteLikeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
         postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
 
+        val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
+            ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
+
         val likeCount =
             commentRedisPort.deleteCommentLike(commend.boardId, commend.postId, commend.commentId, commend.email)
-
-        val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
-                ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
 
         comment.updateLike(likeCount)
 
