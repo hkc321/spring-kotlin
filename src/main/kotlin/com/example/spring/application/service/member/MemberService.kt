@@ -6,6 +6,7 @@ import com.example.spring.application.service.member.exception.MemberAlreadyExis
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
 import com.example.spring.domain.member.Member
 import com.example.spring.domain.member.MemberRole
+import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,15 +18,17 @@ class MemberService(
 ) : MemberUseCase {
     @Transactional
     override fun createMember(commend: MemberUseCase.Commend.CreateCommend): Member {
-        memberJpaPort.findMemberByEmail(commend.email)?.let { throw MemberAlreadyExistException() }
-
-        return memberJpaPort.createMember(
-            Member(
-                email = commend.email,
-                password = passwordEncoder.encode(commend.password),
-                role = MemberRole.ROLE_STANDARD.name
+        try {
+            return memberJpaPort.createMember(
+                Member(
+                    email = commend.email,
+                    password = passwordEncoder.encode(commend.password),
+                    role = MemberRole.ROLE_STANDARD.name
+                )
             )
-        )
+        } catch (ex: DataIntegrityViolationException) {
+            throw MemberAlreadyExistException()
+        }
     }
 
 

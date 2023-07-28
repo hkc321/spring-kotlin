@@ -32,7 +32,7 @@ class MemberJpaAdapter(private val memberJpaRepository: MemberJpaRepository) : M
      * Member 등록
      * */
     override fun createMember(member: Member): Member =
-        memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
+        memberJpaMapper.toMember(memberJpaRepository.saveAndFlush(memberJpaMapper.toEntity(member)))
 
     override fun updateMember(member: Member): Member =
         memberJpaMapper.toMember(memberJpaRepository.save(memberJpaMapper.toEntity(member)))
