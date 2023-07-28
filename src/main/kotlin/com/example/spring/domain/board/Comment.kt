@@ -40,6 +40,7 @@ class Comment(
 
     fun updateLike(like: Int) {
         this.like = like
+        updatedAt = LocalDateTime.now()
     }
 
     fun updateIsLiked(boolean: Boolean) {
