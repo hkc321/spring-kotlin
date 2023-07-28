@@ -75,7 +75,7 @@ allOpen {
 openapi3 {
     this.setServer("http://localhost:8080")
     title = "API Documentation"
-    description = "Except for login and member registration, JWT is required. Click the 'Authorize' button to register JWT globally. JWT can be obtained through login."
+    description = "로그인과 회원가입 이외에는 JWT가 필요합니다(Access token). 'Authorize' 버튼을 눌러 JWT를 등록해주세요. JWT는 /members/login 에서 받을 수 있습니다. 이후 access token이 만료되었을 경우에는 /members/token 에서 refresh token을 통해 재발급 받을 수 있습니다."
     version = "0.0.1-SNAPSHOT"
     format = "yaml"
 //    outputDirectory = "src/main/resources/static"

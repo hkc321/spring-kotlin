@@ -88,7 +88,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Create comment")
-                    .description("Create comment with send info")
+                    .description("댓글을 생성합니다. 대댓글만 지원하기 때문에 level은 1 또는 2만 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
@@ -104,7 +104,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field(
                             "level",
                             JsonFieldType.NUMBER,
-                            "Must be 1 or higher. To comment on an existing comment, enter the level (parentComment's level + 1)",
+                            "Must be 1 or 2. To comment on an existing comment, enter the level (parentComment's level + 1)",
                             true
                         ),
                         field("content", JsonFieldType.STRING, "Content of comment")
@@ -171,7 +171,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Read comments list")
-                    .description("Read topLevelComments list with send info.")
+                    .description("게시글의 최상위 레벨의 댓글을 조회합니다. 댓글은 no offset 방식으로 한 페이지에 보여줄 댓글의 갯수와 커서, 정렬조건을 넘겨야 합니다. 커서는 commentId 입니다. 커서가 없을 경우 처음부터 탐색합니다. 만약 존재하지 않는 커서를 전송할 경우 빈 리스트가 전달됩니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
@@ -180,19 +180,19 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter(
                             "size",
                             SimpleType.INTEGER,
-                            "The number of comment lists the user wants to receive. min = 1, max = 50",
+                            "한 페이지에 보여줄 댓글 갯수. min = 1, max = 50",
                             false
                         ),
                         parameter(
                             "cursor",
                             SimpleType.INTEGER,
-                            "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning. If the value queried in the db with the cursor does not exist, an empty list is returned.",
+                            "Cursor는 검색할 기준값이며, 커서 이후 부터 검색합니다. 커서값이 비어있으면 처음부터 검색합니다. DB에 없는 값을 커서로 넘기면 빈 리스트를 반환합니다.",
                             true
                         ),
                         parameter(
                             "orderBy",
                             SimpleType.STRING,
-                            "Only like or recent are allowed as sorting criteria",
+                            "정렬기준(Only recent or like). 최근생성 순 혹은 좋아요 갯수 순으로 내림차순 정렬됩니다.",
                             false
                         )
                     )
@@ -257,7 +257,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Read comment")
-                    .description("Read comment with send info")
+                    .description("댓글 정보를 조회합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
@@ -314,7 +314,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Read childComments list")
-                    .description("Read childComments list with send info. This list is sorted in ascending order by newest only.")
+                    .description("최상위 댓글의 하위 댓글을 조회합니다. 현재는 대댓글 까지만 지원합니다. 최근 작성순으로 오름차순 정렬됩니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
@@ -324,13 +324,13 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         parameter(
                             "size",
                             SimpleType.INTEGER,
-                            "The number of comment lists the user wants to receive. min = 1, max = 50",
+                            "한 페이지에 보여줄 댓글 갯수. min = 1, max = 50",
                             false
                         ),
                         parameter(
                             "cursor",
                             SimpleType.INTEGER,
-                            "Cursor is the reference value to search for, and searches after the cursor. If it is null, search from the beginning.",
+                            "Cursor는 검색할 기준값이며, 커서 이후 부터 검색합니다. 커서값이 비어있으면 처음부터 검색합니다. DB에 없는 값을 커서로 넘기면 빈 리스트를 반환합니다.",
                             true
                         )
                     )
@@ -399,7 +399,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Update comment")
-                    .description("Update comment with send info")
+                    .description("댓글을 업데이트 합니다. 작성자만 수정이 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
@@ -463,14 +463,14 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
-            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
+            MockMvcResultMatchers.jsonPath("updatedAt").exists()
         ).andDocument(
             "PATCH-boards-{boardId}-posts-{postId}-comments-{commentId}-like",
             snippets = makeSnippets(
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Update comment like")
-                    .description("Update comment's like with send info")
+                    .description("댓글의 좋아요를 추가합니다. 이미 좋아요를 클릭한 댓글은 중복이 불가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
@@ -489,7 +489,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("content", JsonFieldType.STRING, "Content of comment", false),
                         field("writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
-                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of comment", true)
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of comment", false)
                     )
                     .build()
             )
@@ -535,14 +535,14 @@ class CommentControllerDocsTest : RestdocsTestDsl {
             MockMvcResultMatchers.jsonPath("content").exists(),
             MockMvcResultMatchers.jsonPath("writer").exists(),
             MockMvcResultMatchers.jsonPath("createdAt").exists(),
-            MockMvcResultMatchers.jsonPath("updatedAt").value(nullOrString())
+            MockMvcResultMatchers.jsonPath("updatedAt").exists()
         ).andDocument(
             "PATCH-boards-{boardId}-posts-{postId}-comments-{commentId}-unlike",
             snippets = makeSnippets(
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Update comment unLike")
-                    .description("Update comment's unLike with send info")
+                    .description("댓글의 좋아요를 제거합니다. 좋아요를 클릭한 이력이 있어야만 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
@@ -561,7 +561,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                         field("content", JsonFieldType.STRING, "Content of comment", false),
                         field("writer", JsonFieldType.STRING, "Writer of comment", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of comment", false),
-                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of comment", true)
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of comment", false)
                     )
                     .build()
             )
@@ -608,7 +608,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("comments")
                     .summary("Delete comment")
-                    .description("Delete comment with send info")
+                    .description("댓글을 제거합니다. 작성자만 제거 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),

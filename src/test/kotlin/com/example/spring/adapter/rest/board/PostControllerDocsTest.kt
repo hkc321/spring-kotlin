@@ -86,7 +86,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Create post")
-                    .description("Create post with send info")
+                    .description("게시글을 생성합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false)
                     )
@@ -155,27 +155,27 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Read post paging list")
-                    .description("Read post paging list with send info.")
+                    .description("게시글 목록을 조회합니다. 페이징 처리가 된 형태로 반환되기 때문에 요청할 페이지, 한 페이지의 보여줄 게시글의 갯수, 정렬 기준을 전송해야 합니다.")
                     .tag("posts")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false)
                     )
                     .queryParameters(
-                        parameter("searchType", SimpleType.STRING, "Search requirement. (Only title, content or write)", true),
-                        parameter("keyword", SimpleType.STRING, "Search keyword", true),
+                        parameter("searchType", SimpleType.STRING, "검색 조건. (Only title, content or write)", true),
+                        parameter("keyword", SimpleType.STRING, "검색 키워드", true),
                         parameter(
                             "page",
                             SimpleType.INTEGER,
-                            "Requested page number(page > 0)",
+                            "요청할 페이지 넘버(page > 0)",
                             false
                         ),
                         parameter(
                             "size",
                             SimpleType.INTEGER,
-                            "The number of posts displayed on one page(size > 0)",
+                            "한 페이지에 보여줄 게시글 갯수. min = 1, max = 50",
                             false
                         ),
-                        parameter("sort", SimpleType.STRING, "Sort by request(only postId or like)", false)
+                        parameter("sort", SimpleType.STRING, "정렬기준(only postId or like). 최근생성 순 혹은 좋아요 갯수 순으로 내림차순 정렬됩니다.", false)
                     )
                     .responseSchema(Schema("postReadPageList.Response"))
                     .responseFields(
@@ -230,9 +230,9 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Read post")
-                    .description("Read post with send info")
+                    .description("게시글 정보를 조회합니다.")
                     .pathParameters(
-                        parameter("boardId", SimpleType.INTEGER, "BoardId of post", false),
+                        parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false),
                     )
                     .responseSchema(Schema("postRead.Response"))
@@ -288,7 +288,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Update post")
-                    .description("Update post with send info")
+                    .description("게시글을 업데이트 합니다. 작성자만 업데이트가 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
@@ -347,7 +347,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Update post like")
-                    .description("Update post's like with send info")
+                    .description("게시글의 좋아요를 추가합니다. 이미 좋아요를 클릭한 게시글은 중복이 불가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
@@ -362,7 +362,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
-                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", false)
                     )
                     .build()
             )
@@ -406,7 +406,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Update post unlike")
-                    .description("Update post unlike with send info")
+                    .description("게시글의 좋아요를 제거합니다. 좋아요를 클릭한 이력이 있어야만 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)
@@ -421,7 +421,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                         field("isLiked", JsonFieldType.BOOLEAN, "Can member like post or not", false),
                         field("writer", JsonFieldType.STRING, "Writer of post", false),
                         field("createdAt", JsonFieldType.STRING, "Created datetime of post", false),
-                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", true)
+                        field("updatedAt", JsonFieldType.STRING, "Updated datetime of post", false)
                     )
                     .build()
             )
@@ -459,7 +459,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
                 ResourceSnippetParameters.builder()
                     .tag("posts")
                     .summary("Delete post")
-                    .description("Delete post with send info")
+                    .description("게시글을 제거합니다. 작성자만 제거 가능합니다.")
                     .pathParameters(
                         parameter("boardId", SimpleType.INTEGER, "Unique board ID", false),
                         parameter("postId", SimpleType.INTEGER, "Unique post ID", false)

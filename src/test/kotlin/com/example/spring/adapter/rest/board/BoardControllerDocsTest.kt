@@ -97,7 +97,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 snippets = makeSnippets(
                     ResourceSnippetParameters.builder()
                         .summary("Create board")
-                        .description("Create board with send info")
+                        .description("게시판을 생성합니다. 게시판의 이름은 중복이 불가능합니다.")
                         .requestSchema(Schema("boardCreate.Request"))
                         .responseSchema(Schema("boardCreate.Response"))
                         .requestFields(
@@ -136,9 +136,9 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         val queryParameters = arrayOf(
             ResourceDocumentation.parameterWithName("page").type(SimpleType.INTEGER)
-                .description("Requested page number(page > 0)"),
+                .description("요청할 페이지 넘버(page > 0)"),
             ResourceDocumentation.parameterWithName("size").type(SimpleType.INTEGER)
-                .description("The number of posts displayed on one page(size > 0)")
+                .description("한 페이지에 보여줄 게시판 갯수. min = 1, max = 50")
         ).toList()
 
         val responseFields = arrayOf(
@@ -186,7 +186,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                             .summary("Read board paging list")
                             .description(
                                 """
-                                    Read board paging list. Only sort by createdAt desc
+                                    게시판 목록을 조회합니다. 오직 최근 생성순으로 내림차순 정렬됩니다. 요청할 페이지, 한 페이지의 보여줄 게시판의 갯수를 전송해야 합니다.
                                 """.trimIndent()
                             )
                             .queryParameters(
@@ -254,7 +254,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                             .summary("Read board")
-                            .description("Read board just one record detail")
+                            .description("게시판 정보를 조회합니다.")
                             .responseSchema(Schema("boardRead.Response"))
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
@@ -334,7 +334,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                             .summary("Update board")
-                            .description("Update board detail")
+                            .description("게시판 정보를 업데이트 합니다. 게시판의 이름은 중복이 불가능합니다.")
                             .requestSchema(Schema("boardUpdate.Request"))
                             .requestFields(
                                 requestFields
@@ -385,7 +385,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
                             .summary("Delete board")
-                            .description("Delete Board with BoardId")
+                            .description("게시판을 제거합니다.")
                             .pathParameters(
                                 ResourceDocumentation.parameterWithName("boardId").type(SimpleType.INTEGER)
                                     .description("Unique board ID")

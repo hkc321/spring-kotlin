@@ -62,7 +62,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Register member")
-                    .description("Register member with email and password.")
+                    .description("이메일과 비밀번호를 입력하여 회원가입을 진행합니다. 이메일은 중복이 불가능합니다.")
                     .requestSchema(Schema("memberCreate.Request"))
                     .requestFields(
                         field("email", JsonFieldType.STRING, "Email of member", false),
@@ -117,7 +117,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Login member")
-                    .description("Login with email and password.")
+                    .description("이메일과 비밀번호를 입력하여 로그인을 진행합니다.")
                     .requestSchema(Schema("memberLogin.Request"))
                     .requestFields(
                         field("email", JsonFieldType.STRING, "Email of member", false),
@@ -167,7 +167,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Read member")
-                    .description("Read member with send info.")
+                    .description("회원의 정보를 조회합니다. 본인의 정보만 접근이 가능합니다.")
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
@@ -213,7 +213,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Update member")
-                    .description("Update member with send info.")
+                    .description("회원의 정보를 업데이트 합니다. 오직 자신의 정보만 업데이트 가능합니다.")
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
@@ -263,13 +263,13 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Update member role")
-                    .description("Update member'role with send info. Only member who has ROLE_ADMIN can update")
+                    .description("회원의 권한을 업데이트 합니다. 오직 관리자(ROLE_ADMIN) 권한을 가진 사람만 변경 가능합니다.")
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
                     .requestSchema(Schema("memberUpdateRole.Request"))
                     .requestFields(
-                        field("role", JsonFieldType.STRING, "Password of member", false)
+                        field("role", JsonFieldType.STRING, "Role of member", false)
                     )
                     .responseSchema(Schema("memberUpdateRole.Response"))
                     .responseFields(
@@ -313,7 +313,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Delete member")
-                    .description("Delete member with send info.")
+                    .description("회원을 제거합니다. 오직 본인만이 삭제 가능합니다.")
                     .pathParameters(
                         parameter("memberId", SimpleType.NUMBER, "Unique member ID")
                     )
@@ -346,7 +346,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Logout member")
-                    .description("Logout")
+                    .description("로그아웃을 진행합니다.")
                     .responseSchema(Schema("memberLogout.Response"))
                     .responseFields(
                         field("success", JsonFieldType.BOOLEAN, "success or not", true)
@@ -384,7 +384,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
                 snippetsBuilder()
                     .tag("members")
                     .summary("Renew token.")
-                    .description("Renew token. When access token is expired, Renew the access token by sending the refresh token in the header. If the validity period of the refresh token is less than 7 days, the refresh token is also renewed.")
+                    .description("토큰을 갱신합니다. access token이 만료되면, 헤더에 refresh token을 담아 access token을 갱신합니다. refresh token의 만료기간이 7일 미만이라면, refresh token 또한 갱신됩니다. 갱신된 토큰들은 response header에서 확인 가능합니다.")
                     .requestHeaders(
                         header("Authorization-refresh", "Refresh token", false)
                     )
