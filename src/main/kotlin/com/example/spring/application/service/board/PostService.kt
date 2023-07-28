@@ -74,6 +74,10 @@ class PostService(
 
     @Transactional
     override fun likePost(commend: PostUseCase.Commend.LikeCommend): Post {
+        val board = boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
+        val post: Post = postKotlinJdslPort.readPost(board, commend.postId)
+            ?: throw PostDataNotFoundException(boardId = commend.boardId, postId = commend.postId)
+
         val likeCount = postRedisPort.createPostLike(commend.boardId, commend.postId, commend.email)
             ?: throw PostLikeException(
                 boardId = commend.boardId,
@@ -82,10 +86,6 @@ class PostService(
                 message = "이미 좋아요를 클릭한 게시글입니다. [boardId: ${commend.boardId}, postId: ${commend.postId}]"
             )
 
-        val board = boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
-        val post: Post = postKotlinJdslPort.readPost(board, commend.postId)
-            ?: throw PostDataNotFoundException(boardId = commend.boardId, postId = commend.postId)
-
         post.updateLike(likeCount)
 
         return postJpaPort.updatePost(post).apply { this.updateIsLiked(false) }
@@ -93,6 +93,10 @@ class PostService(
 
     @Transactional
     override fun deleteLikePost(commend: PostUseCase.Commend.LikeCommend): Post {
+        val board = boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
+        val post: Post = postKotlinJdslPort.readPost(board, commend.postId)
+            ?: throw PostDataNotFoundException(boardId = commend.boardId, postId = commend.postId)
+
         val likeCount = postRedisPort.deletePostLike(commend.boardId, commend.postId, commend.email)
             ?: throw PostLikeException(
                 boardId = commend.boardId,
@@ -100,10 +104,6 @@ class PostService(
                 code = ErrorCode.DATA_NOT_FOUND,
                 message = "좋아요를 클릭한 이력이 없습니다. [boardId: ${commend.boardId}, postId: ${commend.postId}]"
             )
-
-        val board = boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(commend.boardId))
-        val post: Post = postKotlinJdslPort.readPost(board, commend.postId)
-            ?: throw PostDataNotFoundException(boardId = commend.boardId, postId = commend.postId)
 
         post.updateLike(likeCount)
 
