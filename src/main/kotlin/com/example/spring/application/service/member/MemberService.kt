@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class MemberService(
     private val memberJpaPort: MemberJpaPort,
-    private val passwordEncoder: BCryptPasswordEncoder
+    private val passwordEncoder: BCryptPasswordEncoder,
+    private val jwtService: JwtService
 ) : MemberUseCase {
     @Transactional
     override fun createMember(commend: MemberUseCase.Commend.CreateCommend): Member {
@@ -70,5 +71,6 @@ class MemberService(
         member.checkAccessor(commend.accessor)
 
         memberJpaPort.deleteMember(member.memberId)
+        jwtService.deleteRefreshTokenByEmail(member.email)
     }
 }
