@@ -11,6 +11,7 @@ fun corsFilter(): CorsFilter {
     val config = CorsConfiguration()
     config.allowCredentials = true
     config.addAllowedOrigin("http://localhost:8080")
+    config.addAllowedOrigin("https://jgchktestdns.shop")
 //    config.addAllowedOriginPattern("")
     config.addAllowedHeader("*")
     config.addExposedHeader("Authorization")
