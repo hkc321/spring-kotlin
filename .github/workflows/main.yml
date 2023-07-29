@@ -9,7 +9,7 @@ on:
       - 'master'
 
 jobs:
-  code-coverage:
+  CI:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,3 +33,16 @@ jobs:
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Change setting
+        run: echo "${{secrets.APPLICATION_PROD}}" > ./src/main/resources/application-prod.yml
+
+      - name: Make jar
+        run: ./gradlew bootJar
+
+      - name: web docker build and push
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker build -t test .
+          docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+
