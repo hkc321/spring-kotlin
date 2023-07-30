@@ -62,7 +62,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/boards/{boardId}/posts/{postId}/comments", boardId, postId)
+            RestDocumentationRequestBuilders.post("/v1/boards/{boardId}/posts/{postId}/comments", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -152,7 +152,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}/comments", boardId, postId)
+            RestDocumentationRequestBuilders.get("/v1/boards/{boardId}/posts/{postId}/comments", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .queryParam("size", "20")
                 .queryParam("cursor", null)
@@ -228,7 +228,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,
                 postId,
                 commentId
@@ -293,7 +293,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.get(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}/childComment",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/childComment",
                 boardId,
                 postId,
                 commentId
@@ -369,7 +369,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,
                 postId,
                 commentId
@@ -441,7 +441,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}/like",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/like",
                 boardId,
                 postId,
                 commentId
@@ -513,7 +513,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.patch(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}/unlike",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}/unlike",
                 boardId,
                 postId,
                 commentId
@@ -590,7 +590,7 @@ class CommentControllerDocsTest : RestdocsTestDsl {
         //when
         val result = mockMvc.perform(
             RestDocumentationRequestBuilders.delete(
-                "/boards/{boardId}/posts/{postId}/comments/{commentId}",
+                "/v1/boards/{boardId}/posts/{postId}/comments/{commentId}",
                 boardId,
                 postId,
                 commentId

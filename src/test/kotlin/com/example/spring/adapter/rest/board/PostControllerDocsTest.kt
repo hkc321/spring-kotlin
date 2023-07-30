@@ -63,7 +63,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/boards/{boardId}/posts", boardId)
+            RestDocumentationRequestBuilders.post("/v1/boards/{boardId}/posts", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -132,7 +132,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts", boardId)
+            RestDocumentationRequestBuilders.get("/v1/boards/{boardId}/posts", boardId)
                 .header("Authorization", "Bearer $token")
                 .queryParam("page", "1")
                 .queryParam("size", "20")
@@ -207,7 +207,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}/posts/{postId}", boardId, postId)
+            RestDocumentationRequestBuilders.get("/v1/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -265,7 +265,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}", boardId, postId)
+            RestDocumentationRequestBuilders.patch("/v1/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -325,7 +325,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/like", boardId, postId)
+            RestDocumentationRequestBuilders.patch("/v1/boards/{boardId}/posts/{postId}/like", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -384,7 +384,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/boards/{boardId}/posts/{postId}/unlike", boardId, postId)
+            RestDocumentationRequestBuilders.patch("/v1/boards/{boardId}/posts/{postId}/unlike", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -445,7 +445,7 @@ class PostControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/boards/{boardId}/posts/{postId}", boardId, postId)
+            RestDocumentationRequestBuilders.delete("/v1/boards/{boardId}/posts/{postId}", boardId, postId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )

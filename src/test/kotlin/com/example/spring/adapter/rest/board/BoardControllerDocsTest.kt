@@ -76,7 +76,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/boards")
+            RestDocumentationRequestBuilders.post("/v1/boards")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -127,7 +127,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards")
+            RestDocumentationRequestBuilders.get("/v1/boards")
                 .header("Authorization", "Bearer $token")
                 .param("page", "1")
                 .param("size", "20")
@@ -227,7 +227,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/boards/{boardId}", boardId)
+            RestDocumentationRequestBuilders.get("/v1/boards/{boardId}", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -306,7 +306,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/boards/{boardId}", boardId)
+            RestDocumentationRequestBuilders.patch("/v1/boards/{boardId}", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -371,7 +371,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/boards/{boardId}", boardId)
+            RestDocumentationRequestBuilders.delete("/v1/boards/{boardId}", boardId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )

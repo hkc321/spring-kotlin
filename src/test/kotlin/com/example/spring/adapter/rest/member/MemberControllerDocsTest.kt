@@ -43,7 +43,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         // when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/members/register")
+            RestDocumentationRequestBuilders.post("/v1/members/register")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
         )
@@ -101,7 +101,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         // When
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/members/login")
+            RestDocumentationRequestBuilders.post("/v1/members/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
         )
@@ -149,7 +149,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get("/members/{memberId}", memberId)
+            RestDocumentationRequestBuilders.get("/v1/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -194,7 +194,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/members/{memberId}", memberId)
+            RestDocumentationRequestBuilders.patch("/v1/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -244,7 +244,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.patch("/members/{memberId}/role", memberId)
+            RestDocumentationRequestBuilders.patch("/v1/members/{memberId}/role", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(ObjectMapper().writeValueAsString(input))
@@ -300,7 +300,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.delete("/members/{memberId}", memberId)
+            RestDocumentationRequestBuilders.delete("/v1/members/{memberId}", memberId)
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -332,7 +332,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         // When
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/members/logout")
+            RestDocumentationRequestBuilders.post("/v1/members/logout")
                 .header("Authorization", "Bearer $token")
                 .contentType(MediaType.APPLICATION_JSON)
         )
@@ -369,7 +369,7 @@ class MemberControllerDocsTest : RestdocsTestDsl {
 
         // When
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.post("/members/token")
+            RestDocumentationRequestBuilders.post("/v1/members/token")
                 .header("Authorization", "Bearer $accessToken")
                 .header("Authorization-refresh", "Bearer $refreshToken")
                 .contentType(MediaType.APPLICATION_JSON)
