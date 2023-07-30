@@ -96,6 +96,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 "POST-boards",
                 snippets = makeSnippets(
                     ResourceSnippetParameters.builder()
+                        .tag("boards")
                         .summary("Create board")
                         .description("게시판을 생성합니다. 게시판의 이름은 중복이 불가능합니다.")
                         .requestSchema(Schema("boardCreate.Request"))
@@ -183,6 +184,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
+                            .tag("boards")
                             .summary("Read board paging list")
                             .description(
                                 """
@@ -253,6 +255,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
+                            .tag("boards")
                             .summary("Read board")
                             .description("게시판 정보를 조회합니다.")
                             .responseSchema(Schema("boardRead.Response"))
@@ -333,6 +336,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
+                            .tag("boards")
                             .summary("Update board")
                             .description("게시판 정보를 업데이트 합니다. 게시판의 이름은 중복이 불가능합니다.")
                             .requestSchema(Schema("boardUpdate.Request"))
@@ -384,6 +388,7 @@ class BoardControllerDocsTest : RestdocsTestDsl {
                 snippets = arrayOf(
                     ResourceDocumentation.resource(
                         ResourceSnippetParameters.builder()
+                            .tag("boards")
                             .summary("Delete board")
                             .description("게시판을 제거합니다.")
                             .pathParameters(
