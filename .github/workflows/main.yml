@@ -77,5 +77,5 @@ jobs:
           username: ${{ secrets.USERNAME }}
           port: ${{ secrets.PORT }}
           key: ${{ secrets.KEY }}
-          source: ./build/api-spec/openapi3.yaml
+          source: ./build/api-spec/*
           target: ${{ secrets.SWAGGER_PATH }}
