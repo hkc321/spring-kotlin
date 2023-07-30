@@ -70,7 +70,11 @@ jobs:
           cache-from: type:gha                         # gha는 github action용 캐시 의미
           cache-to: type=gha,mode=max
 
-      - name: copy file via ssh key
+  CD:
+    need: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Copy OAS file
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.HOST }}
