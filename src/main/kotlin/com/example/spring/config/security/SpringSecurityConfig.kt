@@ -36,8 +36,8 @@ class SpringSecurityConfig(
                 .requestMatchers("/swagger-ui.html")
                 .requestMatchers("/static/**")
             it.ignoring()
-                .requestMatchers("/members/register")
-                .requestMatchers("/members/token")
+                .requestMatchers("/v1/members/register")
+                .requestMatchers("/v1/members/token")
         }
 
     @Bean
@@ -49,9 +49,9 @@ class SpringSecurityConfig(
                 sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
             authorizeRequests {
-                authorize("/members/login", permitAll)
-                authorize("/members/register", permitAll)
-                authorize("/members/{memberId}/role", hasRole("ROLE_ADMIN"))
+                authorize("/v1/members/login", permitAll)
+                authorize("/v1/members/register", permitAll)
+                authorize("/v1/members/{memberId}/role", hasRole("ROLE_ADMIN"))
                 authorize(anyRequest, permitAll)
             }
             usernamePasswordAuthenticationFilter()?.let { addFilterAt<UsernamePasswordAuthenticationFilter>(it) }
@@ -68,7 +68,7 @@ class SpringSecurityConfig(
             }
             formLogin { disable() }
             logout {
-                logoutUrl = "/members/logout"
+                logoutUrl = "/v1/members/logout"
                 logoutSuccessHandler = customLogoutSuccessHandler
             }
         }
@@ -84,7 +84,7 @@ class SpringSecurityConfig(
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
             jwtService
-        ).apply { setFilterProcessesUrl("/members/login") }
+        ).apply { setFilterProcessesUrl("/v1/members/login") }
     }
 
 }
