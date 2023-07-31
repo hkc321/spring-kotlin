@@ -70,10 +70,6 @@ jobs:
           cache-from: type:gha                         # gha는 github action용 캐시 의미
           cache-to: type=gha,mode=max
 
-  CD:
-    need: CI
-    runs-on: ubuntu-latest
-    steps:
       - name: Copy OAS file
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -83,4 +79,20 @@ jobs:
           key: ${{ secrets.KEY }}
           source: ./build/api-spec/*
           target: ${{ secrets.SWAGGER_PATH }}
-          strip_components: 2
+
+  CD:
+    needs: CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: multiple command
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ secrets.TARGET_PATH }}
+            . deploy.sh
+            sudo docker image prune -f
+            
