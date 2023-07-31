@@ -79,6 +79,7 @@ jobs:
           key: ${{ secrets.KEY }}
           source: ./build/api-spec/*
           target: ${{ secrets.SWAGGER_PATH }}
+          strip_components: 2
 
   CD:
     needs: CI
