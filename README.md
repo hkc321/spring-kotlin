@@ -17,3 +17,7 @@
 
 [![](https://img.shields.io/badge/junit5-5.8.1-none?logo=junit5) ](https://junit.org/junit5/)
 [![](https://img.shields.io/badge/kotest-5.6.2-none?logo=kotest) ](https://kotest.io/)
+
+[![](https://img.shields.io/badge/docker-20.10.24-white?logo=docker) ](https://www.docker.com/)
+[![](https://img.shields.io/badge/nginx-1.25.1-white?logo=nginx) ](https://www.nginx.com/)
+[![](https://img.shields.io/badge/github_actions-white?logo=githubactions) ](https://docs.github.com/ko/actions)
