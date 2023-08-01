@@ -67,6 +67,10 @@ dependencies {
     testImplementation("io.mockk:mockk:1.13.5")
     //redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
+    //sentry
+    implementation ("io.sentry:sentry-spring-boot-starter-jakarta:6.25.2")
+    //slack
+    implementation ("com.slack.api:slack-api-client:1.30.0")
 }
 allOpen {
     annotation("jakarta.persistence.Entity")
