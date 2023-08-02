@@ -5,12 +5,15 @@ import com.example.spring.application.service.member.exception.JwtRenewException
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.dto.BaseExceptionResponse
 import com.example.spring.config.exception.WriterNotMatchException
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.exc.InvalidFormatException
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
+import io.sentry.Sentry
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -27,7 +30,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 
 @RestControllerAdvice
-class ControllerAdvice {
+class ControllerAdvice(private val slackService: SlackService) {
     protected val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     @ExceptionHandler(BoardExistException::class)
@@ -273,9 +276,12 @@ class ControllerAdvice {
     }
 
     @ExceptionHandler(Exception::class)
-    fun exception(ex: Exception): ResponseEntity<Any> {
+    fun exception(ex: Exception, request: HttpServletRequest): ResponseEntity<Any> {
         log.warn("INTERNAL_SERVER_ERROR")
         log.warn(ex.stackTraceToString())
+        Sentry.captureException(ex)
+        slackService.sendExceptionMessage(request, ex)
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(
                 BaseExceptionResponse(

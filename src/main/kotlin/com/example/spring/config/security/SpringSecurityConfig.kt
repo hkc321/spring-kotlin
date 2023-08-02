@@ -1,6 +1,7 @@
 package com.example.spring.config.security
 
 import com.example.spring.application.service.member.JwtService
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.filter.CustomJwtAuthorizationFilter
 import com.example.spring.config.filter.CustomUsernamePasswordAuthenticationFilter
 import com.example.spring.config.filter.JwtAuthorizationExceptionFilter
@@ -27,7 +28,8 @@ class SpringSecurityConfig(
     private val authenticationConfiguration: AuthenticationConfiguration,
     private val customAccessDeniedHandler: CustomAccessDeniedHandler,
     private val customAuthenticationEntryPoint: CustomAuthenticationEntryPoint,
-    private val customLogoutSuccessHandler: CustomLogoutSuccessHandler
+    private val customLogoutSuccessHandler: CustomLogoutSuccessHandler,
+    private val slackService: SlackService
 ) {
     @Bean
     fun webSecurityCustomizer(): WebSecurityCustomizer =
@@ -58,10 +60,11 @@ class SpringSecurityConfig(
             addFilterAt<CorsFilter>(corsFilter())
             addFilterBefore<BasicAuthenticationFilter>(
                 CustomJwtAuthorizationFilter(
-                    jwtService
+                    jwtService,
+                    slackService
                 )
             )
-            addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService))
+            addFilterBefore<CustomJwtAuthorizationFilter>(JwtAuthorizationExceptionFilter(jwtService, slackService))
             exceptionHandling {
                 accessDeniedHandler = customAccessDeniedHandler
                 authenticationEntryPoint = customAuthenticationEntryPoint
@@ -83,7 +86,8 @@ class SpringSecurityConfig(
     fun usernamePasswordAuthenticationFilter(): UsernamePasswordAuthenticationFilter? {
         return CustomUsernamePasswordAuthenticationFilter(
             authenticationManager(authenticationConfiguration),
-            jwtService
+            jwtService,
+            slackService
         ).apply { setFilterProcessesUrl("/v1/members/login") }
     }
 

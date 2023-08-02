@@ -3,11 +3,13 @@ package com.example.spring.config.filter
 import com.example.spring.adapter.rest.member.dto.MemberLoginRequest
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.UserDetailsImpl
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.fasterxml.jackson.core.JsonParseException
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+import io.sentry.Sentry
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -28,7 +30,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * */
 class CustomUsernamePasswordAuthenticationFilter(
     private val authenticationManager: AuthenticationManager,
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val slackService: SlackService
 ) : UsernamePasswordAuthenticationFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
@@ -55,6 +58,8 @@ class CustomUsernamePasswordAuthenticationFilter(
         } catch (ex: Exception) {
             log.warn("login unknown error")
             ex.printStackTrace()
+            Sentry.captureException(ex)
+            slackService.sendExceptionMessage(request, ex)
             throw UsernameNotFoundException(ErrorCode.INTERNAL_SERVER_ERROR.name)
         }
     }

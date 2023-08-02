@@ -2,11 +2,13 @@ package com.example.spring.config.filter
 
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
 import com.example.spring.domain.member.Jwt
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
+import io.sentry.Sentry
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -20,7 +22,10 @@ import java.lang.IllegalStateException
 /**
  * 인가필터
  * */
-class CustomJwtAuthorizationFilter(private val jwtService: JwtService) : OncePerRequestFilter() {
+class CustomJwtAuthorizationFilter(
+    private val jwtService: JwtService,
+    private val slackService: SlackService
+) : OncePerRequestFilter() {
     private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
 
     override fun doFilterInternal(
@@ -63,8 +68,8 @@ class CustomJwtAuthorizationFilter(private val jwtService: JwtService) : OncePer
         } catch (ex: MemberDataNotFoundException) {
             throw ex
         } catch (ex: IllegalStateException) {
-            var code = ""
-            var message = ""
+            var code: String
+            var message: String
 
             when (ex.message) {
                 Jwt.JWT_EXCEPTION + Jwt.ACCESS -> {
@@ -77,12 +82,17 @@ class CustomJwtAuthorizationFilter(private val jwtService: JwtService) : OncePer
                     message = "만료된 accessToken 입니다."
                 }
 
-                else -> throw ex
+                else -> {
+                    Sentry.captureException(ex)
+                    throw ex
+                }
             }
             throw CustomJwtAuthorizationFilterException(code, message)
         } catch (ex: Exception) {
             log.warn("jwt unknown error")
             ex.printStackTrace()
+            Sentry.captureException(ex)
+            slackService.sendExceptionMessage(request, ex)
             throw ex
         }
         filterChain.doFilter(request, response)

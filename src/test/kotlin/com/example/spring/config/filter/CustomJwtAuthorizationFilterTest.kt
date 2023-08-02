@@ -2,6 +2,7 @@ package com.example.spring.config.filter
 
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
 import com.example.spring.domain.member.Jwt
@@ -22,8 +23,9 @@ import java.lang.IllegalStateException
 class CustomJwtAuthorizationFilterTest : BehaviorSpec({
 
     val jwtService = mockk<JwtService>()
+    val slackService = mockk<SlackService>()
     val jwtAuthorizationExceptionFilter = mockk<JwtAuthorizationExceptionFilter>()
-    val customJwtAuthorizationFilter = CustomJwtAuthorizationFilter(jwtService)
+    val customJwtAuthorizationFilter = CustomJwtAuthorizationFilter(jwtService, slackService)
 
     given("a CustomJwtAuthorizationFilter") {
 
@@ -110,6 +112,7 @@ class CustomJwtAuthorizationFilterTest : BehaviorSpec({
             every { jwtService.checkValidRefreshHeader(request) } returns false
             every { jwtService.extractAccessToken(request) } returns "VALID_ACCESS_TOKEN"
             justRun { jwtService.checkAccessToken("VALID_ACCESS_TOKEN") }
+            justRun { slackService.sendExceptionMessage(any(), any()) }
             every { jwtService.extractClaims(any()) } throws Exception("something")
 
             Then("it should return 400 BAD_REQUEST") {

@@ -2,13 +2,17 @@ package com.example.spring.config.filter
 
 import com.example.spring.application.service.member.JwtService
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.exception.CustomJwtAuthorizationFilterException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.JwtException
+import io.sentry.Sentry
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -16,8 +20,11 @@ import org.springframework.web.filter.OncePerRequestFilter
  * JWT 예외처리 필터
  * */
 class JwtAuthorizationExceptionFilter(
-    private val jwtService: JwtService
+    private val jwtService: JwtService,
+    private val slackService: SlackService
 ) : OncePerRequestFilter() {
+    private val log: Logger = LoggerFactory.getLogger(this::class.simpleName)
+
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -40,6 +47,10 @@ class JwtAuthorizationExceptionFilter(
         } catch (ex: MemberDataNotFoundException) {
             setErrorResponse(response, HttpStatus.BAD_REQUEST, ex.code.name, ex)
         } catch (ex: Exception) {
+            log.warn("exception filter unknown error")
+            ex.printStackTrace()
+            Sentry.captureException(ex)
+            slackService.sendExceptionMessage(request, ex)
             setErrorResponse(response, HttpStatus.BAD_REQUEST, ErrorCode.JWT_EXCEPTION.name, ex)
         }
     }

@@ -80,23 +80,23 @@ class MemberController(private val memberUseCase: MemberUseCase, private val jwt
     fun renewToken(request: HttpServletRequest, response: HttpServletResponse) =
         jwt.renewToken(request, response)
 
-    /**
-     * Spring Security 에서 실행
-     * */
-    @PostMapping("login")
-    fun login(@RequestBody body: MemberLoginRequest): ResponseEntity<Any> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("성공")
-    }
-
-    /**
-     * Spring Security 에서 실행
-     * */
-    @PostMapping("logout")
-    fun logout(): ResponseEntity<Any> {
-        return ResponseEntity
-            .status(HttpStatus.OK)
-            .body("성공")
-    }
+//    /**
+//     * Spring Security 에서 실행
+//     * */
+//    @PostMapping("login")
+//    fun login(@RequestBody body: MemberLoginRequest): ResponseEntity<Any> {
+//        return ResponseEntity
+//            .status(HttpStatus.OK)
+//            .body("성공")
+//    }
+//
+//    /**
+//     * Spring Security 에서 실행
+//     * */
+//    @PostMapping("logout")
+//    fun logout(): ResponseEntity<Any> {
+//        return ResponseEntity
+//            .status(HttpStatus.OK)
+//            .body("성공")
+//    }
 }

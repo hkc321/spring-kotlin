@@ -6,6 +6,7 @@ import com.example.spring.application.service.member.exception.JwtRenewException
 import com.example.spring.application.service.member.exception.MemberAccessorNotMatchException
 import com.example.spring.application.service.member.exception.MemberAlreadyExistException
 import com.example.spring.application.service.member.exception.MemberDataNotFoundException
+import com.example.spring.application.service.slack.SlackService
 import com.example.spring.config.code.ErrorCode
 import com.example.spring.config.dto.BaseExceptionResponse
 import com.example.spring.config.exception.WriterNotMatchException
@@ -14,7 +15,9 @@ import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
+import io.mockk.justRun
 import io.mockk.mockk
+import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolation
 import jakarta.validation.ConstraintViolationException
 import org.springframework.core.MethodParameter
@@ -31,7 +34,9 @@ import kotlin.reflect.KParameter
 class ControllerAdviceTest : DescribeSpec({
 
     describe("ControllerAdvice") {
-        val controllerAdvice = ControllerAdvice()
+        val request = mockk<HttpServletRequest>()
+        val slackService = mockk<SlackService>()
+        val controllerAdvice = ControllerAdvice(slackService)
 
         it("should handle BoardExistException") {
             val ex = BoardExistException(ErrorCode.ALREADY_EXIST, "같은 이름의 게시판이 존재합니다.")
@@ -254,8 +259,10 @@ class ControllerAdviceTest : DescribeSpec({
 
 
         it("should handle other exceptions with INTERNAL_SERVER_ERROR") {
-            val ex = Exception("Some internal error")
-            val response = controllerAdvice.exception(ex)
+            val ex = Exception("Test internal error")
+            justRun { slackService.sendExceptionMessage(request, ex) }
+
+            val response = controllerAdvice.exception(ex, request)
 
             response.statusCode shouldBe HttpStatus.INTERNAL_SERVER_ERROR
             response.body shouldBe BaseExceptionResponse(ErrorCode.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR")
