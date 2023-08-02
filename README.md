@@ -21,3 +21,6 @@
 [![](https://img.shields.io/badge/docker-20.10.24-white?logo=docker) ](https://www.docker.com/)
 [![](https://img.shields.io/badge/nginx-1.25.1-white?logo=nginx) ](https://www.nginx.com/)
 [![](https://img.shields.io/badge/github_actions-white?logo=githubactions) ](https://docs.github.com/ko/actions)
+
+[![](https://img.shields.io/badge/slack-purple?logo=slack)](https://slack.com/intl/ko-kr/)
+[![](https://img.shields.io/badge/sentry-purple?logo=sentry)](https://sentry.io/welcome/)
