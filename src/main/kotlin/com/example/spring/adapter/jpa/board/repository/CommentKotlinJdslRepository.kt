@@ -33,16 +33,7 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
         }
 
         return queryFactory.listQuery<CommentJpaEntity> {
-            select(entity(CommentJpaEntity::class))
-            from(entity(CommentJpaEntity::class))
-            fetch(CommentJpaEntity::writer)
-            whereAnd(
-                nestedCol(column(CommentJpaEntity::board),BoardJpaEntity::boardId).equal(boardId),
-                nestedCol(column(CommentJpaEntity::post),PostJpaEntity::postId).equal(postId),
-                column(CommentJpaEntity::parentComment).isNull(),
-            )
-            // where
-            cursorComment?.run {
+            val whereAdditional = cursorComment?.run {
                 if (orderBy == "like") {
                     whereOr(
                         and(
@@ -58,9 +49,7 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
                 }
             } ?: cursor?.run { whereAnd(column(CommentJpaEntity::commentId).lessThan(0)) } // 존재하지 않는 최상위 게시글을 커서로 넘긴 경우 빈 리스트 반환되도록 설정}
 
-
-            //orderby
-            if (orderBy == "like") {
+            val orderBySpec = if (orderBy == "like") {
                 orderBy(
                     column(CommentJpaEntity::like).desc(),
                     column(CommentJpaEntity::commentId).desc()
@@ -68,6 +57,17 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
             } else {
                 orderBy(column(CommentJpaEntity::commentId).desc())
             }
+
+            select(entity(CommentJpaEntity::class))
+            from(entity(CommentJpaEntity::class))
+            fetch(CommentJpaEntity::writer)
+            whereAnd(
+                nestedCol(column(CommentJpaEntity::board),BoardJpaEntity::boardId).equal(boardId),
+                nestedCol(column(CommentJpaEntity::post),PostJpaEntity::postId).equal(postId),
+                column(CommentJpaEntity::parentComment).isNull(),
+            )
+            whereAdditional
+            orderBySpec
             limit(size + 1)
         }
     }
