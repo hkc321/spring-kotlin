@@ -113,3 +113,4 @@ kotlin과 srping boot를 이용한 회원 및 게시판 관련 api<br/>
 ## 프로젝트 관련 추가 블로그 게시글
 - [Kotlin JDSL 사용해보기](https://medium.com/@jgchk4814/kotlin-jdsl-%EC%82%AC%EC%9A%A9%ED%95%B4%EB%B3%B4%EA%B8%B0-92fb77dcd10f)
 - [Redis 비밀번호에 $가 있을 때 나타나는 에러?](https://medium.com/@jgchk4814/redis-%EB%B9%84%EB%B0%80%EB%B2%88%ED%98%B8%EC%97%90-%EA%B0%80-%EC%9E%88%EC%9D%84-%EB%95%8C-%EB%82%98%ED%83%80%EB%82%98%EB%8A%94-%EC%97%90%EB%9F%AC-b98234e90002)
+- [DataIntegrityViolationException 잡기](https://medium.com/@jgchk4814/dataintegrityviolationexception-%EC%9E%A1%EA%B8%B0-5610a594cd3c)
