@@ -28,6 +28,9 @@
 [![](https://img.shields.io/badge/slack-purple?logo=slack)](https://slack.com/intl/ko-kr/)
 [![](https://img.shields.io/badge/sentry-purple?logo=sentry)](https://sentry.io/welcome/)
 
+## Swagger
+https://jgchktestdns.shop/swagger<br/>
+포트폴리오 링크가 잘못 기입되었습니다. 위 링크로 접속 부탁드립니다.
 
 
 <br/><br/>
