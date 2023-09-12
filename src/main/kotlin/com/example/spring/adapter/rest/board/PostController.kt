@@ -68,7 +68,7 @@ class PostController(
     ): ResponseEntity<PostReadPageListResponse> =
         ResponseEntity.ok(
             postUseCase.readPostPageList(
-                PostUseCase.Commend.ReadListCommend(
+                PostUseCase.Commend.ReadPageListCommend(
                     boardId = boardId,
                     keyword = keyword,
                     searchType = searchType,

@@ -34,7 +34,7 @@ class PostService(
         )
 
     @Transactional(readOnly = true)
-    override fun readPostPageList(commend: PostUseCase.Commend.ReadListCommend): Page<Post> =
+    override fun readPostPageList(commend: PostUseCase.Commend.ReadPageListCommend): Page<Post> =
         postKotlinJdslPort.readPostPageList(commend.boardId, commend.keyword, commend.searchType, commend.pageable)
 
     @Transactional(readOnly = true)

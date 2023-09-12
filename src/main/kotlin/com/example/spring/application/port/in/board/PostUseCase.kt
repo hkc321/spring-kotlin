@@ -13,7 +13,7 @@ interface PostUseCase {
     /**
      * 게시글 리스트 조회
      * */
-    fun readPostPageList(commend: Commend.ReadListCommend): Page<Post>
+    fun readPostPageList(commend: Commend.ReadPageListCommend): Page<Post>
 
     /**
      * 게시글 조회
@@ -50,7 +50,7 @@ interface PostUseCase {
             val writer: String
         ) : Commend()
 
-        data class ReadListCommend(
+        data class ReadPageListCommend(
             override val boardId: Int,
             var keyword: String? = null, // 검색 키워드
             var searchType: String? = null, // 검색 유형
