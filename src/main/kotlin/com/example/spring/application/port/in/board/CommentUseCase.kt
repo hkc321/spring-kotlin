@@ -43,6 +43,11 @@ interface CommentUseCase {
      * */
     fun deleteComment(commend: Commend.DeleteCommend)
 
+    /**
+     * 댓글 여러개 삭제
+     * */
+    fun deleteCommentAll(commend: Commend.DeleteAllCommend)
+
     sealed class Commend {
         abstract val boardId: Int
         abstract val postId: Int
@@ -101,6 +106,11 @@ interface CommentUseCase {
             override val postId: Int,
             val commentId: Int,
             val modifier: String
+        ) : Commend()
+
+        data class DeleteAllCommend(
+            override val boardId: Int,
+            override val postId: Int
         ) : Commend()
 
     }

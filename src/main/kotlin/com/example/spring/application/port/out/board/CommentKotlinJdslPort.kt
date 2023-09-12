@@ -12,4 +12,10 @@ interface CommentKotlinJdslPort {
      * 대댓글 조회
      * */
     fun readChildComment(boardId: Int, postId: Int, parentCommentId: Int, size: Int, cursor: Int?): Pair<List<Comment>, Int?>
+
+    /**
+     * 댓글 여러개 삭제
+     * post 삭제 시 작동
+     * */
+    fun deleteAllComment(boardId: Int, postId: Int)
 }

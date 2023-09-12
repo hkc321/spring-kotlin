@@ -1,6 +1,7 @@
 package com.example.spring.application.service.board
 
 import com.example.spring.application.port.`in`.board.BoardUseCase
+import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.PostJpaPort
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
@@ -19,7 +20,8 @@ class PostService(
     private val postJpaPort: PostJpaPort,
     private val postKotlinJdslPort: PostKotlinJdslPort,
     private val boardUseCase: BoardUseCase,
-    private val postRedisPort: PostRedisPort
+    private val postRedisPort: PostRedisPort,
+    private val commentUseCase: CommentUseCase
 ) : PostUseCase {
 
     @Transactional
@@ -117,6 +119,8 @@ class PostService(
             ?: throw PostDataNotFoundException(boardId = commend.boardId, postId = commend.postId)
 
         post.checkWriter(commend.modifier)
+
+        commentUseCase.deleteCommentAll(CommentUseCase.Commend.DeleteAllCommend(commend.boardId, commend.postId))
 
         postJpaPort.deletePost(board, post.postId)
         postRedisPort.deletePostLikeAll(commend.boardId, commend.postId)

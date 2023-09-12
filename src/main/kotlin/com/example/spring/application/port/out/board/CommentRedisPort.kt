@@ -25,4 +25,9 @@ interface CommentRedisPort {
      * 댓글 좋아요 모두 제거
      * */
     fun deleteCommentLikeAll(boardId: Int, postId: Int, commentId: Int)
+    
+    /**
+     * 패턴에 해당 하는 댓글 좋아요 제거
+     * */
+    fun deleteLikeCommentAllByPattern(boardId: Int, postId: Int)
 }

@@ -6,6 +6,7 @@ import com.example.spring.adapter.jpa.board.entity.PostJpaEntity
 import com.linecorp.kotlinjdsl.querydsl.expression.column
 import com.linecorp.kotlinjdsl.querydsl.from.fetch
 import com.linecorp.kotlinjdsl.spring.data.SpringDataQueryFactory
+import com.linecorp.kotlinjdsl.spring.data.deleteQuery
 import com.linecorp.kotlinjdsl.spring.data.listQuery
 import com.linecorp.kotlinjdsl.spring.data.singleQuery
 import jakarta.persistence.NoResultException
@@ -107,5 +108,14 @@ class CommentKotlinJdslRepository(private val queryFactory: SpringDataQueryFacto
             orderBy(column(CommentJpaEntity::commentId).asc())
             limit(size + 1)
         }
+    }
+
+    fun deleteAllComment(boardId: Int, postId: Int) {
+        queryFactory.deleteQuery<CommentJpaEntity> {
+            whereAnd(
+                nestedCol(column(CommentJpaEntity::board),BoardJpaEntity::boardId).equal(boardId),
+                nestedCol(column(CommentJpaEntity::post),PostJpaEntity::postId).equal(postId)
+            )
+        }.executeUpdate()
     }
 }

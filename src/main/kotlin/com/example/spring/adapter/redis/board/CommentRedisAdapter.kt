@@ -47,4 +47,8 @@ class CommentRedisAdapter(private val commentRedisRepository: CommentRedisReposi
     override fun deleteCommentLikeAll(boardId: Int, postId: Int, commentId: Int) {
         commentRedisRepository.deleteLikeCommentAll(boardId, postId, commentId)
     }
+
+    override fun deleteLikeCommentAllByPattern(boardId: Int, postId: Int) {
+        commentRedisRepository.deleteLikeCommentAllByPattern(boardId, postId)
+    }
 }

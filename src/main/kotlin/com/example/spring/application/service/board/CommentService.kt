@@ -1,7 +1,6 @@
 package com.example.spring.application.service.board
 
 import com.example.spring.application.port.`in`.board.CommentUseCase
-import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.CommentJpaPort
 import com.example.spring.application.port.out.board.CommentKotlinJdslPort
 import com.example.spring.application.port.out.board.CommentRedisPort
@@ -14,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 class CommentService(
     private val commentJpaPort: CommentJpaPort,
     private val commentKotlinJdslPort: CommentKotlinJdslPort,
-    private val postUseCase: PostUseCase,
     private val commentRedisPort: CommentRedisPort
 ) : CommentUseCase {
 
@@ -32,10 +30,8 @@ class CommentService(
         )
 
     @Transactional(readOnly = true)
-    override fun readTopLevelComment(commend: CommentUseCase.Commend.ReadTopLevelCommend): Pair<List<Comment>, Int?> {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
-
-        return commentKotlinJdslPort.readTopLevelComment(
+    override fun readTopLevelComment(commend: CommentUseCase.Commend.ReadTopLevelCommend): Pair<List<Comment>, Int?> =
+        commentKotlinJdslPort.readTopLevelComment(
             commend.boardId,
             commend.postId,
             commend.size,
@@ -53,13 +49,10 @@ class CommentService(
                 )
             }
         }
-    }
 
     @Transactional(readOnly = true)
-    override fun readComment(commend: CommentUseCase.Commend.ReadCommend): Comment {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
-
-        return commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
+    override fun readComment(commend: CommentUseCase.Commend.ReadCommend): Comment =
+        commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
             ?.apply {
                 this.updateIsLiked(
                     !commentRedisPort.checkCommentLikeByEmail(
@@ -70,12 +63,14 @@ class CommentService(
                     )
                 )
             }
-            ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
-    }
+            ?: throw CommentDataNotFoundException(
+                boardId = commend.boardId,
+                postId = commend.postId,
+                commentId = commend.commentId
+            )
 
     @Transactional(readOnly = true)
     override fun readChildComment(commend: CommentUseCase.Commend.ReadChildCommend): Pair<List<Comment>, Int?> {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
         commentJpaPort.readComment(commend.boardId, commend.postId, commend.parentCommentId)
 
         return commentKotlinJdslPort.readChildComment(
@@ -100,8 +95,6 @@ class CommentService(
 
     @Transactional
     override fun updateComment(commend: CommentUseCase.Commend.UpdateCommend): Comment {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
-
         val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
             ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
 
@@ -121,8 +114,6 @@ class CommentService(
 
     @Transactional
     override fun likeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
-
         val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
             ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
 
@@ -136,8 +127,6 @@ class CommentService(
 
     @Transactional
     override fun deleteLikeComment(commend: CommentUseCase.Commend.LikeCommend): Comment {
-        postUseCase.readPost(PostUseCase.Commend.ReadCommend(commend.boardId, commend.postId))
-
         val comment: Comment = commentJpaPort.readComment(commend.boardId, commend.postId, commend.commentId)
             ?: throw CommentDataNotFoundException(boardId = commend.boardId, postId = commend.postId, commentId = commend.commentId)
 
@@ -159,4 +148,10 @@ class CommentService(
         commentJpaPort.deleteComment(comment.boardId, comment.postId, comment.commentId)
         commentRedisPort.deleteCommentLikeAll(comment.boardId, comment.postId, comment.commentId)
     }
+    @Transactional
+    override fun deleteCommentAll(commend: CommentUseCase.Commend.DeleteAllCommend) {
+        commentKotlinJdslPort.deleteAllComment(commend.boardId, commend.postId)
+        commentRedisPort.deleteLikeCommentAllByPattern(commend.boardId, commend.postId)
+    }
+
 }

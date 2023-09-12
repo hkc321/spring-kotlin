@@ -40,6 +40,10 @@ class CommentKotlinJdslAdapter(
         return calcLast(comments, size)
     }
 
+    override fun deleteAllComment(boardId: Int, postId: Int) {
+        commentKotlinJdslRepository.deleteAllComment(boardId, postId)
+    }
+
     fun calcLast(comments: List<Comment>, size: Int): Pair<List<Comment>, Int?> {
         var lastValue: Int? = null
         val mutalbleCommentList: MutableList<Comment> = comments.toMutableList()
