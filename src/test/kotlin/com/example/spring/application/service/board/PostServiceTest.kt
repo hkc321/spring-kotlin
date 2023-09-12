@@ -1,6 +1,7 @@
 package com.example.spring.application.service.board
 
 import com.example.spring.application.port.`in`.board.BoardUseCase
+import com.example.spring.application.port.`in`.board.CommentUseCase
 import com.example.spring.application.port.`in`.board.PostUseCase
 import com.example.spring.application.port.out.board.PostJpaPort
 import com.example.spring.application.port.out.board.PostKotlinJdslPort
@@ -15,17 +16,15 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowUnit
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 
 class PostServiceTest : BehaviorSpec({
     val postJpaPort = mockk<PostJpaPort>()
     val postKotlinJdslPort = mockk<PostKotlinJdslPort>()
     val boardUseCase = mockk<BoardUseCase>()
     val postRedisPort = mockk<PostRedisPort>()
-    val postService = PostService(postJpaPort, postKotlinJdslPort, boardUseCase, postRedisPort)
+    val commentUseCase = mockk<CommentUseCase>()
+    val postService = PostService(postJpaPort, postKotlinJdslPort, boardUseCase, postRedisPort, commentUseCase)
 
     Given("Read post") {
         val postReadCommend = mockk<PostUseCase.Commend.ReadCommend>()
@@ -127,6 +126,27 @@ class PostServiceTest : BehaviorSpec({
                     this.code shouldBe ErrorCode.INVALID_USER
                     this.message shouldBe "작성자만 수정이 가능합니다."
                 }
+            }
+        }
+
+        When("correct request") {
+            every { boardUseCase.readBoard(BoardUseCase.Commend.ReadCommend(3)) } returns board
+            every { postDeleteCommend.boardId } returns 3
+            every { postDeleteCommend.postId } returns 3
+            every { postKotlinJdslPort.readPost(board, 3) } returns post
+            every { postDeleteCommend.modifier } returns "test"
+            every { post.checkWriter("test") } returns true
+            justRun { commentUseCase.deleteCommentAll(CommentUseCase.Commend.DeleteAllCommend(3, 3)) }
+            every { post.postId } returns 3
+            justRun { postJpaPort.deletePost(board, 3) }
+            justRun { postRedisPort.deletePostLikeAll(3, 3) }
+
+            postService.deletePost(postDeleteCommend)
+
+            Then("it should delete comments on post, likes of comments on a post, post, like of post") {
+                verify(exactly = 1) { commentUseCase.deleteCommentAll(CommentUseCase.Commend.DeleteAllCommend(3, 3)) }
+                verify(exactly = 1) { postJpaPort.deletePost(board, 3) }
+                verify(exactly = 1) { postRedisPort.deletePostLikeAll(3, 3) }
             }
         }
     }
