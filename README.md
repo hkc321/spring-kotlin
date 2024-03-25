@@ -28,12 +28,6 @@
 [![](https://img.shields.io/badge/slack-purple?logo=slack)](https://slack.com/intl/ko-kr/)
 [![](https://img.shields.io/badge/sentry-purple?logo=sentry)](https://sentry.io/welcome/)
 
-## Swagger
-https://jgchktestdns.shop/swagger
-
-
-<br/><br/>
-
 ## 설명
 kotlin과 srping boot를 이용한 회원 및 게시판 관련 api<br/>
 - 회원가입 및 로그인 및 로그아웃
